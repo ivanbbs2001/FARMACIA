@@ -721,6 +721,97 @@ const MEDS=[
    al:["Absorção sistêmica pode causar bradicardia e broncoespasmo","Pressionar o canto interno do olho após aplicação (reduz absorção)","Não usar em asmáticos"],
    ci:"Asma brônquica, DPOC, BAV, bradicardia grave, insuf. cardíaca descompensada",
    mec:"Bloqueia receptores β-adrenérgicos no epitélio ciliar → reduz produção de humor aquoso → queda da pressão intraocular"},
+
+  /* ═══════════════════════════════════════
+     VITAMINAS & SUPLEMENTOS
+  ═══════════════════════════════════════ */
+  {id:"vitd3",pa:"Vitamina D3 (Colecalciferol)",comerciais:["Addera D3","Depura","Vitamina D3 Genérico"],
+   classe:"Vitamina Lipossolúvel · Imunomoduladora",cor:"#f59e0b",fito:false,chronic:true,fp:false,sus:true,
+   syms:["vit_d_def","ossos","fraqueza","baixa_imunidade"],
+   dose:{a:"1000–2000 UI/dia (manutenção); 50.000 UI/semana por 8–12 semanas (reposição)",max:"4000 UI/dia uso contínuo",p:"400–1000 UI/dia (<1 ano); 600–1000 UI/dia (>1 ano)"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Dosar 25-OH vitamina D antes e após reposição","Doses >4000 UI/dia: monitorar calcemia"],
+   ci:"Hipercalcemia, sarcoidose, tuberculose ativa, hipersensibilidade",
+   mec:"Precursor da hormona calcitriol → regula absorção intestinal de cálcio e fósforo, função imune via receptores VDR"},
+
+  {id:"acido_folico",pa:"Ácido Fólico (Vitamina B9)",comerciais:["Ácido Fólico Genérico","Neofolin","Folacin"],
+   classe:"Vitamina B9 · Essencial na Gestação · Antianemica",cor:"#22c55e",fito:false,chronic:false,fp:false,sus:true,
+   syms:["gestacao_vit","anemia","fraqueza"],
+   dose:{a:"400–800 mcg/dia (prevenção DTN); 5 mg/dia (anemia megaloblástica)",max:"5 mg/dia terapêutico",p:"50–200 mcg/dia"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Iniciar 3 meses antes da gestação","Pode mascarar deficiência de B12 em doses altas"],
+   ci:"Hipersensibilidade",
+   mec:"Cofator na síntese de purinas e timidilato → essencial para divisão celular e prevenção de defeitos do tubo neural"},
+
+  {id:"vitb12",pa:"Vitamina B12 (Cianocobalamina)",comerciais:["Citoneurin","Bedoyecta","B12 Genérico"],
+   classe:"Vitamina B12 · Neuroprotetora · Antianemica",cor:"#ef4444",fito:false,chronic:false,fp:false,sus:true,
+   syms:["vit_b12_def","anemia","neuropatia_vit","fraqueza"],
+   dose:{a:"1000 mcg/dia VO (deficiência leve); 1000 mcg IM 3×/semana × 2 semanas → 1×/mês (grave)",max:"conforme gravidade",p:"25–100 mcg/dia"},
+   via:"Oral / IM",gS:true,lS:true,cS:true,
+   al:["Metformina e IBPs reduzem absorção de B12 — monitorar","Dosar B12 sérica antes de suplementar"],
+   ci:"Hipersensibilidade, doença de Leber (neuropatia óptica hereditária)",
+   mec:"Cofator na síntese de mielina e metionina → mantém integridade neuronal e produção de eritrócitos"},
+
+  {id:"complexo_b",pa:"Complexo B (B1+B2+B3+B5+B6+B9+B12)",comerciais:["Complexo B Genérico","Neurovig","Revitalize B"],
+   classe:"Complexo de Vitaminas B · Neuroprotetor · Energético",cor:"#f97316",fito:false,chronic:false,fp:false,sus:true,
+   syms:["neuropatia_vit","fraqueza","ansiedade_leve","insonia","vit_b12_def"],
+   dose:{a:"1–2 comprimidos/dia com refeição",max:"conforme produto",p:"Conforme formulação pediátrica"},
+   via:"Oral",gS:true,lS:true,cS:true,al:[],ci:"Hipersensibilidade",
+   mec:"B1 condução nervosa; B2 metabolismo energético; B3 síntese de NAD; B6 neurotransmissores; B12 mielina e eritrócitos"},
+
+  {id:"calcio_vitd",pa:"Cálcio + Vitamina D3",comerciais:["Cálcio + D3","Calcimax","Oscal D"],
+   classe:"Suplemento de Cálcio · Saúde Óssea",cor:"#94a3b8",fito:false,chronic:true,fp:false,sus:true,
+   syms:["ossos","caimbra","osteoporose","vit_d_def"],
+   dose:{a:"500–1000 mg Ca + 400–800 UI D3/dia com refeição",max:"1200 mg Ca/dia",p:"Conforme faixa etária e necessidade clínica"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Tomar com refeição (aumenta absorção)","Separar ≥2h de ferro e bisfosfonatos","Risco de cálculo renal com doses altas"],
+   ci:"Hipercalcemia, hipercalciúria, litíase renal de oxalato, insuf. renal grave",
+   mec:"Cálcio: componente estrutural de ossos e dentes; D3: regula absorção intestinal de Ca e mineralização óssea"},
+
+  {id:"magnesio",pa:"Magnésio (Cloreto / Gliconato)",comerciais:["Mag Plus","Magnésio Quelato","Cloreto de Magnésio P.A."],
+   classe:"Suplemento de Magnésio · Relaxante Muscular",cor:"#64748b",fito:false,chronic:false,fp:false,sus:false,
+   syms:["caimbra","fraqueza","ansiedade_leve","insonia","neuropatia_vit"],
+   dose:{a:"200–400 mg Mg elementar/dia (preferencialmente à noite)",max:"400 mg/dia",p:"Conforme peso corporal"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Doses altas podem causar diarreia","Tomar à noite para relaxamento muscular"],
+   ci:"Insuf. renal grave (TFG <30), hipermagnesemia, miastenia gravis",
+   mec:"Cofator em >300 enzimas; regula contração muscular, transmissão nervosa, síntese de ATP e estabilização de membranas"},
+
+  {id:"vite",pa:"Vitamina E (Tocoferol)",comerciais:["Ephynal","Vitamina E Genérico","E-Vit"],
+   classe:"Vitamina Lipossolúvel · Antioxidante · Dermatoprotetor",cor:"#eab308",fito:false,chronic:false,fp:false,sus:false,
+   syms:["pele_cabelo","vit_d_def","baixa_imunidade"],
+   dose:{a:"200–400 UI/dia",max:"1000 mg/dia (uso prolongado)",p:"Conforme faixa etária"},
+   via:"Oral / Tópico",gS:true,lS:true,cS:true,
+   al:["Doses >400 UI/dia podem aumentar risco de sangramento","Cuidado com anticoagulantes"],
+   ci:"Coagulopatias graves, uso de anticoagulantes sem supervisão",
+   mec:"Principal antioxidante lipossolúvel — protege membranas celulares da peroxidação lipídica; imunomodulador"},
+
+  {id:"biotina",pa:"Biotina (Vitamina B7 / Vitamina H)",comerciais:["Bioxin","Biotina Genérico","Hair Skin Nails"],
+   classe:"Vitamina B7 · Saúde Dermatológica",cor:"#ec4899",fito:false,chronic:false,fp:false,sus:false,
+   syms:["pele_cabelo"],
+   dose:{a:"2,5–10 mg/dia",max:"10 mg/dia",p:"Conforme produto e orientação"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Interfere em exames laboratoriais (troponina, TSH, T4) — informar ao médico","Efeito visível em 3–6 meses de uso contínuo"],
+   ci:"Hipersensibilidade",
+   mec:"Cofator nas carboxilases; essencial para síntese de ácidos graxos e estrutura da queratina (cabelo, pele e unhas)"},
+
+  {id:"vita",pa:"Vitamina A (Retinol / Betacaroteno)",comerciais:["Vitamina A Genérico","Arovit","AquADEKs"],
+   classe:"Vitamina Lipossolúvel · Visão · Imunidade · Epitelial",cor:"#f97316",fito:false,chronic:false,fp:false,sus:true,
+   syms:["vit_d_def","baixa_imunidade","olhos_vermelhos","pele_cabelo"],
+   dose:{a:"5000 UI/dia (manutenção); programa PNVITAMINA A: 100.000–200.000 UI dose única (crianças 6 meses–5 anos)",max:"10.000 UI/dia uso crônico adulto",p:"PNVITAMINA A: 100.000 UI (6–11 meses); 200.000 UI (12 meses–5 anos) — dose única semestral"},
+   via:"Oral",gS:false,lS:false,cS:true,
+   al:["TERATOGÊNICA em doses altas — gestantes: máx 5000 UI/dia","Betacaroteno: forma mais segura na gestação","Dose alta crônica: hepatotóxica"],
+   ci:"Gestação (doses altas), hepatopatia, hipervitaminose A",
+   mec:"Regula expressão gênica via receptores RAR/RXR; essencial para rodopsina (visão), diferenciação epitelial e resposta imune"},
+
+  {id:"vitk",pa:"Vitamina K2 (Menaquinona MK-7)",comerciais:["Vitamina K2 Genérico","MK-7","Ostemil K2"],
+   classe:"Vitamina Lipossolúvel · Saúde Óssea e Cardiovascular",cor:"#65a30d",fito:false,chronic:true,fp:false,sus:false,
+   syms:["ossos","osteoporose","vit_d_def"],
+   dose:{a:"90–120 mcg/dia (junto com cálcio e vitamina D)",max:"360 mcg/dia",p:"Conforme indicação clínica"},
+   via:"Oral",gS:false,lS:false,cS:false,
+   al:["Cuidado com warfarina e anticoagulantes cumarínicos — antagonismo direto","Sinergismo com vitamina D3 e cálcio"],
+   ci:"Uso de warfarina e anticoagulantes cumarínicos, hipersensibilidade",
+   mec:"Ativa osteocalcina e MGP → direciona cálcio para os ossos (evitando calcificação arterial); complementa ação da vitamina D na mineralização"},
   /* ═══════════════════════════════════════
      FITOTERÁPICOS — Gerais
   ═══════════════════════════════════════ */
@@ -1118,6 +1209,16 @@ const GROUPS=[
     {id:"tontura",label:"Tontura"},{id:"insonia",label:"Insônia"},
     {id:"ansiedade_leve",label:"Ansiedade Leve"},
   ]},
+  {label:"Vitaminas & Suplementos",icon:"💊",vitaminas:true,items:[
+    {id:"vit_d_def",   label:"Deficiência de Vitamina D"},
+    {id:"anemia",      label:"Anemia / Deficiência de Ferro"},
+    {id:"vit_b12_def", label:"Deficiência de Vitamina B12"},
+    {id:"caimbra",     label:"Cãibras Musculares"},
+    {id:"ossos",       label:"Saúde Óssea / Osteoporose"},
+    {id:"gestacao_vit",label:"Gestação (suplementação)"},
+    {id:"pele_cabelo", label:"Pele, Cabelo e Unhas"},
+    {id:"neuropatia_vit",label:"Neuropatia / Formigamento"},
+  ]},
 ];
 const ALL=GROUPS.flatMap(g=>g.items);
 
@@ -1508,6 +1609,7 @@ function CatalogView({f,t,theme,onSelectMed}){
       if(cFilter==="chronic"&&!m.chronic) return false;
       if(cFilter==="fp"&&!m.fp) return false;
       if(cFilter==="sus"&&!m.sus) return false;
+      if(cFilter==="vit"){const V=new Set(["vitd3","acido_folico","vitb12","complexo_b","calcio_vitd","magnesio","vite","biotina","vita","vitk","vitc","sulfato_fe","zinc"]);if(!V.has(m.id)) return false;}
       if(!q) return true;
       return m.pa.toLowerCase().includes(q)||m.classe.toLowerCase().includes(q)||m.comerciais.some(c=>c.toLowerCase().includes(q));
     }).sort((a,b)=>a.pa.localeCompare(b.pa,"pt-BR"));
@@ -1520,7 +1622,7 @@ function CatalogView({f,t,theme,onSelectMed}){
         <p style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--sans"]}}>{MEDS.length} medicamentos · {MEDS.filter(m=>m.fito).length} fitoterápicos · {MEDS.filter(m=>m.chronic).length} para condições crônicas · Clique para detalhes</p>
       </div>
       <div style={{display:"flex",gap:7,flexWrap:"wrap",marginBottom:12,alignItems:"center"}}>
-        {[["all","Todos"],["conv","Convencionais"],["fito","🌿 Fitoterápicos"],["fp","🏛️ Farmácia Popular"],["sus","💊 Farmácia Básica SUS"],["chronic","🏥 Crônicos"]].map(([id,lbl])=>(
+        {[["all","Todos"],["conv","Convencionais"],["fito","🌿 Fitoterápicos"],["vit","💛 Vitaminas"],["fp","🏛️ Farmácia Popular"],["sus","💊 Farmácia Básica SUS"],["chronic","🏥 Crônicos"]].map(([id,lbl])=>(
           <button key={id} onClick={()=>setCFilter(id)} style={btnS(cFilter===id, id==="chronic"?t["--chronicBg"]:null)}>{lbl}</button>
         ))}
         <div style={{flex:1,minWidth:150}}>
@@ -1543,13 +1645,15 @@ function CatalogView({f,t,theme,onSelectMed}){
 }
 
 /* ════════════════════════ TAB BAR ════════════════════════ */
-function TabBar({tab,setTab,convCount,fitoCount,fpCount,susCount,t,theme}){
+function TabBar({tab,setTab,todosCount,convCount,fitoCount,vitCount,fpCount,susCount,t,theme}){
   const isInd=theme==="industrial";
   const tabs=[
+    {id:"todos",lbl:"Todos",              ico:"◉",  cnt:todosCount,bg:t["--surface3"],  clr:t["--text"],       brd:t["--border2"]},
     {id:"conv", lbl:"Medicamentos",       ico:"💊", cnt:convCount, bg:t["--accentBg"],  clr:t["--accentText"], brd:t["--accentBrd"]},
     {id:"fito", lbl:"Fitoterápicos",       ico:"🌿", cnt:fitoCount, bg:t["--fitoBg"],   clr:t["--fitoText"],  brd:t["--fitoBrd"]},
+    {id:"vit",  lbl:"Vitaminas",           ico:"💛", cnt:vitCount,  bg:"#fef3c7",       clr:"#92400e",        brd:"#fcd34d"},
     {id:"fp",   lbl:"Farmácia Popular",    ico:"🏛️", cnt:fpCount,   bg:t["--fpBg"]||t["--blueBg"], clr:t["--fpTxt"]||t["--blueTxt"], brd:t["--fpBrd"]||t["--blue"]},
-    {id:"sus",  lbl:"Farmácia Básica SUS", ico:"💊", cnt:susCount,  bg:t["--susBg"]||t["--accentBg"], clr:t["--susTxt"]||t["--accentText"], brd:t["--susBrd"]||t["--accentBrd"]},
+    {id:"sus",  lbl:"Farmácia Básica SUS", ico:"🏥", cnt:susCount,  bg:t["--susBg"]||t["--accentBg"], clr:t["--susTxt"]||t["--accentText"], brd:t["--susBrd"]||t["--accentBrd"]},
   ];
   return(
     <div style={{display:"flex",gap:5,marginBottom:14,flexWrap:"wrap"}}>
@@ -1579,6 +1683,18 @@ function TabBar({tab,setTab,convCount,fitoCount,fpCount,susCount,t,theme}){
 
 function Empty({t}){return(<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"56px 20px",gap:14,animation:"pgFade .4s ease"}}><div style={{width:60,height:60,borderRadius:"50%",background:t["--surface2"],border:`1.5px solid ${t["--border"]}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26}}>💊</div><p style={{fontSize:13,fontWeight:600,color:t["--textMuted"],fontFamily:t["--sans"]}}>Nenhum sintoma selecionado</p><p style={{fontSize:11.5,color:t["--textDim"],lineHeight:1.7,maxWidth:230,textAlign:"center",fontFamily:t["--sans"]}}>Selecione sintomas ao lado para ver sugestões em tempo real, ou use <strong>MEDICAMENTOS</strong> no menu para o catálogo completo.</p></div>);}
 function FitoEmpty({t}){return(<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}><div style={{width:52,height:52,borderRadius:"50%",background:t["--fitoBg"],border:`1.5px solid ${t["--fitoBrd"]}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>🌿</div><p style={{fontSize:13,fontWeight:600,color:t["--fito"],fontFamily:t["--sans"]}}>Nenhum fitoterápico para estes sintomas</p></div>);}
+
+function VitEmpty({t}){
+  return(
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}>
+      <div style={{width:52,height:52,borderRadius:"50%",background:"#fef3c7",border:"1.5px solid #fcd34d",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>💛</div>
+      <p style={{fontSize:13,fontWeight:600,color:"#92400e",fontFamily:t["--sans"]}}>Nenhuma vitamina para estes sintomas</p>
+      <p style={{fontSize:11.5,color:t["--textMuted"],lineHeight:1.65,maxWidth:240,textAlign:"center",fontFamily:t["--sans"]}}>
+        Use o grupo <strong>💊 Vitaminas & Suplementos</strong> no menu lateral para selecionar a condição adequada.
+      </p>
+    </div>
+  );
+}
 function ConvEmpty({t}){return(<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}><div style={{width:52,height:52,borderRadius:"50%",background:t["--accentBg"],border:`1.5px solid ${t["--accentBrd"]}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>💊</div><p style={{fontSize:13,fontWeight:600,color:t["--accentText"],fontFamily:t["--sans"]}}>Nenhum medicamento para estes sintomas</p><p style={{fontSize:11.5,color:t["--textMuted"],lineHeight:1.65,maxWidth:230,textAlign:"center",fontFamily:t["--sans"]}}>Os sintomas selecionados não possuem medicamentos convencionais cadastrados. Experimente a aba Fitoterápicos.</p></div>);}
 function ProgramEmpty({tipo,t}){
   const isFP=tipo==="fp";
@@ -1950,11 +2066,13 @@ function FarmaciaONG(){
     if(!sel.size) return[];
     return MEDS.map(m=>({m,score:m.syms.filter(s=>sel.has(s)).length})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
   },[sel]);
-  const convRanked=useMemo(()=>allRanked.filter(x=>!x.m.fito),[allRanked]);
+  const VIT_IDS=new Set(["vitd3","acido_folico","vitb12","complexo_b","calcio_vitd","magnesio","vite","biotina","vita","vitk","vitc","sulfato_fe","zinc"]);
+  const convRanked=useMemo(()=>allRanked.filter(x=>!x.m.fito&&!VIT_IDS.has(x.m.id)),[allRanked]);
   const fitoRanked=useMemo(()=>allRanked.filter(x=>x.m.fito),[allRanked]);
+  const vitRanked =useMemo(()=>allRanked.filter(x=>VIT_IDS.has(x.m.id)),[allRanked]);
   const fpRanked  =useMemo(()=>allRanked.filter(x=>x.m.fp),  [allRanked]);
   const susRanked =useMemo(()=>allRanked.filter(x=>x.m.sus), [allRanked]);
-  const ranked=tab==="fito"?fitoRanked:tab==="fp"?fpRanked:tab==="sus"?susRanked:convRanked;
+  const ranked=tab==="todos"?allRanked:tab==="fito"?fitoRanked:tab==="vit"?vitRanked:tab==="fp"?fpRanked:tab==="sus"?susRanked:convRanked;
   const maxScore=ranked.length?ranked[0].score:1;
 
   const toggle=useCallback(id=>{setSel(p=>{const n=new Set(p);n.has(id)?n.delete(id):n.add(id);return n;});},[]);
@@ -1984,7 +2102,7 @@ function FarmaciaONG(){
             <span style={{fontSize:9,padding:"3px 7px",borderRadius:isInd?"2px":"4px",background:t["--tagBg"],color:t["--tagTxt"],border:`1px solid ${t["--tagBrd"]}`,letterSpacing:".08em",fontWeight:700,textTransform:"uppercase",fontFamily:t["--sans"],display:isMobile?"none":"inline-block"}}>ONG · Dispensação</span>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:7}}>
-            {mode==="symptoms"&&sel.size>0&&<span style={{fontSize:10.5,color:t["--textMuted"],marginRight:2,fontFamily:t["--sans"],display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}><span style={{color:t["--accentText"]}}>{sel.size} sint.</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--blue"]}}>💊{convRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--fito"]}}>🌿{fitoRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--fp"]||t["--blue"]}}>🏛️{fpRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--sus"]||t["--accent"]}}>UBS {susRanked.length}</span></span>}
+            {mode==="symptoms"&&sel.size>0&&<span style={{fontSize:10.5,color:t["--textMuted"],marginRight:2,fontFamily:t["--sans"],display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}><span style={{color:t["--accentText"]}}>{sel.size} sint.</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--blue"]}}>💊{convRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--fito"]}}>🌿{fitoRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:"#d97706"}}>💛{vitRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--fp"]||t["--blue"]}}>🏛️{fpRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--sus"]||t["--accent"]}}>UBS {susRanked.length}</span></span>}
             {Object.keys(THEMES).map(id=><ThemeBtn key={id} id={id} current={theme} onChange={setTheme}/>)}
           </div>
         </div>
@@ -2055,6 +2173,7 @@ function FarmaciaONG(){
                         {grp.items.map(item=>{
                           const on=sel.has(item.id);
                           const isChr=CHRONIC_IDS.has(item.id);
+                          const isVit=grp.vitaminas||false;
                           return(
                             <button key={item.id} className="pg-sym" onClick={()=>toggle(item.id)}
                               style={{display:"flex",justifyContent:"space-between",alignItems:"center",width:"100%",textAlign:"left",padding:"6px 10px",marginBottom:2,borderRadius:t["--radiusSm"],
@@ -2063,7 +2182,7 @@ function FarmaciaONG(){
                                 color:on?(isChr?t["--chronicText"]:t["--accentText"]):t["--textMuted"],
                                 fontSize:12,fontWeight:on?600:400,cursor:"pointer",transition:"all .14s",fontFamily:t["--sans"]}}>
                               {item.label}
-                              {on&&<span style={{fontSize:10,color:isChr?t["--chronic"]:t["--accent"],flexShrink:0}}>✓</span>}
+                              {on&&<span style={{fontSize:10,color:isChr?t["--chronic"]:isVit?"#d97706":t["--accent"],flexShrink:0}}>✓</span>}
                             </button>
                           );
                         })}
@@ -2075,7 +2194,7 @@ function FarmaciaONG(){
             )}
             {mode==="catalog"&&<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px",flexDirection:"column",gap:10}}><span style={{fontSize:28}}>📋</span><p style={{fontSize:11.5,color:t["--textMuted"],textAlign:"center",lineHeight:1.7,fontFamily:t["--sans"]}}>Catálogo completo ativo.<br/><span style={{fontSize:10.5,color:t["--textDim"]}}>Volte ao modo de sintomas para filtrar por condição.</span></p></div>}
             {/* clear */}
-            {mode==="symptoms"&&sel.size>0&&<div style={{padding:"9px 13px",borderTop:`1px solid ${t["--border"]}`,flexShrink:0}}><button className="pg-clr" onClick={()=>setSel(new Set())} style={{width:"100%",padding:"7px",borderRadius:t["--radiusSm"],background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,color:t["--dangerTxt"],fontSize:11.5,fontWeight:600,cursor:"pointer",fontFamily:t["--sans"]}}>✕ Limpar seleção ({sel.size})</button></div>}
+            {mode==="symptoms"&&sel.size>0&&<div style={{padding:"9px 13px",borderTop:`1px solid ${t["--border"]}`,flexShrink:0}}><button className="pg-clr" onClick={()=>{setSel(new Set());setTab("conv");}} style={{width:"100%",padding:"7px",borderRadius:t["--radiusSm"],background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,color:t["--dangerTxt"],fontSize:11.5,fontWeight:600,cursor:"pointer",fontFamily:t["--sans"]}}>✕ Limpar seleção ({sel.size})</button></div>}
             {/* MEDICAMENTOS nav */}
             <div style={{borderTop:`${isInd?"2px":"1px"} solid ${t["--border"]}`,flexShrink:0}}>
               <button className="pg-nav" onClick={()=>setMode(m=>m==="catalog"?"symptoms":"catalog")}
@@ -2095,8 +2214,30 @@ function FarmaciaONG(){
             :!sel.size?<Empty t={t}/>
             :(
               <>
-                <TabBar tab={tab} setTab={setTab} convCount={convRanked.length} fitoCount={fitoRanked.length} fpCount={fpRanked.length} susCount={susRanked.length} t={t} theme={theme}/>
+                <TabBar tab={tab} setTab={setTab} todosCount={allRanked.length} convCount={convRanked.length} fitoCount={fitoRanked.length} vitCount={vitRanked.length} fpCount={fpRanked.length} susCount={susRanked.length} t={t} theme={theme}/>
                 <ChronicBanner sel={sel} t={t}/>
+                {tab==="todos"&&(
+                  <div style={{marginBottom:14,padding:"12px 15px",borderRadius:t["--radius"],background:t["--surface3"],border:`1.5px solid ${t["--border2"]}`,display:"flex",gap:10,alignItems:"flex-start"}}>
+                    <span style={{fontSize:20}}>◉</span>
+                    <div>
+                      <div style={{fontWeight:700,fontSize:12.5,color:t["--text"],fontFamily:t["--sans"],marginBottom:2}}>Todos os Resultados</div>
+                      <div style={{fontSize:11,color:t["--textMuted"],lineHeight:1.65,fontFamily:t["--sans"]}}>
+                        Exibindo medicamentos convencionais, fitoterápicos, vitaminas e suplementos correspondentes aos sintomas selecionados. Use as abas específicas para filtrar por categoria.
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {tab==="vit"&&(
+                  <div style={{marginBottom:14,padding:"12px 15px",borderRadius:t["--radius"],background:"#fef3c7",border:"1.5px solid #fcd34d",display:"flex",gap:10,alignItems:"flex-start"}}>
+                    <span style={{fontSize:20}}>💛</span>
+                    <div>
+                      <div style={{fontWeight:700,fontSize:12.5,color:"#92400e",fontFamily:t["--sans"],marginBottom:2}}>Vitaminas & Suplementos</div>
+                      <div style={{fontSize:11,color:"#b45309",lineHeight:1.65,fontFamily:t["--sans"]}}>
+                        Vitaminas e suplementos indicados para os sintomas selecionados. Consulte um profissional de saúde para indicação de dosagem e necessidade de exames prévios.
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {tab==="fito"&&(
                   <div style={{marginBottom:14,padding:"12px 15px",borderRadius:t["--radius"],background:t["--fitoBg"],border:`1.5px solid ${t["--fitoBrd"]}`,display:"flex",gap:10,alignItems:"flex-start"}}>
                     <span style={{fontSize:20}}>🌿</span>
@@ -2140,13 +2281,13 @@ function FarmaciaONG(){
                   </div>
                 )}
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:11,flexWrap:"wrap",gap:8}}>
-                  <div><h2 style={{fontSize:15,fontWeight:700,marginBottom:2,fontFamily:t["--sans"],color:t["--text"],letterSpacing:isInd?".04em":"normal",textTransform:isInd?"uppercase":"none"}}>{tab==="fito"?"🌿 Fitoterápicos":tab==="fp"?"🏛️ Farmácia Popular":tab==="sus"?"🏥 Farmácia Básica SUS":"💊 Medicamentos Sugeridos"}</h2><p style={{fontSize:10.5,color:t["--textMuted"],fontFamily:t["--sans"]}}>Ordenados por relevância · Clique no card para expandir</p></div>
+                  <div><h2 style={{fontSize:15,fontWeight:700,marginBottom:2,fontFamily:t["--sans"],color:t["--text"],letterSpacing:isInd?".04em":"normal",textTransform:isInd?"uppercase":"none"}}>{tab==="todos"?"◉ Todos os Resultados":tab==="fito"?"🌿 Fitoterápicos":tab==="vit"?"💛 Vitaminas e Suplementos":tab==="fp"?"🏛️ Farmácia Popular":tab==="sus"?"🏥 Farmácia Básica SUS":"💊 Medicamentos Sugeridos"}</h2><p style={{fontSize:10.5,color:t["--textMuted"],fontFamily:t["--sans"]}}>Ordenados por relevância · Clique no card para expandir</p></div>
                   <span style={{fontSize:10,padding:"3px 10px",borderRadius:20,background:tab==="fito"?t["--fitoBg"]:t["--tagBg"],color:tab==="fito"?t["--fitoText"]:t["--tagTxt"],border:`1px solid ${tab==="fito"?t["--fitoBrd"]:t["--tagBrd"]}`,fontFamily:t["--mono"],flexShrink:0}}>{ranked.length} resultado{ranked.length!==1?"s":""}</span>
                 </div>
                 <div style={{display:"flex",flexWrap:"wrap",gap:5,marginBottom:12}}>
                   {[...sel].map(s=>{const label=ALL.find(i=>i.id===s)?.label||s;const isChr=CHRONIC_IDS.has(s);return(<span key={s} className="pg-pill" onClick={()=>toggle(s)} style={{fontSize:10.5,padding:"3px 10px",borderRadius:isInd?"2px":"20px",background:isChr?t["--chronicBg"]:t["--accentBg"],color:isChr?t["--chronicText"]:t["--accentText"],border:`1px solid ${isChr?t["--chronicBrd"]:t["--accentBrd"]}`,cursor:"pointer",transition:"opacity .15s",fontFamily:t["--sans"]}} title="Clique para remover">{label} ×</span>);})}
                 </div>
-                {ranked.length===0?(tab==="fito"?<FitoEmpty t={t}/>:tab==="fp"?<ProgramEmpty tipo="fp" t={t}/>:tab==="sus"?<ProgramEmpty tipo="sus" t={t}/>:<ConvEmpty t={t}/>):(
+                {ranked.length===0?(tab==="fito"?<FitoEmpty t={t}/>:tab==="vit"?<VitEmpty t={t}/>:tab==="fp"?<ProgramEmpty tipo="fp" t={t}/>:tab==="sus"?<ProgramEmpty tipo="sus" t={t}/>:<ConvEmpty t={t}/>):(
                   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))",gap:9}}>
                     {ranked.map(({m,score})=><MedCard key={m.id} m={m} score={score} max={maxScore} f={f} sel={sel} onSelectMed={openMedDetail}/>)}
                   </div>
