@@ -8,10 +8,10 @@
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-<body>
+<body style="margin:0;padding:0;">
 <div id="root"></div>
 <script type="text/babel" data-presets="react">
-const { useState, useMemo, useCallback, createContext, useContext } = React;
+const { useState, useMemo, useCallback, createContext, useContext, useEffect } = React;
 
 /* ═══════════════ THEMES ═══════════════ */
 const THEMES = {
@@ -28,7 +28,7 @@ const THEMES = {
     "--mono":"'JetBrains Mono',monospace","--sans":"'Sora',sans-serif",
     "--radius":"13px","--radiusSm":"8px",
     "--hdrBg":"#ffffff","--hdrBrd":"#e2eaf4",
-    "--tagBg":"#edfaf4","--tagTxt":"#065f3c","--tagBrd":"#9fe8c8","--doseBg":"#f1f5fb",
+    "--tagBg":"#edfaf4","--tagTxt":"#065f3c","--tagBrd":"#9fe8c8","--doseBg":"#f1f5fb","--fp":"#1d4ed8","--fpBg":"#eff6ff","--fpBrd":"#bfdbfe","--fpTxt":"#1e3a8a","--sus":"#047857","--susBg":"#ecfdf5","--susBrd":"#6ee7b7","--susTxt":"#065f3c",
   }},
   dark:{name:"Escuro",icon:"◐",vars:{
     "--bg":"#07090d","--surface":"#0c1018","--surface2":"#101520","--surface3":"#141b25",
@@ -43,7 +43,7 @@ const THEMES = {
     "--mono":"'JetBrains Mono',monospace","--sans":"'Sora',sans-serif",
     "--radius":"13px","--radiusSm":"8px",
     "--hdrBg":"#0a0e16","--hdrBrd":"#141e2e",
-    "--tagBg":"#0a1f1a","--tagTxt":"#34d399","--tagBrd":"#064e3b","--doseBg":"#060a0e",
+    "--tagBg":"#0a1f1a","--tagTxt":"#34d399","--tagBrd":"#064e3b","--doseBg":"#060a0e","--fp":"#60a5fa","--fpBg":"#0a1628","--fpBrd":"#1e40af","--fpTxt":"#93c5fd","--sus":"#34d399","--susBg":"#052e16","--susBrd":"#065f46","--susTxt":"#6ee7b7",
   }},
   industrial:{name:"Industrial",icon:"◧",vars:{
     "--bg":"#e9e4da","--surface":"#f0ebe1","--surface2":"#e4dfd5","--surface3":"#dbd5ca",
@@ -58,7 +58,7 @@ const THEMES = {
     "--mono":"'Courier New',monospace","--sans":"'Georgia',serif",
     "--radius":"4px","--radiusSm":"2px",
     "--hdrBg":"#1a1612","--hdrBrd":"#3a3028",
-    "--tagBg":"#fdf0e6","--tagTxt":"#7c2d0a","--tagBrd":"#d4824a","--doseBg":"#dbd5ca",
+    "--tagBg":"#fdf0e6","--tagTxt":"#7c2d0a","--tagBrd":"#d4824a","--doseBg":"#dbd5ca","--fp":"#1e3a8a","--fpBg":"#e8f0fb","--fpBrd":"#93c5fd","--fpTxt":"#1e3a8a","--sus":"#14532d","--susBg":"#f0f5e8","--susBrd":"#86efac","--susTxt":"#14532d",
   }},
 };
 
@@ -83,6 +83,13 @@ if(!document.getElementById("pg-sty")){
     .pg-clr:hover{filter:brightness(.88)}
     .pg-theme:hover{background:var(--surface3)!important}
     .pg-nav:hover{filter:brightness(.93)}
+    @keyframes sidebarSlide{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+    @keyframes pgPanelIn{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:none}}
+    .pg-sidebar{animation:sidebarSlide .22s ease}
+    .pg-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:198;animation:pgFade .2s ease}
+    .pg-menu-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:none;cursor:pointer;transition:background .18s;flex-shrink:0}
+    .pg-menu-btn:hover{filter:brightness(.88)}
+    .fp-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px!important;padding:2px 6px;border-radius:4px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
   `;
   document.head.appendChild(s);
 }
@@ -97,25 +104,25 @@ const Ctx=createContext("light");
 const MEDS=[
   /* ────── ANALGÉSICOS & ANTIPIRÉTICOS ────── */
   {id:"paracetamol",pa:"Paracetamol",comerciais:["Tylenol","Parador","Dorflex Uni"],
-   classe:"Analgésico · Antipirético",cor:"#10b981",fito:false,chronic:false,
+   classe:"Analgésico · Antipirético",cor:"#10b981",fito:false,chronic:false,fp:false,sus:true,
    syms:["febre","dor_cabeca","dor_muscular","dor_garganta","enxaqueca","dor_costas","dor_cronica","fraqueza"],
    dose:{a:"500–1000 mg a cada 4–6h",max:"máx 4 g/dia",p:"10–15 mg/kg a cada 4–6h"},
    via:"Oral",gS:true,lS:true,cS:true,al:[],
    ci:"Hepatopatia grave, hipersensibilidade",mec:"Inibe síntese de prostaglandinas no SNC"},
   {id:"ibuprofeno",pa:"Ibuprofeno",comerciais:["Advil","Alivium","Buscofem"],
-   classe:"AINE · Anti-inflamatório",cor:"#3b82f6",fito:false,chronic:false,
+   classe:"AINE · Anti-inflamatório",cor:"#3b82f6",fito:false,chronic:false,fp:false,sus:true,
    syms:["febre","dor_cabeca","dor_muscular","dor_garganta","dor_ouvido","enxaqueca","dor_costas","dor_cronica"],
    dose:{a:"200–400 mg a cada 4–6h",max:"máx 1,2 g/dia",p:"5–10 mg/kg a cada 6–8h"},
    via:"Oral",gS:false,lS:true,cS:true,al:["Evitar no 3º trimestre","Tomar com alimentos"],
    ci:"Úlcera péptica, insuf. renal, HAS não controlada, gestação 3º tri",mec:"Inibe COX-1 e COX-2"},
   {id:"dipirona",pa:"Dipirona Sódica",comerciais:["Novalgina","Anador","Magnorol"],
-   classe:"Analgésico · Antipirético",cor:"#f59e0b",fito:false,chronic:false,
+   classe:"Analgésico · Antipirético",cor:"#f59e0b",fito:false,chronic:false,fp:false,sus:true,
    syms:["febre","dor_cabeca","dor_muscular","dor_abdominal","enxaqueca","colica","dor_cronica"],
    dose:{a:"500–1000 mg a cada 6–8h",max:"máx 4 g/dia",p:"10–15 mg/kg a cada 6–8h"},
    via:"Oral / IM",gS:false,lS:false,cS:true,al:["Raro: agranulocitose"],
    ci:"Hipersensibilidade, porfiria, gestação",mec:"Inibição central e periférica de prostaglandinas"},
   {id:"diclofenaco",pa:"Diclofenaco de Sódio",comerciais:["Voltaren","Cataflam","Biofenac"],
-   classe:"AINE · Anti-inflamatório",cor:"#8b5cf6",fito:false,chronic:false,
+   classe:"AINE · Anti-inflamatório",cor:"#8b5cf6",fito:false,chronic:false,fp:false,sus:true,
    syms:["dor_muscular","dor_costas","dor_ouvido","enxaqueca","dor_cronica"],
    dose:{a:"50 mg a cada 8h",max:"máx 150 mg/dia",p:"1–3 mg/kg/dia (≥6 anos)"},
    via:"Oral / Tópico",gS:false,lS:false,cS:false,al:["Uso >7 dias: avaliação médica"],
@@ -141,12 +148,12 @@ const MEDS=[
    via:"Oral",gS:false,lS:false,cS:true,al:["Não usar em tosse produtiva","Não associar com IMAO"],
    ci:"Tosse produtiva, IMAO, asma ativa",mec:"Agonista sigma-1, suprime reflexo da tosse no bulbo"},
   {id:"acetilcist",pa:"Acetilcisteína",comerciais:["Fluimucil","Mucosolvan AC"],
-   classe:"Mucolítico",cor:"#06b6d4",fito:false,chronic:false,
+   classe:"Mucolítico",cor:"#06b6d4",fito:false,chronic:false,fp:false,sus:true,
    syms:["tosse_catarro","coriza"],dose:{a:"600 mg/dia ou 200 mg 3×/dia",max:"600 mg/dia",p:"100 mg 3×/dia"},
    via:"Oral",gS:true,lS:true,cS:true,al:[],ci:"Hipersensibilidade, úlcera péptica",
    mec:"Reduz viscosidade do muco por quebra de pontes dissulfeto"},
   {id:"ambroxol",pa:"Ambroxol",comerciais:["Mucosolvan","Transbronchin"],
-   classe:"Mucolítico · Expectorante",cor:"#14b8a6",fito:false,chronic:false,
+   classe:"Mucolítico · Expectorante",cor:"#14b8a6",fito:false,chronic:false,fp:false,sus:true,
    syms:["tosse_catarro"],dose:{a:"30 mg 3×/dia",max:"máx 90 mg/dia",p:"7,5–15 mg 3×/dia"},
    via:"Oral",gS:false,lS:false,cS:true,al:["Evitar no 1º trimestre"],
    ci:"Hipersensibilidade, 1º trimestre",mec:"Estimula surfactante pulmonar e clearance mucociliar"},
@@ -156,12 +163,12 @@ const MEDS=[
    via:"Tópico nasal",gS:false,lS:false,cS:true,al:["NUNCA usar >3 dias (efeito rebote)"],
    ci:"HAS grave, glaucoma, gestação",mec:"Vasoconstricção local por agonismo α2-adrenérgico"},
   {id:"soro_nasal",pa:"NaCl 0,9% Nasal",comerciais:["Soro Fisiológico Nasal","Marimer","Neilmed"],
-   classe:"Lavagem Nasal · Descongestionante Mecânico",cor:"#38bdf8",fito:false,chronic:false,
+   classe:"Lavagem Nasal · Descongestionante Mecânico",cor:"#38bdf8",fito:false,chronic:false,fp:false,sus:true,
    syms:["coriza"],dose:{a:"2–3 gotas/jatos em cada narina 3–6×/dia",max:"conforme necessidade",p:"Mesmo esquema"},
    via:"Tópico nasal",gS:true,lS:true,cS:true,al:[],ci:"Hipersensibilidade ao conservante",
    mec:"Lavagem mecânica nasal, fluidificação de secreções"},
   {id:"benzidamina",pa:"Benzidamina",comerciais:["Tantum Verde","Benflogin"],
-   classe:"Anti-inflamatório Tópico · Anestésico Local",cor:"#a855f7",fito:false,chronic:false,
+   classe:"Anti-inflamatório Tópico · Anestésico Local",cor:"#a855f7",fito:false,chronic:false,fp:false,sus:true,
    syms:["dor_garganta","candidíase_oral"],dose:{a:"Gargarejar 15 mL a cada 3h",max:"tópico",p:"4–8 jatos (>6 anos)"},
    via:"Tópico bucal",gS:true,lS:true,cS:true,al:[],ci:"Hipersensibilidade",
    mec:"Estabiliza membranas celulares e inibe prostaglandinas locais"},
@@ -172,13 +179,13 @@ const MEDS=[
    ci:"Hipersensibilidade, <12 anos",mec:"Disrupção da membrana bacteriana e antifúngica por carga catiônica"},
   /* ────── ANTI-HISTAMÍNICOS ────── */
   {id:"loratadina",pa:"Loratadina",comerciais:["Claritin","Histadin","Loratin"],
-   classe:"Anti-histamínico H1 (2ª geração)",cor:"#ec4899",fito:false,chronic:false,
+   classe:"Anti-histamínico H1 (2ª geração)",cor:"#ec4899",fito:false,chronic:false,fp:false,sus:true,
    syms:["coriza","coceira_alergia","erupcao"],dose:{a:"10 mg 1×/dia",max:"10 mg/dia",p:"5 mg/dia (2–12 anos)"},
    via:"Oral",gS:true,lS:false,cS:true,al:[],ci:"Hipersensibilidade, insuf. hepática grave",
    mec:"Antagonista seletivo H1 periférico — não sedativo"},
   {id:"cetirizina",pa:"Cloridrato de Cetirizina",comerciais:["Zyrtec","Reactine","Cetriz"],
-   classe:"Anti-histamínico H1 (2ª geração)",cor:"#f43f5e",fito:false,chronic:false,
-   syms:["coriza","coceira_alergia","erupcao","olhos_vermelhos"],
+   classe:"Anti-histamínico H1 (2ª geração)",cor:"#f43f5e",fito:false,chronic:false,fp:false,sus:true,
+   syms:["coriza","rinite","coceira_alergia","erupcao","olhos_vermelhos"],
    dose:{a:"10 mg 1×/dia",max:"10 mg/dia",p:"5 mg/dia (2–6 anos)"},
    via:"Oral",gS:false,lS:false,cS:true,al:["Leve sonolência possível"],
    ci:"Hipersensibilidade, insuf. renal grave",mec:"Bloqueio seletivo dos receptores H1"},
@@ -193,22 +200,22 @@ const MEDS=[
    via:"Tópico ocular",gS:true,lS:true,cS:true,al:[],ci:"Hipersensibilidade",
    mec:"Estabiliza mastócitos oculares, inibe liberação de histamina"},
   {id:"colirio_sf",pa:"NaCl 0,9% Oftálmico",comerciais:["Soro Oftálmico","Optive","Systane"],
-   classe:"Lubrificante Ocular",cor:"#67e8f9",fito:false,chronic:false,
+   classe:"Lubrificante Ocular",cor:"#67e8f9",fito:false,chronic:false,fp:false,sus:true,
    syms:["olhos_vermelhos"],dose:{a:"1–2 gotas em cada olho 3–4×/dia",max:"conforme necessidade",p:"Igual adulto"},
    via:"Tópico ocular",gS:true,lS:true,cS:true,al:[],ci:"Hipersensibilidade ao conservante",mec:"Lavagem e lubrificação ocular"},
   /* ────── DIGESTIVO ────── */
   {id:"metoclop",pa:"Metoclopramida",comerciais:["Plasil","Metossina"],
-   classe:"Antiemético · Procinético",cor:"#84cc16",fito:false,chronic:false,
+   classe:"Antiemético · Procinético",cor:"#84cc16",fito:false,chronic:false,fp:false,sus:true,
    syms:["nausea","vomito"],dose:{a:"10 mg 3×/dia",max:"30 mg/dia",p:"0,1–0,15 mg/kg a cada 6–8h"},
    via:"Oral / IM",gS:false,lS:false,cS:true,al:["Reações extrapiramidais","Máx 5 dias"],
    ci:"Feocromocitoma, obstrução GI, epilepsia",mec:"Antagonista D2, acelera esvaziamento gástrico"},
   {id:"domperidona",pa:"Domperidona",comerciais:["Motilium","Peridon"],
-   classe:"Antiemético · Procinético · Antagonista D2",cor:"#22c55e",fito:false,chronic:false,
+   classe:"Antiemético · Procinético · Antagonista D2",cor:"#22c55e",fito:false,chronic:false,fp:false,sus:true,
    syms:["nausea","vomito","azia_refluxo"],dose:{a:"10 mg 3×/dia (15 min antes)",max:"30 mg/dia",p:"0,25 mg/kg 3×/dia"},
    via:"Oral",gS:false,lS:false,cS:true,al:["Uso máximo 7 dias","Risco QT"],
    ci:"Sangramento GI, prolactinoma, QT prolongado",mec:"Antagonista D2 periférico, esvaziamento gástrico"},
   {id:"dimenidrin",pa:"Dimenidrinato",comerciais:["Dramin","Dramamine"],
-   classe:"Antiemético · Anti-histamínico",cor:"#65a30d",fito:false,chronic:false,
+   classe:"Antiemético · Anti-histamínico",cor:"#65a30d",fito:false,chronic:false,fp:false,sus:true,
    syms:["nausea","vomito","tontura"],dose:{a:"50–100 mg a cada 4–6h",max:"400 mg/dia",p:"1,25 mg/kg a cada 6h"},
    via:"Oral",gS:false,lS:false,cS:true,al:["Causa sonolência"],
    ci:"Glaucoma, hipertrofia prostática, gestação",mec:"Bloqueia H1 e muscarínicos, inibe estímulos vestibulares"},
@@ -223,21 +230,21 @@ const MEDS=[
    via:"Oral",gS:false,lS:false,cS:false,al:["Não usar com sangue/febre","Manter hidratação"],
    ci:"Colite, diarreia infecciosa grave, <2 anos",mec:"Agonista µ periférico, reduz peristaltismo"},
   {id:"sro",pa:"Sais de Reidratação Oral",comerciais:["Pedialyte","SRO OMS"],
-   classe:"Reidratante Oral",cor:"#38bdf8",fito:false,chronic:false,
+   classe:"Reidratante Oral",cor:"#38bdf8",fito:false,chronic:false,fp:false,sus:true,
    syms:["diarreia","vomito","febre"],dose:{a:"200–400 mL após cada evacuação",max:"conforme perdas",p:"50–100 mL/kg em 4h"},
    via:"Oral",gS:true,lS:true,cS:true,al:["SEMPRE associar em diarreia+vômito"],
    ci:"Vômitos incoercíveis",mec:"Cotransporte Na⁺/glicose restaura equilíbrio eletrolítico"},
   {id:"escopolam",pa:"Butilbrometo de Escopolamina",comerciais:["Buscopan","Escopram"],
-   classe:"Espasmolítico",cor:"#fb923c",fito:false,chronic:false,
+   classe:"Espasmolítico",cor:"#fb923c",fito:false,chronic:false,fp:false,sus:true,
    syms:["dor_abdominal","colica"],dose:{a:"10–20 mg a cada 6–8h",max:"80 mg/dia",p:"0,3–0,6 mg/kg a cada 6h"},
    via:"Oral / IM",gS:false,lS:false,cS:true,al:[],ci:"Glaucoma, megacólon, gestação",
    mec:"Antagonismo muscarínico da musculatura lisa GI"},
   {id:"simeticona",pa:"Simeticona",comerciais:["Luftal","Sab-Simplex"],
-   classe:"Antiflatulento",cor:"#fbbf24",fito:false,chronic:false,
+   classe:"Antiflatulento",cor:"#fbbf24",fito:false,chronic:false,fp:false,sus:true,
    syms:["dor_abdominal","colica"],dose:{a:"40–80 mg após refeições",max:"500 mg/dia",p:"20 mg 4×/dia"},
    via:"Oral",gS:true,lS:true,cS:true,al:[],ci:"Hipersensibilidade",mec:"Surfactante que colapsa bolhas de gás intestinal"},
   {id:"omeprazol",pa:"Omeprazol",comerciais:["Losec","Peprazol","Omeprazol Genérico"],
-   classe:"IBP — Inibidor da Bomba de Prótons",cor:"#a78bfa",fito:false,chronic:false,
+   classe:"IBP — Inibidor da Bomba de Prótons",cor:"#a78bfa",fito:false,chronic:false,fp:false,sus:true,
    syms:["azia_refluxo"],dose:{a:"20–40 mg 1×/dia em jejum",max:"40 mg/dia OTC",p:"0,7–3,5 mg/kg/dia"},
    via:"Oral",gS:true,lS:false,cS:true,al:["30–60 min antes do café","Uso >14 dias: prescrição"],
    ci:"Hipersensibilidade a benzimidazóis",mec:"Inibe H⁺/K⁺-ATPase (bomba de prótons) da célula parietal"},
@@ -247,47 +254,47 @@ const MEDS=[
    via:"Oral",gS:true,lS:true,cS:true,al:["Separar ≥2h de outros medicamentos"],
    ci:"Insuf. renal, hiperfosfatemia",mec:"Neutralização ácida direta no lúmen gástrico"},
   {id:"bisacodil",pa:"Bisacodil",comerciais:["Dulcolax","Bislax"],
-   classe:"Laxante Estimulante",cor:"#d97706",fito:false,chronic:false,
+   classe:"Laxante Estimulante",cor:"#d97706",fito:false,chronic:false,fp:false,sus:true,
    syms:["constipacao"],dose:{a:"5–10 mg ao deitar",max:"10 mg/dia",p:"5 mg (>6 anos)"},
    via:"Oral / Retal",gS:false,lS:false,cS:true,al:["Não usar >7 dias"],
    ci:"Obstrução intestinal, sangramento retal, gestação",mec:"Estimula plexo entérico, aumenta peristaltismo"},
   {id:"lactulose",pa:"Lactulose",comerciais:["Lactulona","Duphalac"],
-   classe:"Laxante Osmótico",cor:"#b45309",fito:false,chronic:false,
+   classe:"Laxante Osmótico",cor:"#b45309",fito:false,chronic:false,fp:false,sus:true,
    syms:["constipacao"],dose:{a:"15–30 mL 2×/dia",max:"60 mL/dia",p:"2,5–10 mL/dia"},
    via:"Oral",gS:true,lS:true,cS:true,al:["Efeito em 24–48h"],
    ci:"Galactosemia, intolerância à galactose",mec:"Osmose no cólon e acidificação luminal"},
   {id:"macrogol",pa:"Macrogol (Polietilenoglicol)",comerciais:["Moviprep","Minilax","Norgine"],
-   classe:"Laxante Osmótico",cor:"#a3a3a3",fito:false,chronic:false,
+   classe:"Laxante Osmótico",cor:"#a3a3a3",fito:false,chronic:false,fp:false,sus:true,
    syms:["constipacao"],dose:{a:"1 sachê (13 g) em 125 mL de água 1–3×/dia",max:"3 sachês/dia",p:"0,5–1 g/kg/dia (>2 anos)"},
    via:"Oral",gS:true,lS:true,cS:true,al:["Boa hidratação"],
    ci:"Oclusão intestinal, megacólon tóxico",mec:"Polímero hidrofílico retém água no cólon"},
   /* ────── PELE ────── */
   {id:"hidrocort",pa:"Hidrocortisona 1% (Tópica)",comerciais:["Cortaid","Hc45"],
-   classe:"Corticosteroide Tópico",cor:"#fb7185",fito:false,chronic:false,
+   classe:"Corticosteroide Tópico",cor:"#fb7185",fito:false,chronic:false,fp:false,sus:true,
    syms:["erupcao","coceira_alergia"],dose:{a:"Camada fina 2–3×/dia",max:"tópico",p:"Cautela — consultar"},
    via:"Tópico",gS:false,lS:false,cS:false,al:["Não usar >7 dias","Não usar em infecções"],
    ci:"Rosácea, acne, pele infectada",mec:"Inibição da fosfolipase A2 local"},
   {id:"clotrimazol",pa:"Clotrimazol 1% (Tópico)",comerciais:["Canesten","Fungizol"],
-   classe:"Antifúngico Tópico",cor:"#f43f5e",fito:false,chronic:false,
+   classe:"Antifúngico Tópico",cor:"#f43f5e",fito:false,chronic:false,fp:false,sus:true,
    syms:["erupcao","coceira_alergia","assadura","candidíase_oral"],
    dose:{a:"Aplicar 2–3×/dia por 2–4 semanas",max:"tópico",p:"Seguro (>2 anos)"},
    via:"Tópico",gS:true,lS:true,cS:true,al:[],
    ci:"Hipersensibilidade a imidazóis",mec:"Inibe ergosterol fúngico"},
   {id:"nistatina",pa:"Nistatina",comerciais:["Micostatin","Biofanil"],
-   classe:"Antifúngico · Polieno",cor:"#e879f9",fito:false,chronic:false,
+   classe:"Antifúngico · Polieno",cor:"#e879f9",fito:false,chronic:false,fp:false,sus:true,
    syms:["candidíase_oral"],dose:{a:"500.000 UI 4×/dia (bochecho e deglutição)",max:"uso oral/local",p:"100.000 UI 4×/dia"},
    via:"Oral (suspensão)",gS:true,lS:true,cS:true,al:[],
    ci:"Hipersensibilidade",mec:"Liga-se ao ergosterol fúngico, forma poros e causa lise"},
   {id:"oxido_zinco",pa:"Óxido de Zinco",comerciais:["Bepantol Baby","Desitin","Hipoglós"],
-   classe:"Dermatoprotetor · Adstringente",cor:"#fde68a",fito:false,chronic:false,
+   classe:"Dermatoprotetor · Adstringente",cor:"#fde68a",fito:false,chronic:false,fp:false,sus:true,
    syms:["assadura","erupcao"],dose:{a:"Aplicar generosamente nas trocas ou 2–3×/dia",max:"tópico",p:"Desde o nascimento"},
    via:"Tópico",gS:true,lS:true,cS:true,al:[],ci:"Hipersensibilidade",mec:"Barreira física, ação adstringente e anti-inflamatória leve"},
   {id:"dexpantenol",pa:"Dexpantenol (Pró-vitamina B5)",comerciais:["Bepantol","D-Pantenol"],
-   classe:"Emoliente · Cicatrizante Tópico",cor:"#fbbf24",fito:false,chronic:false,
+   classe:"Emoliente · Cicatrizante Tópico",cor:"#fbbf24",fito:false,chronic:false,fp:false,sus:true,
    syms:["assadura","erupcao"],dose:{a:"Aplicar 2–3×/dia",max:"tópico",p:"Desde o nascimento"},
    via:"Tópico",gS:true,lS:true,cS:true,al:[],ci:"Hipersensibilidade",mec:"Cofator na síntese de colágeno e regeneração cutânea"},
   {id:"fluconazol",pa:"Fluconazol",comerciais:["Zoltec","Fluconazol Genérico"],
-   classe:"Antifúngico Triazólico Sistêmico",cor:"#d946ef",fito:false,chronic:false,
+   classe:"Antifúngico Triazólico Sistêmico",cor:"#d946ef",fito:false,chronic:false,fp:false,sus:true,
    syms:["candidíase_oral"],dose:{a:"50–100 mg/dia por 7–14 dias (oral/esofágica)",max:"400 mg/dia",p:"3–6 mg/kg/dia"},
    via:"Oral",gS:false,lS:false,cS:true,al:["Interações: warfarina, estatinas","Monitorar função hepática"],
    ci:"Gestação, hipersensibilidade a azóis",mec:"Inibe lanosterol 14α-desmetilase, bloqueia ergosterol fúngico"},
@@ -304,38 +311,38 @@ const MEDS=[
    ci:"Glaucoma, hipertrofia prostática, gestação",mec:"Antagonismo H1 central sedativo"},
   /* ────── ANTIPARASITÁRIOS ────── */
   {id:"albendazol",pa:"Albendazol",comerciais:["Zentel","Albend"],
-   classe:"Antiparasitário · Benzimidazólico",cor:"#7c3aed",fito:false,chronic:false,
+   classe:"Antiparasitário · Benzimidazólico",cor:"#7c3aed",fito:false,chronic:false,fp:false,sus:true,
    syms:["parasitose"],dose:{a:"400 mg dose única (helmintos)",max:"400 mg/dose",p:"400 mg (>2 anos); 200 mg (<2 anos)"},
    via:"Oral",gS:false,lS:false,cS:true,al:["Tomar com refeição gordurosa"],
    ci:"Gestação, hipersensibilidade, <1 ano",mec:"Inibe tubulina parasitária, bloqueia captação de glicose"},
   {id:"mebendazol",pa:"Mebendazol",comerciais:["Vermox","Mebendazol Genérico"],
-   classe:"Antiparasitário · Benzimidazólico",cor:"#6d28d9",fito:false,chronic:false,
+   classe:"Antiparasitário · Benzimidazólico",cor:"#6d28d9",fito:false,chronic:false,fp:false,sus:true,
    syms:["parasitose"],dose:{a:"100 mg 2×/dia por 3 dias ou 500 mg dose única",max:"500 mg/dose",p:"(>2 anos)"},
    via:"Oral",gS:false,lS:false,cS:true,al:[],ci:"Gestação, <2 anos",mec:"Inibe microtúbulos, bloqueia captação de glicose"},
   {id:"ivermectina",pa:"Ivermectina",comerciais:["Ivermectin","Revectina"],
-   classe:"Antiparasitário · Avermectina",cor:"#4c1d95",fito:false,chronic:false,
+   classe:"Antiparasitário · Avermectina",cor:"#4c1d95",fito:false,chronic:false,fp:false,sus:true,
    syms:["parasitose"],dose:{a:"200 mcg/kg dose única em jejum",max:"conforme peso",p:"(>15 kg)"},
    via:"Oral",gS:false,lS:false,cS:false,al:["Tomar em jejum"],
    ci:"Gestação, lactação, <15 kg",mec:"Potencializa canais de Cl⁻, paralisia do parasito"},
   {id:"metronidazol",pa:"Metronidazol",comerciais:["Flagyl","Protozol"],
-   classe:"Antiprotozoário · Nitroimidazólico",cor:"#059669",fito:false,chronic:false,
+   classe:"Antiprotozoário · Nitroimidazólico",cor:"#059669",fito:false,chronic:false,fp:false,sus:true,
    syms:["parasitose","diarreia"],dose:{a:"250–500 mg 3×/dia por 7–10 dias",max:"2 g/dia",p:"15–35 mg/kg/dia ÷ 3 doses"},
    via:"Oral",gS:false,lS:false,cS:true,al:["Efeito antabuse com álcool","Gosto metálico"],
    ci:"Gestação 1º tri, álcool",mec:"Radical livre nitro danifica DNA do protozoário"},
   /* ────── VITAMINAS & SUPLEMENTOS ────── */
   {id:"vitc",pa:"Vitamina C (Ácido Ascórbico)",comerciais:["Redoxon","Cewin"],
-   classe:"Vitamina · Antioxidante",cor:"#f97316",fito:false,chronic:false,
+   classe:"Vitamina · Antioxidante",cor:"#f97316",fito:false,chronic:false,fp:false,sus:true,
    syms:["febre","coriza","tosse_seca","fraqueza","baixa_imunidade"],
    dose:{a:"500–1000 mg/dia",max:"2 g/dia",p:"100–300 mg/dia"},
    via:"Oral",gS:true,lS:true,cS:true,al:["Altas doses: risco de litíase renal"],
    ci:"Litíase renal recorrente",mec:"Antioxidante, imunoestimulante, cofator para síntese de colágeno"},
   {id:"sulfato_fe",pa:"Sulfato Ferroso",comerciais:["Feospan","Noripurum"],
-   classe:"Suplemento de Ferro",cor:"#b45309",fito:false,chronic:false,
+   classe:"Suplemento de Ferro",cor:"#b45309",fito:false,chronic:false,fp:false,sus:true,
    syms:["fraqueza"],dose:{a:"300 mg (60 mg Fe elementar) 1–3×/dia em jejum",max:"conforme anemia",p:"3–6 mg/kg/dia Fe elementar"},
    via:"Oral",gS:true,lS:true,cS:true,al:["Tomar com Vitamina C","Fezes escuras (normal)"],
    ci:"Hemocromatose, anemia não ferropriva",mec:"Reposição de ferro para síntese de hemoglobina"},
   {id:"zinc",pa:"Sulfato/Gluconato de Zinco",comerciais:["Zinco Quelato","Zincovit"],
-   classe:"Suplemento de Zinco · Imunomodulador",cor:"#6b7280",fito:false,chronic:false,
+   classe:"Suplemento de Zinco · Imunomodulador",cor:"#6b7280",fito:false,chronic:false,fp:false,sus:true,
    syms:["fraqueza","erupcao","diarreia","baixa_imunidade"],
    dose:{a:"20–40 mg/dia",max:"40 mg/dia",p:"10–20 mg/dia"},
    via:"Oral",gS:true,lS:true,cS:true,al:["Tomar com alimentos"],
@@ -347,7 +354,7 @@ const MEDS=[
 
   /* ── INIBIDORES ECA ── */
   {id:"enalapril",pa:"Enalapril Maleato",comerciais:["Renitec","Enalapril Genérico","Vasotec"],
-   classe:"IECA — Inibidor da ECA · Anti-hipertensivo",cor:"#0284c7",fito:false,chronic:true,
+   classe:"IECA — Inibidor da ECA · Anti-hipertensivo",cor:"#0284c7",fito:false,chronic:true,fp:true,sus:true,
    syms:["pressao_alta"],
    dose:{a:"5–40 mg/dia em 1–2 doses",max:"40 mg/dia",p:"0,08–0,6 mg/kg/dia (>1 mês)"},
    via:"Oral",gS:false,lS:false,cS:true,
@@ -355,7 +362,7 @@ const MEDS=[
    ci:"Gestação (fetotóxico), angioedema prévio por IECA, hipercalemia, estenose bilateral de artéria renal",
    mec:"Inibe ECA, bloqueando conversão de angiotensina I → II; reduz vasoconstrição e retenção de sódio"},
   {id:"captopril",pa:"Captopril",comerciais:["Capoten","Captopril Genérico"],
-   classe:"IECA — Inibidor da ECA · Anti-hipertensivo",cor:"#0369a1",fito:false,chronic:true,
+   classe:"IECA — Inibidor da ECA · Anti-hipertensivo",cor:"#0369a1",fito:false,chronic:true,fp:true,sus:true,
    syms:["pressao_alta"],
    dose:{a:"12,5–150 mg/dia em 2–3 doses em jejum",max:"150 mg/dia",p:"0,1–0,5 mg/kg a cada 8h"},
    via:"Oral",gS:false,lS:false,cS:true,
@@ -363,7 +370,7 @@ const MEDS=[
    ci:"Gestação, angioedema por IECA, hipercalemia, estenose renal bilateral",
    mec:"Inibe ECA competitivamente; ação rápida útil em crises hipertensivas"},
   {id:"perindopril",pa:"Perindopril Arginina",comerciais:["Acertil","Naprix","Coversyl"],
-   classe:"IECA — Inibidor da ECA · Anti-hipertensivo",cor:"#075985",fito:false,chronic:true,
+   classe:"IECA — Inibidor da ECA · Anti-hipertensivo",cor:"#075985",fito:false,chronic:true,fp:false,sus:false,
    syms:["pressao_alta"],
    dose:{a:"5–10 mg 1×/dia em jejum (manhã)",max:"10 mg/dia",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -371,7 +378,7 @@ const MEDS=[
    ci:"Gestação, angioedema por IECA, hipercalemia",
    mec:"Pró-fármaco → perindoprilato ativo; inibição prolongada e sustentada da ECA, melhora função endotelial"},
   {id:"ramipril",pa:"Ramipril",comerciais:["Triatec","Ramipril Genérico"],
-   classe:"IECA — Inibidor da ECA · Cardioprotetor",cor:"#0c4a6e",fito:false,chronic:true,
+   classe:"IECA — Inibidor da ECA · Cardioprotetor",cor:"#0c4a6e",fito:false,chronic:true,fp:false,sus:true,
    syms:["pressao_alta"],
    dose:{a:"2,5–10 mg 1×/dia",max:"10 mg/dia",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -381,7 +388,7 @@ const MEDS=[
 
   /* ── COMBINAÇÕES PERINDOPRIL ── */
   {id:"naprix_d",pa:"Naprix D® (Perindopril + Indapamida)",comerciais:["Naprix D","Coversyl Plus","Bipreterax"],
-   classe:"IECA + Diurético Tiazídico · Combinação Anti-hipertensiva",cor:"#1e40af",fito:false,chronic:true,
+   classe:"IECA + Diurético Tiazídico · Combinação Anti-hipertensiva",cor:"#1e40af",fito:false,chronic:true,fp:false,sus:false,
    syms:["pressao_alta"],
    dose:{a:"Perindopril 5 mg + Indapamida 1,25 mg — 1 comp. 1×/dia (manhã em jejum)",max:"Perindopril 10 mg + Indapamida 2,5 mg",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -389,7 +396,7 @@ const MEDS=[
    ci:"Gestação, angioedema por IECA, hipercalemia, encefalopatia hepática, anúria",
    mec:"Perindopril inibe ECA; indapamida bloqueia reabsorção tubular de NaCl e promove vasodilatação — sinergismo anti-hipertensivo"},
   {id:"acertanlo",pa:"Acertanlo® (Perindopril + Anlodipino)",comerciais:["Acertanlo","Viacoram","Prestalia"],
-   classe:"IECA + Bloqueador de Canais de Cálcio · Combinação Anti-hipertensiva",cor:"#1d4ed8",fito:false,chronic:true,
+   classe:"IECA + Bloqueador de Canais de Cálcio · Combinação Anti-hipertensiva",cor:"#1d4ed8",fito:false,chronic:true,fp:false,sus:false,
    syms:["pressao_alta"],
    dose:{a:"Perindopril 5 mg + Anlodipino 5 mg — 1 comp. 1×/dia; ajuste para 10/10 mg se necessário",max:"Perindopril 10 mg + Anlodipino 10 mg/dia",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -397,7 +404,7 @@ const MEDS=[
    ci:"Gestação, angioedema por IECA, hipotensão grave, estenose aórtica grave",
    mec:"Duplo mecanismo: IECA (perindopril) inibe ECA + BCC (anlodipino) bloqueia entrada de Ca²⁺ em músculo liso vascular"},
   {id:"naprix_a",pa:"Naprix A® (Perindopril + Anlodipino)",comerciais:["Naprix A","Coveram"],
-   classe:"IECA + Bloqueador de Canais de Cálcio · Combinação Anti-hipertensiva",cor:"#2563eb",fito:false,chronic:true,
+   classe:"IECA + Bloqueador de Canais de Cálcio · Combinação Anti-hipertensiva",cor:"#2563eb",fito:false,chronic:true,fp:false,sus:false,
    syms:["pressao_alta"],
    dose:{a:"Perindopril 4 mg + Anlodipino 5 mg — 1 comp. 1×/dia; titulação até 8/10 mg",max:"Perindopril 8 mg + Anlodipino 10 mg",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -407,7 +414,7 @@ const MEDS=[
 
   /* ── BLOQUEADORES DE RECEPTOR DE ANGIOTENSINA (BRA) ── */
   {id:"losartana",pa:"Losartana Potássica",comerciais:["Cozaar","Losartana Genérico","Aradois"],
-   classe:"BRA — Bloqueador Receptor Angiotensina II · Anti-hipertensivo",cor:"#7c3aed",fito:false,chronic:true,
+   classe:"BRA — Bloqueador Receptor Angiotensina II · Anti-hipertensivo",cor:"#7c3aed",fito:false,chronic:true,fp:true,sus:true,
    syms:["pressao_alta"],
    dose:{a:"50–100 mg 1×/dia",max:"100 mg/dia",p:"0,7–1,4 mg/kg/dia (6–16 anos)"},
    via:"Oral",gS:false,lS:false,cS:true,
@@ -415,7 +422,7 @@ const MEDS=[
    ci:"Gestação (fetotóxico), hipercalemia grave, estenose renal bilateral",
    mec:"Bloqueia seletivamente receptor AT1 da angiotensina II → vasodilatação e natriurese; sem efeito sobre bradicinina (sem tosse)"},
   {id:"valsartana",pa:"Valsartana",comerciais:["Diovan","Valsartana Genérico","Tareg"],
-   classe:"BRA — Bloqueador Receptor Angiotensina II · Anti-hipertensivo",cor:"#6d28d9",fito:false,chronic:true,
+   classe:"BRA — Bloqueador Receptor Angiotensina II · Anti-hipertensivo",cor:"#6d28d9",fito:false,chronic:true,fp:false,sus:false,
    syms:["pressao_alta"],
    dose:{a:"80–320 mg 1×/dia",max:"320 mg/dia",p:"1,3 mg/kg/dia (6–16 anos)"},
    via:"Oral",gS:false,lS:false,cS:true,
@@ -423,7 +430,7 @@ const MEDS=[
    ci:"Gestação, hipercalemia, insuf. hepática grave",
    mec:"Bloqueio seletivo do receptor AT1 da angiotensina II; cardioprotetor — reduz remodelamento miocárdico"},
   {id:"olmesartana",pa:"Olmesartana Medoxomila",comerciais:["Benicar","Mecloran","Olmesartana Genérico"],
-   classe:"BRA — Bloqueador Receptor Angiotensina II · Anti-hipertensivo",cor:"#5b21b6",fito:false,chronic:true,
+   classe:"BRA — Bloqueador Receptor Angiotensina II · Anti-hipertensivo",cor:"#5b21b6",fito:false,chronic:true,fp:false,sus:false,
    syms:["pressao_alta"],
    dose:{a:"20–40 mg 1×/dia",max:"40 mg/dia",p:"Não recomendado <6 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -431,7 +438,7 @@ const MEDS=[
    ci:"Gestação, hipercalemia, colestase",
    mec:"BRA com alta afinidade e dissociação lenta do receptor AT1 — duração de ação prolongada"},
   {id:"irbesartana",pa:"Irbesartana",comerciais:["Aprovel","Karvea","Irbesartana Genérico"],
-   classe:"BRA — Bloqueador Receptor Angiotensina II · Anti-hipertensivo",cor:"#4c1d95",fito:false,chronic:true,
+   classe:"BRA — Bloqueador Receptor Angiotensina II · Anti-hipertensivo",cor:"#4c1d95",fito:false,chronic:true,fp:false,sus:false,
    syms:["pressao_alta"],
    dose:{a:"150–300 mg 1×/dia",max:"300 mg/dia",p:"Não recomendado <6 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -441,7 +448,7 @@ const MEDS=[
 
   /* ── BLOQUEADORES DE CANAIS DE CÁLCIO ── */
   {id:"anlodipino",pa:"Besilato de Anlodipino",comerciais:["Norvasc","Amplodil","Anlodipino Genérico"],
-   classe:"BCC Di-hidropiridínico · Anti-hipertensivo · Antianginoso",cor:"#0891b2",fito:false,chronic:true,
+   classe:"BCC Di-hidropiridínico · Anti-hipertensivo · Antianginoso",cor:"#0891b2",fito:false,chronic:true,fp:true,sus:true,
    syms:["pressao_alta"],
    dose:{a:"5–10 mg 1×/dia",max:"10 mg/dia",p:"2,5–5 mg/dia (6–17 anos)"},
    via:"Oral",gS:false,lS:false,cS:true,
@@ -451,7 +458,7 @@ const MEDS=[
 
   /* ── BETABLOQUEADORES ── */
   {id:"nebivolol",pa:"Nebivolol",comerciais:["Nebilet","Nebivolol Genérico"],
-   classe:"Betabloqueador β1-seletivo + Vasodilatador · Anti-hipertensivo",cor:"#0e7490",fito:false,chronic:true,
+   classe:"Betabloqueador β1-seletivo + Vasodilatador · Anti-hipertensivo",cor:"#0e7490",fito:false,chronic:true,fp:false,sus:false,
    syms:["pressao_alta"],
    dose:{a:"5 mg 1×/dia; 2,5 mg em idosos",max:"10 mg/dia",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -459,7 +466,7 @@ const MEDS=[
    ci:"Bradicardia grave, BAV 2º/3º grau, asma brônquica, descompensação cardíaca",
    mec:"Bloqueio seletivo β1 + liberação endotelial de NO (vasodilatação) — perfil metabólico neutro; indicado em IC"},
   {id:"carvedilol",pa:"Carvedilol",comerciais:["Coreg","Dilatrend","Carvedilol Genérico"],
-   classe:"Betabloqueador Não-seletivo + α1-bloqueador · Anti-hipertensivo · Cardioprotetor",cor:"#0f766e",fito:false,chronic:true,
+   classe:"Betabloqueador Não-seletivo + α1-bloqueador · Anti-hipertensivo · Cardioprotetor",cor:"#0f766e",fito:false,chronic:true,fp:false,sus:true,
    syms:["pressao_alta"],
    dose:{a:"12,5–50 mg 2×/dia com refeição; IC: iniciar com 3,125 mg 2×/dia",max:"100 mg/dia (HAS); 50 mg/dia (IC)",p:"0,1 mg/kg 2×/dia (IC pediátrica)"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -469,7 +476,7 @@ const MEDS=[
 
   /* ── DIURÉTICOS ── */
   {id:"hidroclorotiazida",pa:"Hidroclorotiazida (HCTZ)",comerciais:["Clorana","Moduretic","HCTZ Genérico"],
-   classe:"Diurético Tiazídico · Anti-hipertensivo",cor:"#0d9488",fito:false,chronic:true,
+   classe:"Diurético Tiazídico · Anti-hipertensivo",cor:"#0d9488",fito:false,chronic:true,fp:true,sus:true,
    syms:["pressao_alta"],
    dose:{a:"12,5–50 mg 1×/dia (manhã)",max:"50 mg/dia",p:"1–3 mg/kg/dia"},
    via:"Oral",gS:false,lS:false,cS:true,
@@ -477,7 +484,7 @@ const MEDS=[
    ci:"Anúria, hipocalemia refratária, hipersensibilidade a sulfonamidas, gota",
    mec:"Inibe cotransportador NaCl no túbulo contorcido distal → natriurese e redução volemia; vasodilatação com uso crônico"},
   {id:"indapamida",pa:"Indapamida",comerciais:["Natrilix","Indapamida SR","Pamida"],
-   classe:"Diurético Tiazídico-like · Anti-hipertensivo · Vasodilatador",cor:"#0f766e",fito:false,chronic:true,
+   classe:"Diurético Tiazídico-like · Anti-hipertensivo · Vasodilatador",cor:"#0f766e",fito:false,chronic:true,fp:false,sus:true,
    syms:["pressao_alta"],
    dose:{a:"1,5 mg (SR) ou 2,5 mg 1×/dia (manhã)",max:"2,5 mg/dia",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -485,7 +492,7 @@ const MEDS=[
    ci:"Encefalopatia hepática, hipocalemia, anúria",
    mec:"Ação diurética discreta; efeito anti-hipertensivo predominantemente vasodilatador por canais de Ca²⁺"},
   {id:"furosemida",pa:"Furosemida",comerciais:["Lasix","Furosemida Genérico","Frusenex"],
-   classe:"Diurético de Alça · Anti-edematoso",cor:"#059669",fito:false,chronic:true,
+   classe:"Diurético de Alça · Anti-edematoso",cor:"#059669",fito:false,chronic:true,fp:true,sus:true,
    syms:["pressao_alta"],
    dose:{a:"20–80 mg/dia em 1–2 doses (manhã/tarde)",max:"600 mg/dia (edema refratário)",p:"0,5–2 mg/kg a cada 6–12h"},
    via:"Oral / IV",gS:false,lS:false,cS:true,
@@ -493,7 +500,7 @@ const MEDS=[
    ci:"Anúria, hipocalemia/hiponatremia graves, coma hepático, hipersensibilidade a sulfonamidas",
    mec:"Inibe cotransportador Na-K-2Cl na alça de Henle → intensa natriurese e diurese; efeito rápido e potente"},
   {id:"espironolactona",pa:"Espironolactona",comerciais:["Aldactone","Espironolactona Genérico"],
-   classe:"Diurético Poupador de Potássio · Antagonista da Aldosterona",cor:"#10b981",fito:false,chronic:true,
+   classe:"Diurético Poupador de Potássio · Antagonista da Aldosterona",cor:"#10b981",fito:false,chronic:true,fp:true,sus:true,
    syms:["pressao_alta"],
    dose:{a:"25–100 mg 1×/dia",max:"400 mg/dia (hiperaldosteronismo)",p:"1–3 mg/kg/dia"},
    via:"Oral",gS:false,lS:false,cS:true,
@@ -503,7 +510,7 @@ const MEDS=[
 
   /* ── ANTIDIABÉTICOS ── */
   {id:"metformina",pa:"Cloridrato de Metformina",comerciais:["Glifage","Glucoformin","Metformina Genérico"],
-   classe:"Biguanida · Antidiabético · Hipoglicemiante",cor:"#16a34a",fito:false,chronic:true,
+   classe:"Biguanida · Antidiabético · Hipoglicemiante",cor:"#16a34a",fito:false,chronic:true,fp:true,sus:true,
    syms:["diabetes"],
    dose:{a:"500–2550 mg/dia em 2–3 tomadas com refeição; iniciar 500 mg 1×/dia e titular",max:"2550 mg/dia",p:"500–2000 mg/dia (>10 anos)"},
    via:"Oral",gS:false,lS:false,cS:true,
@@ -511,7 +518,7 @@ const MEDS=[
    ci:"TFG <30 mL/min, acidose metabólica, hepatopatia grave, alcoolismo, contraste iodado recente",
    mec:"Ativa AMPK → reduz gliconeogênese hepática e melhora sensibilidade à insulina periférica; efeito neutro ou redutor de peso"},
   {id:"glibenclamida",pa:"Glibenclamida",comerciais:["Daonil","Glibenclamida Genérico","Glucovance"],
-   classe:"Sulfonilureia de 2ª Geração · Antidiabético · Secretagogo",cor:"#15803d",fito:false,chronic:true,
+   classe:"Sulfonilureia de 2ª Geração · Antidiabético · Secretagogo",cor:"#15803d",fito:false,chronic:true,fp:true,sus:true,
    syms:["diabetes"],
    dose:{a:"2,5–20 mg/dia em 1–2 doses antes das refeições",max:"20 mg/dia",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -519,7 +526,7 @@ const MEDS=[
    ci:"DM tipo 1, insuf. renal grave (TFG <30), insuf. hepática, gestação, hipoglicemia recorrente, idosos frágeis",
    mec:"Bloqueia canais de K⁺ ATP-dependentes nas células β pancreáticas → despolarização → secreção de insulina (efeito independente da glicemia)"},
   {id:"glicazida",pa:"Glicazida MR",comerciais:["Diamicron MR","Glicazida Genérico"],
-   classe:"Sulfonilureia de 2ª Geração · Antidiabético · Secretagogo",cor:"#166534",fito:false,chronic:true,
+   classe:"Sulfonilureia de 2ª Geração · Antidiabético · Secretagogo",cor:"#166534",fito:false,chronic:true,fp:false,sus:true,
    syms:["diabetes"],
    dose:{a:"30–120 mg 1×/dia com café da manhã",max:"120 mg/dia",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -527,7 +534,7 @@ const MEDS=[
    ci:"DM tipo 1, insuf. renal grave, gestação, hipoglicemia recorrente",
    mec:"Secretagogo com ação mais glicemia-dependente que glibenclamida; menor risco de hipoglicemia prolongada"},
   {id:"glipizida",pa:"Glipizida",comerciais:["Minidiab","Glucotrol","Glipizida Genérico"],
-   classe:"Sulfonilureia de 2ª Geração · Antidiabético",cor:"#14532d",fito:false,chronic:true,
+   classe:"Sulfonilureia de 2ª Geração · Antidiabético",cor:"#14532d",fito:false,chronic:true,fp:false,sus:false,
    syms:["diabetes"],
    dose:{a:"2,5–20 mg/dia em 1–2 doses; tomar 30 min antes da refeição principal",max:"20 mg/dia",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -537,7 +544,7 @@ const MEDS=[
 
   /* ── HIPOLIPEMIANTES ── */
   {id:"sinvastatina",pa:"Sinvastatina",comerciais:["Zocor","Sinvastatina Genérico","Lipox"],
-   classe:"Estatina · Inibidor da HMG-CoA Redutase · Hipolipemiante",cor:"#dc2626",fito:false,chronic:true,
+   classe:"Estatina · Inibidor da HMG-CoA Redutase · Hipolipemiante",cor:"#dc2626",fito:false,chronic:true,fp:true,sus:true,
    syms:["colesterol","trigliceridios"],
    dose:{a:"10–40 mg 1×/dia à noite",max:"40 mg/dia (80 mg apenas em casos especiais)",p:"10–40 mg/dia (>10 anos)"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -545,7 +552,7 @@ const MEDS=[
    ci:"Gestação, lactação, hepatopatia ativa, miopatia prévia, interação com CYP3A4 potentes",
    mec:"Inibe competitivamente HMG-CoA redutase → reduz síntese hepática de colesterol → upregulation de receptores LDL"},
   {id:"atorvastatina",pa:"Atorvastatina Cálcica",comerciais:["Crestor","Atorvastatina Genérico","Lipitor"],
-   classe:"Estatina · Inibidor da HMG-CoA Redutase · Hipolipemiante",cor:"#b91c1c",fito:false,chronic:true,
+   classe:"Estatina · Inibidor da HMG-CoA Redutase · Hipolipemiante",cor:"#b91c1c",fito:false,chronic:true,fp:false,sus:false,
    syms:["colesterol","trigliceridios"],
    dose:{a:"10–80 mg 1×/dia (qualquer horário)",max:"80 mg/dia",p:"10–20 mg/dia (>10 anos)"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -553,7 +560,7 @@ const MEDS=[
    ci:"Gestação, lactação, hepatopatia ativa, miopatia",
    mec:"Inibição potente HMG-CoA redutase; maior redução de LDL que sinvastatina; também reduz TG e eleva HDL"},
   {id:"rosuvastatina",pa:"Rosuvastatina Cálcica",comerciais:["Crestor","Rosuvastatina Genérico","Vissol"],
-   classe:"Estatina · Inibidor da HMG-CoA Redutase · Hipolipemiante",cor:"#991b1b",fito:false,chronic:true,
+   classe:"Estatina · Inibidor da HMG-CoA Redutase · Hipolipemiante",cor:"#991b1b",fito:false,chronic:true,fp:false,sus:false,
    syms:["colesterol","trigliceridios"],
    dose:{a:"5–20 mg 1×/dia (qualquer horário)",max:"40 mg/dia",p:"5–20 mg/dia (>10 anos)"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -561,7 +568,7 @@ const MEDS=[
    ci:"Gestação, lactação, hepatopatia ativa, miopatia, TFG <30",
    mec:"Estatina mais hidrofílica — alta seletividade hepática, menor risco muscular; maior potência por mg na redução de LDL"},
   {id:"ezetimiba",pa:"Ezetimiba",comerciais:["Zetia","Ezetimiba Genérico","Vittoria"],
-   classe:"Inibidor da Absorção de Colesterol · Hipolipemiante",cor:"#e11d48",fito:false,chronic:true,
+   classe:"Inibidor da Absorção de Colesterol · Hipolipemiante",cor:"#e11d48",fito:false,chronic:true,fp:false,sus:false,
    syms:["colesterol"],
    dose:{a:"10 mg 1×/dia (qualquer horário, com ou sem alimentos)",max:"10 mg/dia",p:"10 mg/dia (>10 anos)"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -569,7 +576,7 @@ const MEDS=[
    ci:"Hepatopatia moderada/grave, gestação",
    mec:"Inibe transportador NPC1L1 na borda em escova intestinal → bloqueia absorção de colesterol e fitoesteróis"},
   {id:"fenofibrato",pa:"Fenofibrato Micronizado",comerciais:["Lipanthyl","Lipless","Fenofibrato Genérico"],
-   classe:"Fibrato · Hipolipemiante · Redutor de Triglicerídios",cor:"#f97316",fito:false,chronic:true,
+   classe:"Fibrato · Hipolipemiante · Redutor de Triglicerídios",cor:"#f97316",fito:false,chronic:true,fp:false,sus:false,
    syms:["trigliceridios","colesterol"],
    dose:{a:"145–200 mg 1×/dia com refeição",max:"200 mg/dia",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -611,6 +618,109 @@ const MEDS=[
    ci:"Gestação 3º tri, úlcera ativa, insuf. renal/cardíaca/hepática grave",
    mec:"Preferência por COX-2 dose-dependente; menor risco GI que AINEs não-seletivos; meia-vida ~20h"},
 
+
+  /* ── MEDICAMENTOS — PROGRAMAS GOVERNAMENTAIS (novos) ── */
+  {id:"atenolol",pa:"Atenolol",comerciais:["Atenolol Genérico","Tenormin","Ablok"],
+   classe:"Betabloqueador β1-seletivo · Anti-hipertensivo",cor:"#0284c7",fito:false,chronic:true,fp:true,sus:true,
+   syms:["pressao_alta"],
+   dose:{a:"25–100 mg 1×/dia",max:"100 mg/dia",p:"0,5–1 mg/kg/dia (>6 anos)"},
+   via:"Oral",gS:false,lS:false,cS:true,al:["Não suspender abruptamente","Mascarar sintomas de hipoglicemia"],
+   ci:"Asma brônquica, DPOC grave, BAV 2º/3º grau, bradicardia grave, choque cardiogênico",
+   mec:"Bloqueio seletivo β1-adrenérgico → reduz FC e débito cardíaco → queda da PA"},
+
+  {id:"propranolol",pa:"Cloridrato de Propranolol",comerciais:["Propranolol Genérico","Inderal"],
+   classe:"Betabloqueador Não-seletivo · Anti-hipertensivo · Antiarrítmico",cor:"#0e7490",fito:false,chronic:true,fp:true,sus:true,
+   syms:["pressao_alta"],
+   dose:{a:"40–320 mg/dia em 2–3 doses",max:"320 mg/dia",p:"0,5–1 mg/kg/dia ÷ 2–3 doses"},
+   via:"Oral",gS:false,lS:false,cS:true,al:["Não suspender abruptamente","Broncoespasmo em asmáticos","Mascarar hipoglicemia"],
+   ci:"Asma brônquica, DPOC, BAV 2º/3º grau, bradicardia grave, hipotensão",
+   mec:"Bloqueio não-seletivo β1+β2 → reduz FC, contratilidade e renina → queda da PA"},
+
+  {id:"metoprolol",pa:"Succinato de Metoprolol",comerciais:["Metoprolol Genérico","Seloken","Lopressor"],
+   classe:"Betabloqueador β1-seletivo · Anti-hipertensivo · Cardioprotetor",cor:"#155e75",fito:false,chronic:true,fp:true,sus:false,
+   syms:["pressao_alta"],
+   dose:{a:"25–200 mg 1×/dia (liberação prolongada)",max:"200 mg/dia",p:"0,1–0,2 mg/kg 2×/dia"},
+   via:"Oral",gS:false,lS:false,cS:false,al:["Não suspender abruptamente","Menor risco de broncoespasmo vs. propranolol"],
+   ci:"BAV 2º/3º grau, bradicardia grave, descompensação cardíaca aguda, asma grave",
+   mec:"Bloqueio seletivo β1-adrenérgico — cardioprotetor pós-IAM, reduz mortalidade em IC"},
+
+  {id:"salbutamol",pa:"Sulfato de Salbutamol",comerciais:["Aerolin","Ventolair","Salbutamol Genérico"],
+   classe:"Broncodilatador β2-agonista de Curta Ação (SABA)",cor:"#0891b2",fito:false,chronic:false,fp:true,sus:true,
+   syms:["tosse_seca","tosse_catarro","coriza"],
+   dose:{a:"Inalatório: 100–200 mcg (1–2 jatos) a cada 4–6h | Nebulização: 2,5 mg a cada 20 min (crise)",max:"8 jatos/dia (manutenção)",p:"100 mcg (1 jato) a cada 4–6h (>4 anos)"},
+   via:"Inalatório / Nebulização",gS:true,lS:true,cS:true,al:["Taquicardia e tremor são efeitos comuns","Usar espaçador em crianças"],
+   ci:"Hipersensibilidade, taquiarritmias não controladas",
+   mec:"Agonista seletivo β2-adrenérgico → relaxamento da musculatura lisa brônquica → broncodilatação rápida (início em 5 min)"},
+
+  {id:"beclometasona",pa:"Dipropionato de Beclometasona",comerciais:["Clenil","Beclometasona Genérico","Beclojet"],
+   classe:"Corticosteroide Inalatório · Anti-inflamatório Brônquico",cor:"#06b6d4",fito:false,chronic:true,fp:true,sus:true,
+   syms:["tosse_seca","tosse_catarro"],
+   dose:{a:"Inalatório: 100–400 mcg 2×/dia (manutenção da asma)",max:"800 mcg/dia",p:"50–100 mcg 2×/dia (>5 anos)"},
+   via:"Inalatório",gS:true,lS:true,cS:true,al:["Bochechar após cada uso (candidíase oral)","Usar espaçador em crianças","Efeito preventivo — não broncodilatador"],
+   ci:"Hipersensibilidade, infecção fúngica ativa das vias aéreas",
+   mec:"Inibe síntese de mediadores inflamatórios na mucosa brônquica → reduz edema, muco e hiper-reatividade"},
+
+  {id:"ipratropi",pa:"Brometo de Ipratrópio",comerciais:["Atrovent","Ipratrópio Genérico"],
+   classe:"Broncodilatador Anticolinérgico · Anti-hipertensivo Pulmonar",cor:"#0369a1",fito:false,chronic:false,fp:true,sus:true,
+   syms:["tosse_seca","coriza"],
+   dose:{a:"Inalatório: 40 mcg (2 jatos) a cada 6–8h | Nebulização: 0,25–0,5 mg a cada 6h",max:"conforme produto",p:"0,125 mg nebulização a cada 6–8h (>1 ano)"},
+   via:"Inalatório / Nebulização",gS:true,lS:true,cS:true,al:["Pode causar boca seca e retenção urinária","Cuidado com glaucoma de ângulo fechado"],
+   ci:"Hipersensibilidade a atropina, glaucoma de ângulo fechado (por aerossol), hipertrofia prostática grave",
+   mec:"Antagonista muscarínico M1/M2 nas vias aéreas → broncodilatação por bloqueio parassimpático"},
+
+  {id:"insulina_nph",pa:"Insulina Humana NPH 100 UI/mL",comerciais:["Insulina NPH Genérico","Humulin N","Novolin N"],
+   classe:"Insulina de Ação Intermediária · Antidiabético",cor:"#059669",fito:false,chronic:true,fp:true,sus:true,
+   syms:["diabetes"],
+   dose:{a:"Individualizada: iniciar 0,1–0,2 UI/kg/dia SC ao deitar ou 2×/dia",max:"individualizada conforme glicemia",p:"0,3–1 UI/kg/dia SC (DM1)"},
+   via:"Subcutâneo (SC)",gS:true,lS:true,cS:true,
+   al:["Monitorar glicemia 4×/dia","Risco de hipoglicemia — ter glicose ou suco disponível","Guardar na geladeira (2–8°C); não congelar","Rotacionar locais de aplicação"],
+   ci:"Hipoglicemia ativa, hipersensibilidade",
+   mec:"Liga-se ao receptor de insulina → captação celular de glicose, inibição de gliconeogênese e glicogenólise hepática"},
+
+  {id:"insulina_regular",pa:"Insulina Humana Regular 100 UI/mL",comerciais:["Insulina Regular Genérico","Humulin R","Novolin R"],
+   classe:"Insulina de Ação Rápida · Antidiabético",cor:"#10b981",fito:false,chronic:true,fp:true,sus:true,
+   syms:["diabetes"],
+   dose:{a:"Individualizada: 0,5–1 UI/kg/dia SC; aplicar 30 min antes das refeições",max:"individualizada",p:"Individualizada — controle intensivo"},
+   via:"Subcutâneo / IV (hospitalar)",gS:true,lS:true,cS:true,
+   al:["Aplicar 30 min antes das refeições","Risco de hipoglicemia","Guardar na geladeira (2–8°C)","IV apenas em ambiente hospitalar"],
+   ci:"Hipoglicemia ativa, hipersensibilidade",
+   mec:"Insulina de ação rápida (início em 30 min, pico 2–3h) → controle prandial da glicemia"},
+
+  {id:"dapagliflozina",pa:"Dapagliflozina",comerciais:["Farxiga","Dapagliflozina Genérico"],
+   classe:"Inibidor SGLT2 · Antidiabético · Cardioprotetor",cor:"#16a34a",fito:false,chronic:true,fp:true,sus:false,
+   syms:["diabetes"],
+   dose:{a:"10 mg 1×/dia (qualquer horário, com ou sem alimentos)",max:"10 mg/dia",p:"Não recomendado <18 anos"},
+   via:"Oral",gS:false,lS:false,cS:false,
+   al:["Risco de infecção geniturinária","Hidratação adequada (risco de cetoacidose diabética)","Suspender antes de cirurgias","Pode causar poliúria"],
+   ci:"TFG <45 mL/min, cetoacidose diabética, gestação, lactação",
+   mec:"Inibe SGLT2 no túbulo proximal renal → glicosúria forçada → redução da glicemia, peso e PA; cardioprotetor e nefroprotetor"},
+
+  {id:"alendronato",pa:"Alendronato de Sódio",comerciais:["Fosamax","Alendronato Genérico","Osteogenon"],
+   classe:"Bisfosfonato · Antiosteoporótico",cor:"#be185d",fito:false,chronic:true,fp:true,sus:true,
+   syms:["osteoporose"],
+   dose:{a:"70 mg 1×/semana em jejum (tomar com 200 mL de água, permanecer em pé 30 min)",max:"70 mg/semana",p:"Não recomendado <18 anos"},
+   via:"Oral",gS:false,lS:false,cS:false,
+   al:["NUNCA deitar após tomar — risco de esofagite grave","Tomar com bastante água em jejum","Monitorar cálcio sérico","Suplementar cálcio + vitamina D"],
+   ci:"Esofagite, hipocalcemia, incapacidade de permanecer em pé 30 min, insuf. renal grave (TFG <35)",
+   mec:"Inibe osteoclastos → reduz reabsorção óssea → aumento da densidade mineral óssea"},
+
+  {id:"budesonida_nasal",pa:"Budesonida (Spray Nasal)",comerciais:["Rhinocort","Busonid","Budesonida Nasal Genérico"],
+   classe:"Corticosteroide Nasal · Anti-inflamatório",cor:"#7c3aed",fito:false,chronic:false,fp:true,sus:false,
+   syms:["coriza"],
+   dose:{a:"64–256 mcg/dia (1–2 jatos em cada narina 1–2×/dia)",max:"256 mcg/dia",p:"64 mcg/dia (1 jato por narina 1×/dia — >6 anos)"},
+   via:"Tópico nasal",gS:true,lS:true,cS:true,
+   al:["Efeito pleno em 1–2 semanas","Pode causar epistaxe leve","Irrigação nasal com soro antes potencializa efeito"],
+   ci:"Hipersensibilidade, infecção nasal não tratada",
+   mec:"Corticosteroide de alta potência tópica → inibe liberação de histamina e leucotrienos na mucosa nasal"},
+
+  {id:"timolol_ocular",pa:"Maleato de Timolol (Colírio)",comerciais:["Timoptol","Timolol Genérico","Nyolol"],
+   classe:"Betabloqueador Ocular · Antiglaucomatoso",cor:"#0891b2",fito:false,chronic:true,fp:true,sus:false,
+   syms:["olhos_vermelhos"],
+   dose:{a:"0,5%: 1 gota em cada olho afetado 2×/dia",max:"uso tópico ocular",p:"Não recomendado <2 anos"},
+   via:"Tópico ocular",gS:false,lS:false,cS:false,
+   al:["Absorção sistêmica pode causar bradicardia e broncoespasmo","Pressionar o canto interno do olho após aplicação (reduz absorção)","Não usar em asmáticos"],
+   ci:"Asma brônquica, DPOC, BAV, bradicardia grave, insuf. cardíaca descompensada",
+   mec:"Bloqueia receptores β-adrenérgicos no epitélio ciliar → reduz produção de humor aquoso → queda da pressão intraocular"},
   /* ═══════════════════════════════════════
      FITOTERÁPICOS — Gerais
   ═══════════════════════════════════════ */
@@ -976,6 +1086,7 @@ const GROUPS=[
   {label:"Respiratório & Garganta",icon:"🫁",items:[
     {id:"dor_garganta",label:"Dor de Garganta"},{id:"tosse_seca",label:"Tosse Seca"},
     {id:"tosse_catarro",label:"Tosse com Catarro"},{id:"coriza",label:"Coriza / Nariz Entupido"},
+    {id:"rinite",label:"Rinite Alérgica"},
   ]},
   {label:"Digestivo",icon:"🫃",items:[
     {id:"nausea",label:"Náusea"},{id:"vomito",label:"Vômito"},
@@ -996,6 +1107,7 @@ const GROUPS=[
     {id:"dor_cronica",label:"Dor Crônica"},
     {id:"colesterol",label:"Colesterol Alto"},
     {id:"trigliceridios",label:"Triglicerídios Altos"},
+    {id:"osteoporose",label:"Osteoporose"},
   ]},
   {label:"Urinário & Imunidade",icon:"🛡️",items:[
     {id:"infeccao_urinaria",label:"Infecção Urinária"},
@@ -1010,7 +1122,7 @@ const GROUPS=[
 const ALL=GROUPS.flatMap(g=>g.items);
 
 /* ─── CHRONIC CONDITION IDS ─── */
-const CHRONIC_IDS=new Set(["pressao_alta","diabetes","colesterol","trigliceridios"]);
+const CHRONIC_IDS=new Set(["pressao_alta","diabetes","colesterol","trigliceridios","osteoporose"]);
 
 /* ═══════════════════════════════════════ UTILS ═══════════════════════════════════════ */
 const rgb=h=>{try{return[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)).join(",");}catch{return"100,180,100";}};
@@ -1170,7 +1282,7 @@ const ALTS={
 const getAlts=(id)=>(ALTS[id]||[]).map(aid=>MEDS.find(m=>m.id===aid)).filter(Boolean);
 
 /* ════════════════════════ MED CARD ════════════════════════ */
-function MedCard({m,score,max,f,sel,catalog=false}){
+function MedCard({m,score,max,f,sel,catalog=false,onSelectMed=null}){
   const[open,setOpen]=useState(false);
   const theme=useContext(Ctx);
   const t=THEMES[theme]?.vars||THEMES.light.vars;
@@ -1213,9 +1325,11 @@ function MedCard({m,score,max,f,sel,catalog=false}){
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10}}>
         <div style={{flex:1,minWidth:0}}>
           <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2,flexWrap:"wrap"}}>
-            <span style={{fontFamily:t["--mono"],fontWeight:700,fontSize:13.5,color:safeCor,letterSpacing:".01em",lineHeight:1.3}}>{m.pa}</span>
+            <span style={{fontFamily:t["--mono"],fontWeight:700,fontSize:16,color:safeCor,letterSpacing:".01em",lineHeight:1.3}}>{m.pa}</span>
             {m.fito&&<span style={{fontSize:9,padding:"1px 5px",borderRadius:t["--radiusSm"],background:t["--fitoBg"],color:t["--fitoText"],border:`1px solid ${t["--fitoBrd"]}`,fontWeight:700,letterSpacing:".05em",textTransform:"uppercase",fontFamily:t["--sans"],flexShrink:0}}>🌿 fito</span>}
             {m.chronic&&<span style={{fontSize:9,padding:"1px 5px",borderRadius:t["--radiusSm"],background:t["--chronicBg"],color:t["--chronicText"],border:`1px solid ${t["--chronicBrd"]}`,fontWeight:700,letterSpacing:".05em",textTransform:"uppercase",fontFamily:t["--sans"],flexShrink:0}}>🏥 crônico</span>}
+            {m.fp&&<span className="fp-badge" style={{background:t["--fpBg"],color:t["--fpTxt"],border:`1px solid ${t["--fpBrd"]}`}}>🏛️ Farm. Popular</span>}
+            {m.sus&&<span className="fp-badge" style={{background:t["--susBg"],color:t["--susTxt"],border:`1px solid ${t["--susBrd"]}`}}>💊 Farmácia Básica</span>}
           </div>
           {m.fito&&m.planta&&<div style={{fontSize:9.5,color:t["--fito"],fontStyle:"italic",marginBottom:3,fontFamily:t["--sans"],opacity:.85}}>{m.planta} · {m.parte}</div>}
           <div style={{fontSize:10,color:t["--textMuted"],textTransform:"uppercase",letterSpacing:".06em",marginBottom:5,fontFamily:t["--sans"]}}>{m.classe}</div>
@@ -1296,36 +1410,42 @@ function MedCard({m,score,max,f,sel,catalog=false}){
                 color:t["--warn"],marginBottom:6,fontFamily:t["--sans"],
                 display:"flex",alignItems:"center",gap:5}}>
                 <span>🔄</span> Substitutos em falta
+                {onSelectMed&&<span style={{fontSize:8.5,color:t["--textDim"],fontWeight:400,textTransform:"none",letterSpacing:0}}>— clique para ver detalhes</span>}
               </div>
-              <div style={{display:"flex",flexDirection:"column",gap:5}}>
+              <div style={{display:"flex",flexDirection:"column",gap:6}}>
                 {alts.map(alt=>{
                   const ar=rgb(alt.cor||"#10b981");
+                  const clickable=!!onSelectMed;
                   return(
-                    <div key={alt.id} style={{display:"flex",alignItems:"center",gap:8,
-                      padding:"7px 10px",borderRadius:t["--radiusSm"],
-                      background:`rgba(${ar},.06)`,
-                      border:`1px solid rgba(${ar},.22)`}}>
-                      <div style={{width:3,height:32,borderRadius:2,background:alt.cor||"#10b981",flexShrink:0}}/>
+                    <div key={alt.id}
+                      onClick={clickable?(e=>{e.stopPropagation();onSelectMed(alt);}):undefined}
+                      style={{display:"flex",alignItems:"center",gap:8,
+                        padding:"9px 11px",borderRadius:t["--radiusSm"],
+                        background:`rgba(${ar},.06)`,
+                        border:`1.5px solid rgba(${ar},.22)`,
+                        cursor:clickable?"pointer":"default",
+                        transition:clickable?"all .16s":"none",
+                        position:"relative"}}>
+                      <div style={{width:3,height:38,borderRadius:2,background:alt.cor||"#10b981",flexShrink:0}}/>
                       <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontFamily:t["--mono"],fontSize:11.5,fontWeight:700,
+                        <div style={{fontFamily:t["--mono"],fontSize:12,fontWeight:700,
                           color:alt.cor||"#10b981",lineHeight:1.2,marginBottom:2}}>{alt.pa}</div>
-                        <div style={{fontSize:10,color:t["--textMuted"],fontFamily:t["--sans"],
-                          display:"flex",flexWrap:"wrap",gap:4,alignItems:"center"}}>
-                          <span style={{textTransform:"uppercase",letterSpacing:".05em",fontSize:9}}>{alt.classe}</span>
-                        </div>
-                        <div style={{fontSize:10,color:t["--textDim"],fontFamily:t["--mono"],marginTop:2}}>
+                        <div style={{fontSize:9.5,color:t["--textMuted"],fontFamily:t["--sans"],
+                          textTransform:"uppercase",letterSpacing:".05em",marginBottom:3}}>{alt.classe}</div>
+                        <div style={{fontSize:10.5,color:t["--textDim"],fontFamily:t["--mono"]}}>
                           {(alt.dose?.a)||"—"}
                         </div>
                       </div>
-                      <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:3,flexShrink:0}}>
+                      <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
                         {(alt.comerciais||[]).slice(0,1).map(n=>(
-                          <span key={n} style={{fontSize:9,padding:"1px 5px",
-                            background:`rgba(${ar},.12)`,color:alt.cor||"#10b981",
+                          <span key={n} style={{fontSize:9,padding:"2px 6px",
+                            background:`rgba(${ar},.13)`,color:alt.cor||"#10b981",
                             borderRadius:t["--radiusSm"],fontFamily:t["--sans"],fontWeight:500}}>{n}</span>
                         ))}
-                        {alt.fito&&<span style={{fontSize:8,padding:"1px 4px",borderRadius:t["--radiusSm"],
+                        {alt.fito&&<span style={{fontSize:8,padding:"1px 5px",borderRadius:t["--radiusSm"],
                           background:t["--fitoBg"],color:t["--fitoText"],
                           border:`1px solid ${t["--fitoBrd"]}`,fontWeight:700,fontFamily:t["--sans"]}}>🌿</span>}
+                        {clickable&&<span style={{fontSize:13,color:`rgba(${ar},.7)`,marginTop:2}}>›</span>}
                       </div>
                     </div>
                   );
@@ -1376,7 +1496,7 @@ function ChronicBanner({sel,t}){
 }
 
 /* ════════════════════════ CATALOG VIEW ════════════════════════ */
-function CatalogView({f,t,theme}){
+function CatalogView({f,t,theme,onSelectMed}){
   const[cSearch,setCSearch]=useState("");
   const[cFilter,setCFilter]=useState("all");
   const isInd=theme==="industrial";
@@ -1386,6 +1506,8 @@ function CatalogView({f,t,theme}){
       if(cFilter==="conv"&&m.fito) return false;
       if(cFilter==="fito"&&!m.fito) return false;
       if(cFilter==="chronic"&&!m.chronic) return false;
+      if(cFilter==="fp"&&!m.fp) return false;
+      if(cFilter==="sus"&&!m.sus) return false;
       if(!q) return true;
       return m.pa.toLowerCase().includes(q)||m.classe.toLowerCase().includes(q)||m.comerciais.some(c=>c.toLowerCase().includes(q));
     }).sort((a,b)=>a.pa.localeCompare(b.pa,"pt-BR"));
@@ -1398,7 +1520,7 @@ function CatalogView({f,t,theme}){
         <p style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--sans"]}}>{MEDS.length} medicamentos · {MEDS.filter(m=>m.fito).length} fitoterápicos · {MEDS.filter(m=>m.chronic).length} para condições crônicas · Clique para detalhes</p>
       </div>
       <div style={{display:"flex",gap:7,flexWrap:"wrap",marginBottom:12,alignItems:"center"}}>
-        {[["all","Todos"],["conv","Convencionais"],["fito","🌿 Fitoterápicos"],["chronic","🏥 Crônicos"]].map(([id,lbl])=>(
+        {[["all","Todos"],["conv","Convencionais"],["fito","🌿 Fitoterápicos"],["fp","🏛️ Farmácia Popular"],["sus","💊 Farmácia Básica SUS"],["chronic","🏥 Crônicos"]].map(([id,lbl])=>(
           <button key={id} onClick={()=>setCFilter(id)} style={btnS(cFilter===id, id==="chronic"?t["--chronicBg"]:null)}>{lbl}</button>
         ))}
         <div style={{flex:1,minWidth:150}}>
@@ -1410,7 +1532,7 @@ function CatalogView({f,t,theme}){
         <span style={{fontSize:10.5,padding:"3px 10px",borderRadius:20,background:t["--tagBg"],color:t["--tagTxt"],border:`1px solid ${t["--tagBrd"]}`,fontFamily:t["--mono"]}}>{filtered.length} resultado{filtered.length!==1?"s":""}</span>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))",gap:9}}>
-        {filtered.map(m=><MedCard key={m.id} m={m} f={f} sel={new Set()} catalog={true}/>)}
+        {filtered.map(m=><MedCard key={m.id} m={m} f={f} sel={new Set()} catalog={true} onSelectMed={onSelectMed}/>)}
       </div>
       <div style={{marginTop:20,padding:"10px 13px",borderRadius:t["--radiusSm"],background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,fontSize:11.5,color:t["--dangerTxt"],lineHeight:1.7,fontFamily:t["--sans"]}}>
         <strong>⚕️ Aviso:</strong> Catálogo de referência auxiliar. Sempre confirme alergias, interações e condições especiais do paciente. Condições crônicas requerem acompanhamento médico.
@@ -1421,31 +1543,33 @@ function CatalogView({f,t,theme}){
 }
 
 /* ════════════════════════ TAB BAR ════════════════════════ */
-function TabBar({tab,setTab,convCount,fitoCount,t,theme}){
+function TabBar({tab,setTab,convCount,fitoCount,fpCount,susCount,t,theme}){
   const isInd=theme==="industrial";
+  const tabs=[
+    {id:"conv", lbl:"Medicamentos",       ico:"💊", cnt:convCount, bg:t["--accentBg"],  clr:t["--accentText"], brd:t["--accentBrd"]},
+    {id:"fito", lbl:"Fitoterápicos",       ico:"🌿", cnt:fitoCount, bg:t["--fitoBg"],   clr:t["--fitoText"],  brd:t["--fitoBrd"]},
+    {id:"fp",   lbl:"Farmácia Popular",    ico:"🏛️", cnt:fpCount,   bg:t["--fpBg"]||t["--blueBg"], clr:t["--fpTxt"]||t["--blueTxt"], brd:t["--fpBrd"]||t["--blue"]},
+    {id:"sus",  lbl:"Farmácia Básica SUS", ico:"💊", cnt:susCount,  bg:t["--susBg"]||t["--accentBg"], clr:t["--susTxt"]||t["--accentText"], brd:t["--susBrd"]||t["--accentBrd"]},
+  ];
   return(
-    <div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
-      {[{id:"conv",lbl:"Medicamentos",ico:"💊",cnt:convCount,fito:false},{id:"fito",lbl:"Fitoterápicos",ico:"🌿",cnt:fitoCount,fito:true}].map(tb=>{
+    <div style={{display:"flex",gap:5,marginBottom:14,flexWrap:"wrap"}}>
+      {tabs.map(tb=>{
         const active=tab===tb.id;
-        const activeBg =tb.fito?t["--fitoBg"] :t["--accentBg"];
-        const activeClr=tb.fito?t["--fitoText"]:t["--accentText"];
-        const activeBrd=tb.fito?t["--fitoBrd"] :t["--accentBrd"];
-        const badgeBg  =tb.fito?t["--fitoBrd"] :t["--accentBrd"];
-        const badgeClr =tb.fito?t["--fitoBg"]  :t["--accentBg"];
         return(
           <button key={tb.id} onClick={()=>setTab(tb.id)}
-            style={{display:"flex",alignItems:"center",gap:7,padding:"8px 16px",cursor:"pointer",
-              transition:"all .17s",fontFamily:t["--sans"],fontSize:12.5,fontWeight:active?700:400,
-              borderRadius:isInd?"2px":"10px",
-              background:active?activeBg:t["--surface2"],
-              color:active?activeClr:t["--textMuted"],
-              border:`2px solid ${active?activeBrd:t["--border"]}`,
-              boxShadow:active?(tb.fito?"0 2px 8px rgba(34,197,94,.15)":"0 2px 8px rgba(10,124,82,.15)"):"none"}}>
-            <span style={{fontSize:15}}>{tb.ico}</span>
+            style={{display:"flex",alignItems:"center",gap:5,padding:"7px 12px",cursor:"pointer",
+              transition:"all .17s",fontFamily:t["--sans"],fontSize:11.5,fontWeight:active?700:400,
+              borderRadius:isInd?"2px":"9px",
+              background:active?tb.bg:t["--surface2"],
+              color:active?tb.clr:t["--textMuted"],
+              border:`${active?"2px":"1px"} solid ${active?tb.brd:t["--border"]}`,
+              boxShadow:active?"0 2px 8px rgba(0,0,0,.1)":"none"}}>
+            <span style={{fontSize:14}}>{tb.ico}</span>
             {tb.lbl}
-            <span style={{fontSize:10,padding:"2px 7px",borderRadius:20,fontWeight:700,
-              background:active?badgeBg:t["--border"],color:active?badgeClr:t["--textMuted"],
-              minWidth:20,textAlign:"center"}}>{tb.cnt}</span>
+            <span style={{fontSize:9.5,padding:"1px 6px",borderRadius:20,fontWeight:700,
+              background:active?tb.brd:t["--border"],
+              color:active?tb.bg:t["--textMuted"],
+              minWidth:18,textAlign:"center"}}>{tb.cnt}</span>
           </button>
         );
       })}
@@ -1456,6 +1580,24 @@ function TabBar({tab,setTab,convCount,fitoCount,t,theme}){
 function Empty({t}){return(<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"56px 20px",gap:14,animation:"pgFade .4s ease"}}><div style={{width:60,height:60,borderRadius:"50%",background:t["--surface2"],border:`1.5px solid ${t["--border"]}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26}}>💊</div><p style={{fontSize:13,fontWeight:600,color:t["--textMuted"],fontFamily:t["--sans"]}}>Nenhum sintoma selecionado</p><p style={{fontSize:11.5,color:t["--textDim"],lineHeight:1.7,maxWidth:230,textAlign:"center",fontFamily:t["--sans"]}}>Selecione sintomas ao lado para ver sugestões em tempo real, ou use <strong>MEDICAMENTOS</strong> no menu para o catálogo completo.</p></div>);}
 function FitoEmpty({t}){return(<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}><div style={{width:52,height:52,borderRadius:"50%",background:t["--fitoBg"],border:`1.5px solid ${t["--fitoBrd"]}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>🌿</div><p style={{fontSize:13,fontWeight:600,color:t["--fito"],fontFamily:t["--sans"]}}>Nenhum fitoterápico para estes sintomas</p></div>);}
 function ConvEmpty({t}){return(<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}><div style={{width:52,height:52,borderRadius:"50%",background:t["--accentBg"],border:`1.5px solid ${t["--accentBrd"]}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>💊</div><p style={{fontSize:13,fontWeight:600,color:t["--accentText"],fontFamily:t["--sans"]}}>Nenhum medicamento para estes sintomas</p><p style={{fontSize:11.5,color:t["--textMuted"],lineHeight:1.65,maxWidth:230,textAlign:"center",fontFamily:t["--sans"]}}>Os sintomas selecionados não possuem medicamentos convencionais cadastrados. Experimente a aba Fitoterápicos.</p></div>);}
+function ProgramEmpty({tipo,t}){
+  const isFP=tipo==="fp";
+  const bg =isFP?(t["--fpBg"]||t["--blueBg"]):(t["--susBg"]||t["--accentBg"]);
+  const brd=isFP?(t["--fpBrd"]||t["--blue"]) :(t["--susBrd"]||t["--accentBrd"]);
+  const clr=isFP?(t["--fpTxt"]||t["--blueTxt"]):(t["--susTxt"]||t["--accentText"]);
+  const lbl=isFP?"Farmácia Popular":"Farmácia Básica SUS";
+  return(
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}>
+      <div style={{width:52,height:52,borderRadius:"50%",background:bg,border:`1.5px solid ${brd}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>
+        {isFP?"🏛️":"🏥"}
+      </div>
+      <p style={{fontSize:13,fontWeight:600,color:clr,fontFamily:t["--sans"]}}>Nenhum medicamento do {lbl} para estes sintomas</p>
+      <p style={{fontSize:11.5,color:t["--textMuted"],lineHeight:1.65,maxWidth:260,textAlign:"center",fontFamily:t["--sans"]}}>
+        Experimente selecionar outros sintomas ou veja as abas Medicamentos e Fitoterápicos.
+      </p>
+    </div>
+  );
+}
 
 function ThemeBtn({id,current,onChange}){
   const th=THEMES[id];const active=current===id;const t=THEMES[current].vars;
@@ -1465,10 +1607,336 @@ function ThemeBtn({id,current,onChange}){
 /* ════════════════════════════════════════
    MAIN APP
 ════════════════════════════════════════ */
+
+/* ════════════════════════ DRUG DETAIL HELPERS ════════════════════════ */
+function PanelSection({title,icon,warn,t,children}){
+  return(
+    <div style={{marginBottom:18}}>
+      <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:9,
+        paddingBottom:6,borderBottom:`1px solid ${t["--border"]}`}}>
+        <span style={{fontSize:14}}>{icon}</span>
+        <span style={{fontSize:10,fontWeight:700,letterSpacing:".09em",textTransform:"uppercase",
+          color:warn?t["--warn"]:t["--textDim"],fontFamily:t["--sans"]}}>{title}</span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function PanelDoseCard({safeDose,dose,f,t,safeCor}){
+  const r=rgb(safeCor);
+  return(
+    <div style={{borderRadius:t["--radiusSm"],overflow:"hidden",border:`1.5px solid rgba(${r},.25)`}}>
+      <div style={{padding:"11px 14px",background:`rgba(${r},.07)`,borderBottom:`1px solid rgba(${r},.15)`}}>
+        <div style={{fontSize:9.5,color:t["--textDim"],fontWeight:700,letterSpacing:".07em",
+          textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>
+          {f.isC&&safeDose.p?"Dose Pediátrica":"Dose — Adulto"}
+        </div>
+        <div style={{fontFamily:t["--mono"],fontSize:13.5,color:t["--text"],lineHeight:1.5}}>{dose}</div>
+        {safeDose.max&&<div style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--mono"],marginTop:3}}>{safeDose.max}</div>}
+      </div>
+      {!f.isC&&safeDose.p&&(
+        <div style={{padding:"11px 14px"}}>
+          <div style={{fontSize:9.5,color:t["--blue"],fontWeight:700,letterSpacing:".07em",
+            textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>Dose Pediátrica</div>
+          <div style={{fontFamily:t["--mono"],fontSize:12.5,color:t["--textMuted"],lineHeight:1.5}}>{safeDose.p}</div>
+        </div>
+      )}
+      {f.isC&&safeDose.a&&safeDose.p&&(
+        <div style={{padding:"11px 14px"}}>
+          <div style={{fontSize:9.5,color:t["--textDim"],fontWeight:700,letterSpacing:".07em",
+            textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>Referência Adulto</div>
+          <div style={{fontFamily:t["--mono"],fontSize:12,color:t["--textMuted"],lineHeight:1.5}}>{safeDose.a}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════ DRUG DETAIL PANEL ════════════════════════ */
+function DrugDetailPanel({stack,onClose,onBack,onOpen,f}){
+  const theme=useContext(Ctx);
+  const t=THEMES[theme]?.vars||THEMES.light.vars;
+  const isInd=theme==="industrial";
+  const med=stack[stack.length-1];
+  if(!med) return null;
+
+  const safeCor = med.cor||"#10b981";
+  const safeAl  = Array.isArray(med.al)?med.al:[];
+  const safeCom = Array.isArray(med.comerciais)?med.comerciais:[];
+  const safeSyms= Array.isArray(med.syms)?med.syms:[];
+  const safeDose= med.dose||{a:"—",max:"",p:""};
+  const safeVia = med.via||"Oral";
+  const dose    = (f.isC&&safeDose.p)?safeDose.p:(safeDose.a||"—");
+  const ws      = getWarns(med,f);
+  const alts    = getAlts(med.id);
+  const r       = rgb(safeCor);
+  const panelW  = typeof window!=="undefined"?Math.min(500,window.innerWidth):400;
+
+  const breadcrumb = stack.length>1
+    ? stack.slice(0,-1).map(m=>m.pa.split(" ").slice(0,3).join(" ")).join(" › ")
+    : null;
+
+  return(
+    <>
+      {/* Backdrop */}
+      <div onClick={onClose} style={{position:"fixed",inset:0,
+        background:"rgba(0,0,0,.5)",zIndex:498,animation:"pgFade .22s ease"}}/>
+
+      {/* Sliding panel */}
+      <div style={{
+        position:"fixed",top:0,right:0,
+        width:panelW,height:"100vh",
+        background:t["--surface"],
+        zIndex:499,
+        display:"flex",flexDirection:"column",
+        boxShadow:"-6px 0 32px rgba(0,0,0,.22)",
+        animation:"pgPanelIn .26s ease",
+      }}>
+
+        {/* Panel header */}
+        <div style={{
+          height:52,flexShrink:0,padding:"0 14px",
+          display:"flex",alignItems:"center",justifyContent:"space-between",
+          borderBottom:`${isInd?"2px":"1px"} solid ${t["--border"]}`,
+          background:t["--hdrBg"],gap:10,
+        }}>
+          <div style={{display:"flex",alignItems:"center",gap:8,minWidth:0,flex:1}}>
+            {stack.length>1&&(
+              <button onClick={e=>{e.stopPropagation();onBack();}}
+                style={{background:t["--surface2"],border:`1px solid ${t["--border"]}`,
+                  borderRadius:isInd?"2px":"8px",padding:"5px 9px",cursor:"pointer",
+                  color:t["--textMuted"],fontFamily:t["--sans"],fontSize:13,flexShrink:0,
+                  display:"flex",alignItems:"center",gap:4}}>
+                ← <span style={{fontSize:11}}>Voltar</span>
+              </button>
+            )}
+            <div style={{minWidth:0,overflow:"hidden"}}>
+              {breadcrumb&&(
+                <div style={{fontSize:9.5,color:t["--textDim"],fontFamily:t["--sans"],
+                  whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",
+                  marginBottom:1}}>{breadcrumb} ›</div>
+              )}
+              <div style={{fontSize:11,fontWeight:700,letterSpacing:".04em",
+                textTransform:"uppercase",color:t["--textMuted"],fontFamily:t["--sans"],
+                whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
+                Detalhe do Medicamento
+              </div>
+            </div>
+          </div>
+          <button onClick={onClose}
+            style={{background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,
+              borderRadius:isInd?"2px":"8px",width:32,height:32,cursor:"pointer",
+              color:t["--dangerTxt"],fontSize:15,flexShrink:0,display:"flex",
+              alignItems:"center",justifyContent:"center"}}>✕</button>
+        </div>
+
+        {/* Scrollable body */}
+        <div className="pg-sc" style={{flex:1,overflowY:"auto",padding:"18px 16px"}}>
+
+          {/* Drug hero card */}
+          <div style={{padding:"16px",marginBottom:20,borderRadius:t["--radius"],
+            background:`rgba(${r},.06)`,border:`2px solid rgba(${r},.28)`}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10}}>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontFamily:t["--mono"],fontWeight:700,fontSize:17,
+                  color:safeCor,lineHeight:1.25,marginBottom:5}}>{med.pa}</div>
+                {med.fito&&med.planta&&(
+                  <div style={{fontSize:11,color:t["--fito"],fontStyle:"italic",
+                    marginBottom:5,fontFamily:t["--sans"]}}>{med.planta} · {med.parte}</div>
+                )}
+                <div style={{fontSize:10.5,color:t["--textMuted"],textTransform:"uppercase",
+                  letterSpacing:".06em",marginBottom:9,fontFamily:t["--sans"]}}>{med.classe}</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
+                  {safeCom.map(n=>(
+                    <span key={n} style={{fontSize:11,padding:"3px 9px",
+                      background:`rgba(${r},.13)`,color:safeCor,
+                      borderRadius:t["--radiusSm"],fontWeight:500,fontFamily:t["--sans"]}}>{n}</span>
+                  ))}
+                </div>
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:5,alignItems:"flex-end",flexShrink:0}}>
+                {med.fito&&<span style={{fontSize:9.5,padding:"2px 7px",borderRadius:t["--radiusSm"],
+                  background:t["--fitoBg"],color:t["--fitoText"],border:`1px solid ${t["--fitoBrd"]}`,
+                  fontWeight:700,fontFamily:t["--sans"]}}>🌿 fito</span>}
+                {med.chronic&&<span style={{fontSize:9.5,padding:"2px 7px",borderRadius:t["--radiusSm"],
+                  background:t["--chronicBg"],color:t["--chronicText"],border:`1px solid ${t["--chronicBrd"]}`,
+                  fontWeight:700,fontFamily:t["--sans"]}}>🏥 crônico</span>}
+                <span style={{fontSize:10.5,padding:"3px 9px",border:`1px solid ${t["--border"]}`,
+                  borderRadius:t["--radiusSm"],color:t["--textMuted"],fontFamily:t["--sans"]}}>{safeVia}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Posologia */}
+          <PanelSection title="Posologia" icon="💊" t={t}>
+            <PanelDoseCard safeDose={safeDose} dose={dose} f={f} t={t} safeCor={safeCor}/>
+          </PanelSection>
+
+          {/* Patient warnings */}
+          {ws.length>0&&(
+            <PanelSection title="Alertas de Perfil" icon="👤" t={t} warn>
+              {ws.map((w,i)=>(
+                <div key={i} style={{fontSize:12.5,padding:"9px 12px",borderRadius:t["--radiusSm"],
+                  marginBottom:5,background:w.d?t["--dangerBg"]:t["--warnBg"],
+                  border:`1px solid ${w.d?t["--dangerBrd"]:t["--warnBrd"]}`,
+                  color:w.d?t["--dangerTxt"]:t["--warnTxt"],fontFamily:t["--sans"]}}>
+                  {w.d?"🚫":"⚠️"} {w.s}
+                </div>
+              ))}
+            </PanelSection>
+          )}
+
+          {/* Mechanism */}
+          <PanelSection title="Mecanismo de Ação" icon="⚗️" t={t}>
+            <p style={{fontSize:13,color:t["--text"],lineHeight:1.75,fontFamily:t["--sans"]}}>{med.mec||"—"}</p>
+          </PanelSection>
+
+          {/* Contraindications */}
+          <PanelSection title="Contraindicações" icon="🚫" t={t} warn>
+            <p style={{fontSize:12.5,color:t["--warnTxt"],lineHeight:1.75,fontFamily:t["--sans"]}}>{med.ci||"—"}</p>
+          </PanelSection>
+
+          {/* Alerts */}
+          {safeAl.length>0&&(
+            <PanelSection title="Alertas Importantes" icon="⚠️" t={t} warn>
+              {safeAl.map((a,i)=>(
+                <div key={i} style={{fontSize:12.5,padding:"9px 12px",borderRadius:t["--radiusSm"],
+                  marginBottom:5,background:t["--warnBg"],border:`1px solid ${t["--warnBrd"]}`,
+                  color:t["--warnTxt"],fontFamily:t["--sans"]}}>⚠️ {a}</div>
+              ))}
+            </PanelSection>
+          )}
+
+          {/* Symptoms covered */}
+          {safeSyms.length>0&&(
+            <PanelSection title="Indicado Para" icon="🩺" t={t}>
+              <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                {safeSyms.map(s=>{
+                  const lbl=ALL.find(i=>i.id===s)?.label||s;
+                  return(
+                    <span key={s} style={{fontSize:11.5,padding:"4px 11px",borderRadius:20,
+                      background:t["--accentBg"],color:t["--accentText"],
+                      border:`1px solid ${t["--accentBrd"]}`,fontFamily:t["--sans"]}}>{lbl}</span>
+                  );
+                })}
+              </div>
+            </PanelSection>
+          )}
+
+          {/* Program availability */}
+          {(med.fp||med.sus)&&(
+            <PanelSection title="Disponível Gratuitamente" icon="🏛️" t={t}>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {med.fp&&(
+                  <div style={{padding:"11px 14px",borderRadius:t["--radiusSm"],
+                    background:t["--fpBg"],border:`1.5px solid ${t["--fpBrd"]}`}}>
+                    <div style={{fontWeight:700,fontSize:12.5,color:t["--fpTxt"],fontFamily:t["--sans"],marginBottom:4,display:"flex",alignItems:"center",gap:6}}>
+                      <span>🏛️</span> Farmácia Popular (Aqui Tem Farmácia Popular)
+                    </div>
+                    <div style={{fontSize:11.5,color:t["--fp"],lineHeight:1.65,fontFamily:t["--sans"],marginBottom:5}}>
+                      <strong>100% gratuito</strong> — apresentar receita médica válida (SUS ou particular) + documento com foto e CPF em qualquer farmácia credenciada com o selo "Aqui Tem Farmácia Popular".
+                    </div>
+                    <div style={{fontSize:11,color:t["--fpTxt"],fontFamily:t["--sans"],opacity:.8}}>
+                      📍 Em Cascavel-PR: consulte farmácias credenciadas em <strong>consultafp.saude.gov.br</strong> ou ligue <strong>136</strong> (Ministério da Saúde).
+                    </div>
+                  </div>
+                )}
+                {med.sus&&(
+                  <div style={{padding:"11px 14px",borderRadius:t["--radiusSm"],
+                    background:t["--susBg"],border:`1.5px solid ${t["--susBrd"]}`}}>
+                    <div style={{fontWeight:700,fontSize:12.5,color:t["--susTxt"],fontFamily:t["--sans"],marginBottom:4,display:"flex",alignItems:"center",gap:6}}>
+                      <span>💊</span> Farmácia Básica SUS — UBS / CBAF
+                    </div>
+                    <div style={{fontSize:11.5,color:t["--sus"],lineHeight:1.65,fontFamily:t["--sans"],marginBottom:5}}>
+                      <strong>Gratuito na UBS</strong> — retirar na Unidade Básica de Saúde (Posto de Saúde) do bairro. Apresentar receita médica + CPF + Cartão SUS.
+                    </div>
+                    <div style={{fontSize:11,color:t["--susTxt"],fontFamily:t["--sans"],opacity:.8}}>
+                      📍 <strong>Cascavel-PR — Farmácia Básica:</strong> Av. Tancredo Neves, 1453 · WhatsApp: <strong>(45) 3321-5529</strong>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </PanelSection>
+          )}
+
+          {/* Substitutes — clickable */}
+          {alts.length>0&&(
+            <PanelSection title="Substitutos em Caso de Falta" icon="🔄" t={t}>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {alts.map(alt=>{
+                  const ar=rgb(alt.cor||"#10b981");
+                  return(
+                    <button key={alt.id}
+                      onClick={()=>onOpen(alt)}
+                      style={{display:"flex",alignItems:"center",gap:10,
+                        padding:"12px 14px",borderRadius:t["--radius"],
+                        background:`rgba(${ar},.06)`,border:`1.5px solid rgba(${ar},.25)`,
+                        cursor:"pointer",textAlign:"left",width:"100%",
+                        transition:"all .18s",fontFamily:t["--sans"]}}
+                      onMouseEnter={e=>{e.currentTarget.style.background=`rgba(${ar},.14)`;e.currentTarget.style.borderColor=`rgba(${ar},.55)`;}}
+                      onMouseLeave={e=>{e.currentTarget.style.background=`rgba(${ar},.06)`;e.currentTarget.style.borderColor=`rgba(${ar},.25)`;}}
+                    >
+                      <div style={{width:4,height:44,borderRadius:2,
+                        background:alt.cor||"#10b981",flexShrink:0}}/>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontFamily:t["--mono"],fontWeight:700,fontSize:13.5,
+                          color:alt.cor||"#10b981",marginBottom:3,lineHeight:1.2}}>{alt.pa}</div>
+                        <div style={{fontSize:10,color:t["--textMuted"],textTransform:"uppercase",
+                          letterSpacing:".05em",marginBottom:4,fontFamily:t["--sans"]}}>{alt.classe}</div>
+                        <div style={{fontSize:11.5,color:t["--textDim"],fontFamily:t["--mono"]}}>
+                          {(alt.dose?.a)||"—"}
+                          {alt.dose?.max&&<span style={{color:t["--textDim"],marginLeft:7,fontSize:10}}>· {alt.dose.max}</span>}
+                        </div>
+                      </div>
+                      <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",
+                        gap:5,flexShrink:0}}>
+                        {(alt.comerciais||[]).slice(0,2).map(n=>(
+                          <span key={n} style={{fontSize:10,padding:"2px 7px",
+                            background:`rgba(${ar},.13)`,color:alt.cor||"#10b981",
+                            borderRadius:t["--radiusSm"],fontWeight:500,fontFamily:t["--sans"]}}>{n}</span>
+                        ))}
+                        {alt.fito&&<span style={{fontSize:9,padding:"1px 5px",borderRadius:t["--radiusSm"],
+                          background:t["--fitoBg"],color:t["--fitoText"],
+                          border:`1px solid ${t["--fitoBrd"]}`,fontWeight:700,fontFamily:t["--sans"]}}>🌿</span>}
+                        {alt.chronic&&<span style={{fontSize:9,padding:"1px 5px",borderRadius:t["--radiusSm"],
+                          background:t["--chronicBg"],color:t["--chronicText"],
+                          border:`1px solid ${t["--chronicBrd"]}`,fontWeight:700,fontFamily:t["--sans"]}}>🏥</span>}
+                        <span style={{fontSize:18,color:`rgba(${ar},.6)`,lineHeight:1}}>›</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </PanelSection>
+          )}
+
+          <div style={{height:24}}/>
+        </div>
+      </div>
+    </>
+  );
+}
+
 function FarmaciaONG(){
   const[theme,setTheme]=useState("light");
   const[mode,setMode]=useState("symptoms");
   const[tab,setTab]=useState("conv");
+  const[medStack,setMedStack]=useState([]);
+  const openMedDetail =useCallback(med=>setMedStack(p=>[...p,med]),[]);
+  const closeMedDetail=useCallback(()=>setMedStack([]),[]);
+  const goBackDetail  =useCallback(()=>setMedStack(p=>p.slice(0,-1)),[]);
+  const[sidebarOpen,setSidebarOpen]=useState(()=>typeof window!=="undefined"&&window.innerWidth>700);
+  const[isMobile,setIsMobile]=useState(()=>typeof window!=="undefined"&&window.innerWidth<=700);
+  useEffect(()=>{
+    const onResize=()=>{
+      const mob=window.innerWidth<=700;
+      setIsMobile(mob);
+      if(!mob) setSidebarOpen(true);
+    };
+    window.addEventListener("resize",onResize);
+    return()=>window.removeEventListener("resize",onResize);
+  },[]);
   const[sel,setSel]=useState(new Set());
   const[idade,setIdade]=useState("");
   const[grupo,setGrupo]=useState("");
@@ -1484,7 +1952,9 @@ function FarmaciaONG(){
   },[sel]);
   const convRanked=useMemo(()=>allRanked.filter(x=>!x.m.fito),[allRanked]);
   const fitoRanked=useMemo(()=>allRanked.filter(x=>x.m.fito),[allRanked]);
-  const ranked=tab==="fito"?fitoRanked:convRanked;
+  const fpRanked  =useMemo(()=>allRanked.filter(x=>x.m.fp),  [allRanked]);
+  const susRanked =useMemo(()=>allRanked.filter(x=>x.m.sus), [allRanked]);
+  const ranked=tab==="fito"?fitoRanked:tab==="fp"?fpRanked:tab==="sus"?susRanked:convRanked;
   const maxScore=ranked.length?ranked[0].score:1;
 
   const toggle=useCallback(id=>{setSel(p=>{const n=new Set(p);n.has(id)?n.delete(id):n.add(id);return n;});},[]);
@@ -1498,22 +1968,58 @@ function FarmaciaONG(){
 
         {/* HEADER */}
         <div style={{background:t["--hdrBg"],borderBottom:`${isInd?"2px":"1px"} solid ${t["--hdrBrd"]}`,padding:"0 18px",height:52,display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
-          <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <button
+              className="pg-menu-btn"
+              onClick={()=>setSidebarOpen(o=>!o)}
+              title={sidebarOpen?"Fechar menu":"Abrir menu"}
+              style={{background:sidebarOpen?t["--accentBg"]:t["--surface3"],
+                color:sidebarOpen?t["--accentText"]:t["--textMuted"],
+                border:`1px solid ${sidebarOpen?t["--accentBrd"]:t["--border"]}`,
+                fontSize:16,borderRadius:isInd?"2px":"8px"}}>
+              {sidebarOpen?"✕":"☰"}
+            </button>
             <div style={{width:28,height:28,borderRadius:isInd?"2px":"7px",background:isInd?t["--accent"]:"linear-gradient(135deg,#059669,#0a7c52)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,fontSize:14,color:"white",border:isInd?`2px solid ${t["--accentText"]}`:"none"}}>✚</div>
             <span style={{fontWeight:700,fontSize:14.5,color:isInd?t["--bg"]:t["--text"],fontFamily:isInd?"'Georgia',serif":t["--sans"],letterSpacing:isInd?".05em":".01em",textTransform:isInd?"uppercase":"none"}}>Guia Farmácia</span>
-            <span style={{fontSize:9,padding:"3px 7px",borderRadius:isInd?"2px":"4px",background:t["--tagBg"],color:t["--tagTxt"],border:`1px solid ${t["--tagBrd"]}`,letterSpacing:".08em",fontWeight:700,textTransform:"uppercase",fontFamily:t["--sans"]}}>ONG · Dispensação</span>
+            <span style={{fontSize:9,padding:"3px 7px",borderRadius:isInd?"2px":"4px",background:t["--tagBg"],color:t["--tagTxt"],border:`1px solid ${t["--tagBrd"]}`,letterSpacing:".08em",fontWeight:700,textTransform:"uppercase",fontFamily:t["--sans"],display:isMobile?"none":"inline-block"}}>ONG · Dispensação</span>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:7}}>
-            {mode==="symptoms"&&sel.size>0&&<span style={{fontSize:11,color:t["--textMuted"],marginRight:4,fontFamily:t["--sans"]}}><span style={{color:t["--accentText"]}}>{sel.size} sintoma{sel.size>1?"s":""}</span><span style={{margin:"0 4px",color:t["--border2"]}}>·</span><span style={{color:t["--blue"]}}>💊 {convRanked.length}</span><span style={{margin:"0 4px",color:t["--border2"]}}>·</span><span style={{color:t["--fito"]}}>🌿 {fitoRanked.length}</span></span>}
+            {mode==="symptoms"&&sel.size>0&&<span style={{fontSize:10.5,color:t["--textMuted"],marginRight:2,fontFamily:t["--sans"],display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}><span style={{color:t["--accentText"]}}>{sel.size} sint.</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--blue"]}}>💊{convRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--fito"]}}>🌿{fitoRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--fp"]||t["--blue"]}}>🏛️{fpRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--sus"]||t["--accent"]}}>UBS {susRanked.length}</span></span>}
             {Object.keys(THEMES).map(id=><ThemeBtn key={id} id={id} current={theme} onChange={setTheme}/>)}
           </div>
         </div>
 
         {/* BODY */}
-        <div style={{display:"flex",flex:1,overflow:"hidden"}}>
+        <div style={{display:"flex",flex:1,overflow:"hidden",position:"relative"}}>
+
+          {/* BACKDROP mobile */}
+          {isMobile&&sidebarOpen&&(
+            <div className="pg-backdrop" onClick={()=>setSidebarOpen(false)}/>
+          )}
 
           {/* LEFT PANEL */}
-          <div style={{width:284,flexShrink:0,background:t["--surface"],borderRight:`${isInd?"2px":"1px"} solid ${t["--border"]}`,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+          <div
+            className={sidebarOpen?"pg-sidebar":""}
+            style={{
+              width: sidebarOpen ? 284 : 0,
+              flexShrink: 0,
+              background: t["--surface"],
+              borderRight: sidebarOpen ? `${isInd?"2px":"1px"} solid ${t["--border"]}` : "none",
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+              transition: "width .25s ease",
+              // Mobile: drawer overlay
+              ...(isMobile && sidebarOpen ? {
+                position:"fixed",
+                top:52,
+                left:0,
+                width:284,
+                height:"calc(100vh - 52px)",
+                zIndex:199,
+                boxShadow:"4px 0 24px rgba(0,0,0,.18)",
+              } : {}),
+            }}>
             {/* patient */}
             <div style={{padding:"11px 13px",borderBottom:`1px solid ${t["--border"]}`,flexShrink:0}}>
               <div style={{fontSize:9,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:t["--textDim"],marginBottom:7,fontFamily:t["--sans"]}}>Perfil do Paciente</div>
@@ -1584,41 +2090,65 @@ function FarmaciaONG(){
           </div>
 
           {/* RIGHT PANEL */}
-          <div className="pg-sc" style={{flex:1,overflowY:"auto",padding:"18px 20px"}}>
-            {mode==="catalog"?<CatalogView f={f} t={t} theme={theme}/>
+          <div className="pg-sc" onClick={()=>{if(isMobile&&sidebarOpen)setSidebarOpen(false);}} style={{flex:1,overflowY:"auto",padding:"18px 20px"}}>
+            {mode==="catalog"?<CatalogView f={f} t={t} theme={theme} onSelectMed={openMedDetail}/>
             :!sel.size?<Empty t={t}/>
             :(
               <>
-                <TabBar tab={tab} setTab={setTab} convCount={convRanked.length} fitoCount={fitoRanked.length} t={t} theme={theme}/>
+                <TabBar tab={tab} setTab={setTab} convCount={convRanked.length} fitoCount={fitoRanked.length} fpCount={fpRanked.length} susCount={susRanked.length} t={t} theme={theme}/>
                 <ChronicBanner sel={sel} t={t}/>
                 {tab==="fito"&&(
                   <div style={{marginBottom:14,padding:"12px 15px",borderRadius:t["--radius"],background:t["--fitoBg"],border:`1.5px solid ${t["--fitoBrd"]}`,display:"flex",gap:10,alignItems:"flex-start"}}>
                     <span style={{fontSize:20}}>🌿</span>
-                    <div>
-                      <div style={{fontWeight:700,fontSize:12.5,color:t["--fitoText"],fontFamily:t["--sans"],marginBottom:2}}>Fitoterápicos</div>
-                      <div style={{fontSize:11,color:t["--fito"],lineHeight:1.65,fontFamily:t["--sans"]}}>Medicamentos de origem vegetal. Cada card mostra nome científico e mecanismo de ação. <strong>Confirme contraindicações e segurança antes da dispensação.</strong></div>
-                    </div>
+                    <div><div style={{fontWeight:700,fontSize:12.5,color:t["--fitoText"],fontFamily:t["--sans"],marginBottom:2}}>Fitoterápicos</div>
+                    <div style={{fontSize:11,color:t["--fito"],lineHeight:1.65,fontFamily:t["--sans"]}}>Medicamentos de origem vegetal. Cada card mostra nome científico e mecanismo de ação. <strong>Confirme contraindicações antes da dispensação.</strong></div></div>
                   </div>
                 )}
                 {tab==="conv"&&(
                   <div style={{marginBottom:14,padding:"12px 15px",borderRadius:t["--radius"],background:t["--accentBg"],border:`1.5px solid ${t["--accentBrd"]}`,display:"flex",gap:10,alignItems:"flex-start"}}>
                     <span style={{fontSize:20}}>💊</span>
+                    <div><div style={{fontWeight:700,fontSize:12.5,color:t["--accentText"],fontFamily:t["--sans"],marginBottom:2}}>Medicamentos Convencionais</div>
+                    <div style={{fontSize:11,color:t["--accent"],lineHeight:1.65,fontFamily:t["--sans"]}}>Medicamentos alopáticos correspondentes aos sintomas. <strong>Verifique alergias, interações e perfil do paciente.</strong></div></div>
+                  </div>
+                )}
+                {tab==="fp"&&(
+                  <div style={{marginBottom:14,padding:"12px 15px",borderRadius:t["--radius"],background:t["--fpBg"]||t["--blueBg"],border:`1.5px solid ${t["--fpBrd"]||t["--blue"]}`,display:"flex",gap:10,alignItems:"flex-start"}}>
+                    <span style={{fontSize:20}}>🏛️</span>
                     <div>
-                      <div style={{fontWeight:700,fontSize:12.5,color:t["--accentText"],fontFamily:t["--sans"],marginBottom:2}}>Medicamentos Convencionais</div>
-                      <div style={{fontSize:11,color:t["--accent"],lineHeight:1.65,fontFamily:t["--sans"]}}>Medicamentos alopáticos correspondentes aos sintomas selecionados. Ordenados por relevância. <strong>Verifique alergias, interações e perfil do paciente.</strong></div>
+                      <div style={{fontWeight:700,fontSize:12.5,color:t["--fpTxt"]||t["--blueTxt"],fontFamily:t["--sans"],marginBottom:2}}>Farmácia Popular — 100% Gratuito</div>
+                      <div style={{fontSize:11,color:t["--fp"]||t["--blue"],lineHeight:1.65,fontFamily:t["--sans"],marginBottom:4}}>
+                        Medicamentos disponíveis <strong>gratuitamente</strong> nas farmácias credenciadas "Aqui Tem Farmácia Popular". Apresente receita válida (SUS ou particular) + documento com foto e CPF.
+                      </div>
+                      <div style={{fontSize:10.5,color:t["--fpTxt"]||t["--blueTxt"],fontFamily:t["--sans"],padding:"6px 10px",background:"rgba(0,0,0,.04)",borderRadius:t["--radiusSm"]}}>
+                        📍 <strong>Cascavel-PR:</strong> consulte farmácias credenciadas em <strong>consultafp.saude.gov.br</strong> ou ligue <strong>136</strong>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {tab==="sus"&&(
+                  <div style={{marginBottom:14,padding:"12px 15px",borderRadius:t["--radius"],background:t["--susBg"]||t["--accentBg"],border:`1.5px solid ${t["--susBrd"]||t["--accentBrd"]}`,display:"flex",gap:10,alignItems:"flex-start"}}>
+                    <span style={{fontSize:20}}>🏥</span>
+                    <div>
+                      <div style={{fontWeight:700,fontSize:12.5,color:t["--susTxt"]||t["--accentText"],fontFamily:t["--sans"],marginBottom:2}}>Farmácia Básica SUS — CBAF/RENAME</div>
+                      <div style={{fontSize:11,color:t["--sus"]||t["--accent"],lineHeight:1.65,fontFamily:t["--sans"],marginBottom:4}}>
+                        Medicamentos do Componente Básico da Assistência Farmacêutica, <strong>gratuitos nas UBS</strong> (Unidades Básicas de Saúde). Apresente receita médica + CPF + Cartão SUS.
+                      </div>
+                      <div style={{fontSize:10.5,color:t["--susTxt"]||t["--accentText"],fontFamily:t["--sans"],padding:"6px 10px",background:"rgba(0,0,0,.04)",borderRadius:t["--radiusSm"]}}>
+                        📍 <strong>Cascavel-PR — Farmácia Básica:</strong> Av. Tancredo Neves, 1453 · WhatsApp: <strong>(45) 3321-5529</strong>
+                      </div>
                     </div>
                   </div>
                 )}
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:11,flexWrap:"wrap",gap:8}}>
-                  <div><h2 style={{fontSize:15,fontWeight:700,marginBottom:2,fontFamily:t["--sans"],color:t["--text"],letterSpacing:isInd?".04em":"normal",textTransform:isInd?"uppercase":"none"}}>{tab==="fito"?"🌿 Fitoterápicos Sugeridos":"💊 Medicamentos Sugeridos"}</h2><p style={{fontSize:10.5,color:t["--textMuted"],fontFamily:t["--sans"]}}>Ordenados por relevância · Clique no card para expandir</p></div>
+                  <div><h2 style={{fontSize:15,fontWeight:700,marginBottom:2,fontFamily:t["--sans"],color:t["--text"],letterSpacing:isInd?".04em":"normal",textTransform:isInd?"uppercase":"none"}}>{tab==="fito"?"🌿 Fitoterápicos":tab==="fp"?"🏛️ Farmácia Popular":tab==="sus"?"🏥 Farmácia Básica SUS":"💊 Medicamentos Sugeridos"}</h2><p style={{fontSize:10.5,color:t["--textMuted"],fontFamily:t["--sans"]}}>Ordenados por relevância · Clique no card para expandir</p></div>
                   <span style={{fontSize:10,padding:"3px 10px",borderRadius:20,background:tab==="fito"?t["--fitoBg"]:t["--tagBg"],color:tab==="fito"?t["--fitoText"]:t["--tagTxt"],border:`1px solid ${tab==="fito"?t["--fitoBrd"]:t["--tagBrd"]}`,fontFamily:t["--mono"],flexShrink:0}}>{ranked.length} resultado{ranked.length!==1?"s":""}</span>
                 </div>
                 <div style={{display:"flex",flexWrap:"wrap",gap:5,marginBottom:12}}>
                   {[...sel].map(s=>{const label=ALL.find(i=>i.id===s)?.label||s;const isChr=CHRONIC_IDS.has(s);return(<span key={s} className="pg-pill" onClick={()=>toggle(s)} style={{fontSize:10.5,padding:"3px 10px",borderRadius:isInd?"2px":"20px",background:isChr?t["--chronicBg"]:t["--accentBg"],color:isChr?t["--chronicText"]:t["--accentText"],border:`1px solid ${isChr?t["--chronicBrd"]:t["--accentBrd"]}`,cursor:"pointer",transition:"opacity .15s",fontFamily:t["--sans"]}} title="Clique para remover">{label} ×</span>);})}
                 </div>
-                {ranked.length===0?(tab==="fito"?<FitoEmpty t={t}/>:<ConvEmpty t={t}/>):(
+                {ranked.length===0?(tab==="fito"?<FitoEmpty t={t}/>:tab==="fp"?<ProgramEmpty tipo="fp" t={t}/>:tab==="sus"?<ProgramEmpty tipo="sus" t={t}/>:<ConvEmpty t={t}/>):(
                   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))",gap:9}}>
-                    {ranked.map(({m,score})=><MedCard key={m.id} m={m} score={score} max={maxScore} f={f} sel={sel}/>)}
+                    {ranked.map(({m,score})=><MedCard key={m.id} m={m} score={score} max={maxScore} f={f} sel={sel} onSelectMed={openMedDetail}/>)}
                   </div>
                 )}
                 <div style={{marginTop:18,padding:"10px 13px",borderRadius:t["--radiusSm"],background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,fontSize:11,color:t["--dangerTxt"],lineHeight:1.7,fontFamily:t["--sans"]}}>
@@ -1630,6 +2160,16 @@ function FarmaciaONG(){
           </div>
         </div>
       </div>
+        {/* DRUG DETAIL PANEL */}
+        {medStack.length>0&&(
+          <DrugDetailPanel
+            stack={medStack}
+            onClose={closeMedDetail}
+            onBack={goBackDetail}
+            onOpen={openMedDetail}
+            f={f}
+          />
+        )}
     </Ctx.Provider>
   );
 }
