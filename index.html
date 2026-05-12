@@ -85,6 +85,7 @@ if(!document.getElementById("pg-sty")){
     .pg-nav:hover{filter:brightness(.93)}
     @keyframes sidebarSlide{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
     @keyframes pgPanelIn{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:none}}
+    .pg-nav:focus{outline:none}
     .pg-sidebar{animation:sidebarSlide .22s ease}
     .pg-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:198;animation:pgFade .2s ease}
     .pg-menu-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:none;cursor:pointer;transition:background .18s;flex-shrink:0}
@@ -510,7 +511,7 @@ const MEDS=[
 
   /* ── ANTIDIABÉTICOS ── */
   {id:"metformina",pa:"Cloridrato de Metformina",comerciais:["Glifage","Glucoformin","Metformina Genérico"],
-   classe:"Biguanida · Antidiabético · Hipoglicemiante",cor:"#16a34a",fito:false,chronic:true,fp:true,sus:true,
+   classe:"Biguanida · Antidiabético · Hipoglicemiante",cor:"#16a34a",fito:false,chronic:true,fp:true,sus:true,sesa:true,
    syms:["diabetes"],
    dose:{a:"500–2550 mg/dia em 2–3 tomadas com refeição; iniciar 500 mg 1×/dia e titular",max:"2550 mg/dia",p:"500–2000 mg/dia (>10 anos)"},
    via:"Oral",gS:false,lS:false,cS:true,
@@ -518,7 +519,7 @@ const MEDS=[
    ci:"TFG <30 mL/min, acidose metabólica, hepatopatia grave, alcoolismo, contraste iodado recente",
    mec:"Ativa AMPK → reduz gliconeogênese hepática e melhora sensibilidade à insulina periférica; efeito neutro ou redutor de peso"},
   {id:"glibenclamida",pa:"Glibenclamida",comerciais:["Daonil","Glibenclamida Genérico","Glucovance"],
-   classe:"Sulfonilureia de 2ª Geração · Antidiabético · Secretagogo",cor:"#15803d",fito:false,chronic:true,fp:true,sus:true,
+   classe:"Sulfonilureia de 2ª Geração · Antidiabético · Secretagogo",cor:"#15803d",fito:false,chronic:true,fp:true,sus:true,sesa:true,
    syms:["diabetes"],
    dose:{a:"2,5–20 mg/dia em 1–2 doses antes das refeições",max:"20 mg/dia",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -544,7 +545,7 @@ const MEDS=[
 
   /* ── HIPOLIPEMIANTES ── */
   {id:"sinvastatina",pa:"Sinvastatina",comerciais:["Zocor","Sinvastatina Genérico","Lipox"],
-   classe:"Estatina · Inibidor da HMG-CoA Redutase · Hipolipemiante",cor:"#dc2626",fito:false,chronic:true,fp:true,sus:true,
+   classe:"Estatina · Inibidor da HMG-CoA Redutase · Hipolipemiante",cor:"#dc2626",fito:false,chronic:true,fp:true,sus:true,sesa:true,
    syms:["colesterol","trigliceridios"],
    dose:{a:"10–40 mg 1×/dia à noite",max:"40 mg/dia (80 mg apenas em casos especiais)",p:"10–40 mg/dia (>10 anos)"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -645,7 +646,7 @@ const MEDS=[
    mec:"Bloqueio seletivo β1-adrenérgico — cardioprotetor pós-IAM, reduz mortalidade em IC"},
 
   {id:"salbutamol",pa:"Sulfato de Salbutamol",comerciais:["Aerolin","Ventolair","Salbutamol Genérico"],
-   classe:"Broncodilatador β2-agonista de Curta Ação (SABA)",cor:"#0891b2",fito:false,chronic:false,fp:true,sus:true,
+   classe:"Broncodilatador β2-agonista de Curta Ação (SABA)",cor:"#0891b2",fito:false,chronic:false,fp:true,sus:true,sesa:true,
    syms:["tosse_seca","tosse_catarro","coriza"],
    dose:{a:"Inalatório: 100–200 mcg (1–2 jatos) a cada 4–6h | Nebulização: 2,5 mg a cada 20 min (crise)",max:"8 jatos/dia (manutenção)",p:"100 mcg (1 jato) a cada 4–6h (>4 anos)"},
    via:"Inalatório / Nebulização",gS:true,lS:true,cS:true,al:["Taquicardia e tremor são efeitos comuns","Usar espaçador em crianças"],
@@ -653,7 +654,7 @@ const MEDS=[
    mec:"Agonista seletivo β2-adrenérgico → relaxamento da musculatura lisa brônquica → broncodilatação rápida (início em 5 min)"},
 
   {id:"beclometasona",pa:"Dipropionato de Beclometasona",comerciais:["Clenil","Beclometasona Genérico","Beclojet"],
-   classe:"Corticosteroide Inalatório · Anti-inflamatório Brônquico",cor:"#06b6d4",fito:false,chronic:true,fp:true,sus:true,
+   classe:"Corticosteroide Inalatório · Anti-inflamatório Brônquico",cor:"#06b6d4",fito:false,chronic:true,fp:true,sus:true,sesa:true,
    syms:["tosse_seca","tosse_catarro"],
    dose:{a:"Inalatório: 100–400 mcg 2×/dia (manutenção da asma)",max:"800 mcg/dia",p:"50–100 mcg 2×/dia (>5 anos)"},
    via:"Inalatório",gS:true,lS:true,cS:true,al:["Bochechar após cada uso (candidíase oral)","Usar espaçador em crianças","Efeito preventivo — não broncodilatador"],
@@ -661,7 +662,7 @@ const MEDS=[
    mec:"Inibe síntese de mediadores inflamatórios na mucosa brônquica → reduz edema, muco e hiper-reatividade"},
 
   {id:"ipratropi",pa:"Brometo de Ipratrópio",comerciais:["Atrovent","Ipratrópio Genérico"],
-   classe:"Broncodilatador Anticolinérgico · Anti-hipertensivo Pulmonar",cor:"#0369a1",fito:false,chronic:false,fp:true,sus:true,
+   classe:"Broncodilatador Anticolinérgico · Anti-hipertensivo Pulmonar",cor:"#0369a1",fito:false,chronic:false,fp:true,sus:true,sesa:true,
    syms:["tosse_seca","coriza"],
    dose:{a:"Inalatório: 40 mcg (2 jatos) a cada 6–8h | Nebulização: 0,25–0,5 mg a cada 6h",max:"conforme produto",p:"0,125 mg nebulização a cada 6–8h (>1 ano)"},
    via:"Inalatório / Nebulização",gS:true,lS:true,cS:true,al:["Pode causar boca seca e retenção urinária","Cuidado com glaucoma de ângulo fechado"],
@@ -696,7 +697,7 @@ const MEDS=[
    mec:"Inibe SGLT2 no túbulo proximal renal → glicosúria forçada → redução da glicemia, peso e PA; cardioprotetor e nefroprotetor"},
 
   {id:"alendronato",pa:"Alendronato de Sódio",comerciais:["Fosamax","Alendronato Genérico","Osteogenon"],
-   classe:"Bisfosfonato · Antiosteoporótico",cor:"#be185d",fito:false,chronic:true,fp:true,sus:true,
+   classe:"Bisfosfonato · Antiosteoporótico",cor:"#be185d",fito:false,chronic:true,fp:true,sus:true,sesa:true,
    syms:["osteoporose"],
    dose:{a:"70 mg 1×/semana em jejum (tomar com 200 mL de água, permanecer em pé 30 min)",max:"70 mg/semana",p:"Não recomendado <18 anos"},
    via:"Oral",gS:false,lS:false,cS:false,
@@ -705,7 +706,7 @@ const MEDS=[
    mec:"Inibe osteoclastos → reduz reabsorção óssea → aumento da densidade mineral óssea"},
 
   {id:"budesonida_nasal",pa:"Budesonida (Spray Nasal)",comerciais:["Rhinocort","Busonid","Budesonida Nasal Genérico"],
-   classe:"Corticosteroide Nasal · Anti-inflamatório",cor:"#7c3aed",fito:false,chronic:false,fp:true,sus:false,
+   classe:"Corticosteroide Nasal · Anti-inflamatório",cor:"#7c3aed",fito:false,chronic:false,fp:true,sus:false,sesa:true,
    syms:["coriza"],
    dose:{a:"64–256 mcg/dia (1–2 jatos em cada narina 1–2×/dia)",max:"256 mcg/dia",p:"64 mcg/dia (1 jato por narina 1×/dia — >6 anos)"},
    via:"Tópico nasal",gS:true,lS:true,cS:true,
@@ -722,6 +723,90 @@ const MEDS=[
    ci:"Asma brônquica, DPOC, BAV, bradicardia grave, insuf. cardíaca descompensada",
    mec:"Bloqueia receptores β-adrenérgicos no epitélio ciliar → reduz produção de humor aquoso → queda da pressão intraocular"},
 
+
+  /* ═══════════════════════════════════════
+     MEDICAMENTOS CEAF / SESA-PR
+  ═══════════════════════════════════════ */
+  {id:"levotiroxina",pa:"Levotiroxina Sódica",comerciais:["Puran T4","Levotiroxina Genérico","Euthyrox"],
+   classe:"Hormônio Tireoidiano · Reposição Hormonal",cor:"#06b6d4",fito:false,chronic:true,fp:false,sus:false,sesa:true,
+   syms:["hipotireoidismo","fraqueza"],
+   dose:{a:"25–200 mcg 1×/dia em jejum (30 min antes do café)",max:"200 mcg/dia",p:"Conforme peso e TSH"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Tomar sempre em jejum, 30 min antes do café","Separar ≥4h de cálcio, ferro e antiácidos","Monitorar TSH a cada 6–12 meses","Ajuste lento — não alterar dose sem TSH"],
+   ci:"Tireotoxicose não tratada, IAM recente, insuf. suprarrenal",
+   mec:"Reposição de T4 (tiroxina) → convertida em T3 ativo nos tecidos → regula metabolismo basal, FC, temperatura e desenvolvimento"},
+
+  {id:"montelucaste",pa:"Montelucaste Sódico",comerciais:["Singulair","Montelucaste Genérico","Brondilat"],
+   classe:"Antagonista de Leucotrienos · Anti-asmático · Anti-alérgico",cor:"#0891b2",fito:false,chronic:true,fp:false,sus:false,sesa:true,
+   syms:["asma","rinite","coriza","tosse_seca"],
+   dose:{a:"10 mg 1×/dia à noite",max:"10 mg/dia",p:"4 mg (<6 anos); 5 mg (6–14 anos) — à noite"},
+   via:"Oral",gS:false,lS:false,cS:true,
+   al:["Pode causar alterações de humor e comportamento — monitorar","Tomar à noite (pico de sintomas noturnos)"],
+   ci:"Hipersensibilidade",
+   mec:"Bloqueia receptor CysLT1 de leucotrienos → reduz broncoconstrição, secreção de muco e inflamação eosinofílica"},
+
+  {id:"formoterol",pa:"Fumarato de Formoterol",comerciais:["Foradil","Oxis Turbuhaler","Formoterol Genérico"],
+   classe:"Beta-2 agonista de Longa Ação (LABA) · Broncodilatador",cor:"#0284c7",fito:false,chronic:true,fp:false,sus:false,sesa:true,
+   syms:["asma","tosse_seca","tosse_catarro"],
+   dose:{a:"Inalatório: 12 mcg 2×/dia (manutenção); 12 mcg PRN em crise (máx 48 mcg/dia)",max:"48 mcg/dia",p:"12 mcg 2×/dia (≥5 anos)"},
+   via:"Inalatório",gS:false,lS:false,cS:true,
+   al:["NUNCA usar sem corticoide inalatório em asma","Monitorar FC — pode causar taquicardia","Associar sempre com beclometasona ou budesonida"],
+   ci:"Asma não controlada sem corticoide inalatório, hipersensibilidade",
+   mec:"Agonista β2 de longa duração (>12h) → broncodilatação sustentada; início em 1–3 min (duplo perfil rápido/longo)"},
+
+  {id:"insulina_glargina",pa:"Insulina Glargina 100 UI/mL",comerciais:["Lantus","Basaglar","Toujeo"],
+   classe:"Insulina Basal de Ação Prolongada · Antidiabético",cor:"#059669",fito:false,chronic:true,fp:false,sus:false,sesa:true,
+   syms:["diabetes"],
+   dose:{a:"Individualizada: 0,1–0,3 UI/kg/dia SC 1×/dia (mesmo horário)",max:"individualizada",p:"0,2–0,5 UI/kg/dia (DM1)"},
+   via:"Subcutâneo (SC)",gS:true,lS:true,cS:true,
+   al:["Não misturar na mesma seringa com outras insulinas","Monitorar glicemia em jejum","Guardar na geladeira — não congelar","Rotacionar local de aplicação"],
+   ci:"Hipoglicemia ativa, hipersensibilidade",
+   mec:"Insulina basal de ação ~24h — precipita no tecido SC em pH fisiológico, liberação lenta e contínua sem pico pronunciado"},
+
+  {id:"carbamazepina",pa:"Carbamazepina",comerciais:["Tegretol","Carbamazepina Genérico","Neurotin"],
+   classe:"Anticonvulsivante · Estabilizador de Humor",cor:"#7c3aed",fito:false,chronic:true,fp:false,sus:false,sesa:true,
+   syms:["epilepsia","dor_cronica"],
+   dose:{a:"Iniciar 100–200 mg 2×/dia; titular até 400–1600 mg/dia ÷ 2–4 doses",max:"1600 mg/dia",p:"10–20 mg/kg/dia ÷ 2–3 doses"},
+   via:"Oral",gS:false,lS:false,cS:true,
+   al:["Monitorar hemograma e função hepática","Interações graves com múltiplos fármacos (indutor CYP3A4)","Teratogênica — anticoncepção obrigatória","Risco de Stevens-Johnson (HLA-B*1502 em asiáticos)"],
+   ci:"BAV, porfiria, uso de IMAO, gestação (relativo), hipersensibilidade",
+   mec:"Bloqueia canais de Na⁺ voltagem-dependentes → estabiliza membranas neuronais e reduz disparo repetitivo"},
+
+  {id:"valproato",pa:"Ácido Valpróico / Valproato de Sódio",comerciais:["Depakote","Valproato Genérico","Epilenil"],
+   classe:"Anticonvulsivante · Estabilizador de Humor",cor:"#6d28d9",fito:false,chronic:true,fp:false,sus:false,sesa:true,
+   syms:["epilepsia"],
+   dose:{a:"15–60 mg/kg/dia ÷ 2–3 doses (iniciar com 250 mg 2×/dia)",max:"60 mg/kg/dia",p:"15–45 mg/kg/dia ÷ 2–3 doses"},
+   via:"Oral",gS:false,lS:false,cS:true,
+   al:["TERATOGÊNICO — anticoncepção obrigatória","Monitorar função hepática e amônia","Hepatotoxicidade grave — monitorar AST/ALT","Ganho de peso e queda de cabelo comuns"],
+   ci:"Hepatopatia, porfiria, gestação, pancreatite",
+   mec:"Inibe GABA-transaminase (eleva GABA) e bloqueia canais de Na⁺/Ca²⁺ → efeito anticonvulsivante amplo espectro"},
+
+  {id:"metotrexato_ceaf",pa:"Metotrexato",comerciais:["Metotrexato Genérico","Biotrexate","Ledertrexate"],
+   classe:"Imunossupressor · Antirreumático · Antimetabólito",cor:"#dc2626",fito:false,chronic:true,fp:false,sus:false,sesa:true,
+   syms:["artrite","dor_cronica"],
+   dose:{a:"7,5–25 mg 1×/semana (artrite); tomar ácido fólico 5 mg no dia seguinte",max:"25 mg/semana",p:"10–15 mg/m² 1×/semana"},
+   via:"Oral / IM / SC",gS:false,lS:false,cS:false,
+   al:["TERATOGÊNICO — anticoncepção obrigatória por 3 meses após suspensão","Monitorar hemograma, função hepática e renal a cada 1–3 meses","Suplementar ácido fólico 5 mg (reduz toxicidade)","Evitar AINEs concomitantes"],
+   ci:"Gestação, lactação, insuf. renal/hepática grave, imunossupressão grave",
+   mec:"Inibe diidrofolato redutase → bloqueia síntese de purinas e pirimidinas → reduz proliferação de células inflamatórias sinoviais"},
+
+  {id:"varfarina",pa:"Varfarina Sódica",comerciais:["Varfarina Genérico","Coumadin","Marevan"],
+   classe:"Anticoagulante Oral · Antagonista da Vitamina K",cor:"#ef4444",fito:false,chronic:true,fp:false,sus:false,sesa:true,
+   syms:["pressao_alta"],
+   dose:{a:"2–10 mg/dia (dose ajustada pelo INR — meta 2,0–3,0 na maioria das indicações)",max:"individualizada pelo INR",p:"Conforme INR — uso pediátrico especializado"},
+   via:"Oral",gS:false,lS:false,cS:false,
+   al:["⚠️ MONITORAR INR regularmente (semanal no início, mensal na estabilização)","Múltiplas interações alimentares (vitamina K) e medicamentosas","Risco de sangramento — orientar paciente sobre sinais","Não suspender abruptamente"],
+   ci:"Gestação (fetotóxico), sangramento ativo, insuf. hepática grave, HAS grave não controlada",
+   mec:"Inibe vitamina K epóxido redutase → impede ativação dos fatores de coagulação II, VII, IX, X → efeito anticoagulante"},
+
+  {id:"pramipexol",pa:"Cloridrato de Pramipexol",comerciais:["Mirapex","Pramipexol Genérico","Sifrol"],
+   classe:"Agonista Dopaminérgico · Antiparkinsoniano",cor:"#8b5cf6",fito:false,chronic:true,fp:false,sus:false,sesa:true,
+   syms:["fraqueza"],
+   dose:{a:"0,125 mg 3×/dia (inicial); titular até 0,5–1,5 mg 3×/dia em semanas",max:"4,5 mg/dia",p:"Não estabelecido em crianças"},
+   via:"Oral",gS:false,lS:false,cS:false,
+   al:["Hipotensão ortostática — levantar devagar","Sonolência diurna súbita (ataques de sono)","Comportamentos compulsivos (jogo, hipersexualidade)","Titulação lenta e gradual"],
+   ci:"Hipersensibilidade, insuf. renal grave (ajuste de dose)",
+   mec:"Agonista direto dos receptores D2/D3 dopaminérgicos → estimulação do estriado → melhora sintomas motores do Parkinson"},
   /* ═══════════════════════════════════════
      VITAMINAS & SUPLEMENTOS
   ═══════════════════════════════════════ */
@@ -1178,6 +1263,7 @@ const GROUPS=[
     {id:"dor_garganta",label:"Dor de Garganta"},{id:"tosse_seca",label:"Tosse Seca"},
     {id:"tosse_catarro",label:"Tosse com Catarro"},{id:"coriza",label:"Coriza / Nariz Entupido"},
     {id:"rinite",label:"Rinite Alérgica"},
+    {id:"asma",label:"Asma / Broncoespasmo"},
   ]},
   {label:"Digestivo",icon:"🫃",items:[
     {id:"nausea",label:"Náusea"},{id:"vomito",label:"Vômito"},
@@ -1199,6 +1285,9 @@ const GROUPS=[
     {id:"colesterol",label:"Colesterol Alto"},
     {id:"trigliceridios",label:"Triglicerídios Altos"},
     {id:"osteoporose",label:"Osteoporose"},
+    {id:"hipotireoidismo",label:"Hipotireoidismo"},
+    {id:"artrite",label:"Artrite / Reumatismo"},
+    {id:"epilepsia",label:"Epilepsia"},
   ]},
   {label:"Urinário & Imunidade",icon:"🛡️",items:[
     {id:"infeccao_urinaria",label:"Infecção Urinária"},
@@ -1223,7 +1312,7 @@ const GROUPS=[
 const ALL=GROUPS.flatMap(g=>g.items);
 
 /* ─── CHRONIC CONDITION IDS ─── */
-const CHRONIC_IDS=new Set(["pressao_alta","diabetes","colesterol","trigliceridios","osteoporose"]);
+const CHRONIC_IDS=new Set(["pressao_alta","diabetes","colesterol","trigliceridios","osteoporose","hipotireoidismo","artrite","epilepsia"]);
 
 /* ═══════════════════════════════════════ UTILS ═══════════════════════════════════════ */
 const rgb=h=>{try{return[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)).join(",");}catch{return"100,180,100";}};
@@ -1431,6 +1520,7 @@ function MedCard({m,score,max,f,sel,catalog=false,onSelectMed=null}){
             {m.chronic&&<span style={{fontSize:9,padding:"1px 5px",borderRadius:t["--radiusSm"],background:t["--chronicBg"],color:t["--chronicText"],border:`1px solid ${t["--chronicBrd"]}`,fontWeight:700,letterSpacing:".05em",textTransform:"uppercase",fontFamily:t["--sans"],flexShrink:0}}>🏥 crônico</span>}
             {m.fp&&<span className="fp-badge" style={{background:t["--fpBg"],color:t["--fpTxt"],border:`1px solid ${t["--fpBrd"]}`}}>🏛️ Farm. Popular</span>}
             {m.sus&&<span className="fp-badge" style={{background:t["--susBg"],color:t["--susTxt"],border:`1px solid ${t["--susBrd"]}`}}>💊 Farmácia Básica</span>}
+            {m.sesa&&<span className="fp-badge" style={{background:"rgba(3,105,161,.1)",color:"#0369a1",border:"1px solid rgba(3,105,161,.3)"}}>🏥 SESA</span>}
           </div>
           {m.fito&&m.planta&&<div style={{fontSize:9.5,color:t["--fito"],fontStyle:"italic",marginBottom:3,fontFamily:t["--sans"],opacity:.85}}>{m.planta} · {m.parte}</div>}
           <div style={{fontSize:10,color:t["--textMuted"],textTransform:"uppercase",letterSpacing:".06em",marginBottom:5,fontFamily:t["--sans"]}}>{m.classe}</div>
@@ -1609,6 +1699,7 @@ function CatalogView({f,t,theme,onSelectMed}){
       if(cFilter==="chronic"&&!m.chronic) return false;
       if(cFilter==="fp"&&!m.fp) return false;
       if(cFilter==="sus"&&!m.sus) return false;
+      if(cFilter==="sesa"&&!m.sesa) return false;
       if(cFilter==="vit"){const V=new Set(["vitd3","acido_folico","vitb12","complexo_b","calcio_vitd","magnesio","vite","biotina","vita","vitk","vitc","sulfato_fe","zinc"]);if(!V.has(m.id)) return false;}
       if(!q) return true;
       return m.pa.toLowerCase().includes(q)||m.classe.toLowerCase().includes(q)||m.comerciais.some(c=>c.toLowerCase().includes(q));
@@ -1622,7 +1713,7 @@ function CatalogView({f,t,theme,onSelectMed}){
         <p style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--sans"]}}>{MEDS.length} medicamentos · {MEDS.filter(m=>m.fito).length} fitoterápicos · {MEDS.filter(m=>m.chronic).length} para condições crônicas · Clique para detalhes</p>
       </div>
       <div style={{display:"flex",gap:7,flexWrap:"wrap",marginBottom:12,alignItems:"center"}}>
-        {[["all","Todos"],["conv","Convencionais"],["fito","🌿 Fitoterápicos"],["vit","💛 Vitaminas"],["fp","🏛️ Farmácia Popular"],["sus","💊 Farmácia Básica SUS"],["chronic","🏥 Crônicos"]].map(([id,lbl])=>(
+        {[["all","Todos"],["conv","Convencionais"],["fito","🌿 Fitoterápicos"],["sesa","🏥 SESA-PR"],["vit","💛 Vitaminas"],["fp","🏛️ Farmácia Popular"],["sus","💊 Farmácia Básica SUS"],["chronic","🏥 Crônicos"]].map(([id,lbl])=>(
           <button key={id} onClick={()=>setCFilter(id)} style={btnS(cFilter===id, id==="chronic"?t["--chronicBg"]:null)}>{lbl}</button>
         ))}
         <div style={{flex:1,minWidth:150}}>
@@ -1878,6 +1969,9 @@ function DrugDetailPanel({stack,onClose,onBack,onOpen,f}){
                 {med.chronic&&<span style={{fontSize:9.5,padding:"2px 7px",borderRadius:t["--radiusSm"],
                   background:t["--chronicBg"],color:t["--chronicText"],border:`1px solid ${t["--chronicBrd"]}`,
                   fontWeight:700,fontFamily:t["--sans"]}}>🏥 crônico</span>}
+                {med.sesa&&<span style={{fontSize:9.5,padding:"2px 7px",borderRadius:t["--radiusSm"],
+                  background:"rgba(3,105,161,.1)",color:"#0369a1",border:"1px solid rgba(3,105,161,.3)",
+                  fontWeight:700,fontFamily:t["--sans"]}}>🏥 SESA-PR</span>}
                 <span style={{fontSize:10.5,padding:"3px 9px",border:`1px solid ${t["--border"]}`,
                   borderRadius:t["--radiusSm"],color:t["--textMuted"],fontFamily:t["--sans"]}}>{safeVia}</span>
               </div>
@@ -2034,9 +2128,580 @@ function DrugDetailPanel({stack,onClose,onBack,onOpen,f}){
   );
 }
 
+
+/* ════════════════════════ SESA ESTOQUE VIEW ════════════════════════ */
+/* Dados reais — FE 10 RS CASCAVEL — Emissão 01/05/2026 (páginas 424-427) */
+const SESA_DEFAULT = {
+  data_relatorio: "01/05/2026",
+  fonte: "pdf_embutido",
+  farmacia: "FE 10 RS CASCAVEL",
+  medicamentos: [
+  {nome:'ACIDO URSODESOXICÓLICO 150 MG',apresentacao:'COMPRIMIDO',quantidade:1230},
+  {nome:'ACIDO URSODESOXICÓLICO 300 MG',apresentacao:'COMPRIMIDO',quantidade:3870},
+  {nome:'ACIDO ZOLEDRÔNICO 5MG/100ML',apresentacao:'FRASCO',quantidade:9},
+  {nome:'ACITRETINA 10mg',apresentacao:'CÁPSULA',quantidade:1250},
+  {nome:'ACITRETINA 25mg',apresentacao:'CÁPSULA',quantidade:600},
+  {nome:'ADALIMUMABE 40 MG - IDACIO (FRESENIUS)',apresentacao:'SERINGA',quantidade:662},
+  {nome:'ADALIMUMABE 40MG - XILBRILADA (PFIZER)',apresentacao:'SERINGA',quantidade:767},
+  {nome:'ALFA-ALGLICOSIDASE 50MG',apresentacao:'FRASCO',quantidade:57},
+  {nome:'ALFADORNASE 2,5 MG',apresentacao:'AMPOLA',quantidade:420},
+  {nome:'ALFAEPOETINA 4.000 U.I.',apresentacao:'FRASCO AMPOLA',quantidade:6550},
+  {nome:'ALFAEPOETINA 10.000 U.I.',apresentacao:'FRASCO AMPOLA',quantidade:15},
+  {nome:'ALFATALIGLICERASE 200 UI',apresentacao:'FRASCO AMPOLA',quantidade:71},
+  {nome:'ALFAVELAGLICERASE 400 U INJETAVEL',apresentacao:'FRASCO AMPOLA',quantidade:30},
+  {nome:'AMANTADINA 100 MG',apresentacao:'COMPRIMIDO',quantidade:9570},
+  {nome:'AMBRISENTANA 10 MG (POR COMP REVEST)',apresentacao:'COMPRIMIDO',quantidade:180},
+  {nome:'AMBRISENTANA 5 MG (POR COMP REVEST)',apresentacao:'COMPRIMIDO',quantidade:60},
+  {nome:'ATORVASTATINA 20 MG',apresentacao:'COMPRIMIDO',quantidade:11280},
+  {nome:'ATORVASTATINA 40 MG',apresentacao:'COMPRIMIDO',quantidade:134850},
+  {nome:'AZATIOPRINA 50MG',apresentacao:'COMPRIMIDO',quantidade:24830},
+  {nome:'BARICITINIBE 4MG',apresentacao:'COMPRIMIDO',quantidade:420},
+  {nome:'BETAINTERFERONA 1A 6.000.000 UI (30 MCG)',apresentacao:'FRASCO AMPOLA',quantidade:16},
+  {nome:'BETAINTERFERONA 1A 12.000.000 UI (44 MCG)',apresentacao:'SERINGA',quantidade:31},
+  {nome:'BOSENTANA 125 MG',apresentacao:'COMPRIMIDO',quantidade:120},
+  {nome:'BUDESONIDA 200 MCG',apresentacao:'CÁPSULA',quantidade:4200},
+  {nome:'BUDESONIDA 400 MCG',apresentacao:'CÁPSULA',quantidade:1740},
+  {nome:'CABERGOLINA 0,5 MG',apresentacao:'COMPRIMIDO',quantidade:872},
+  {nome:'CALCIPOTRIOL 50 MCG/G 30 G',apresentacao:'BISNAGA',quantidade:412},
+  {nome:'CALCITRIOL 0,25 MCG',apresentacao:'CÁPSULA',quantidade:11970},
+  {nome:'CERTOLIZUMABE PEGOL 200 MG/ML INJETÁVEL',apresentacao:'SERINGA',quantidade:246},
+  {nome:'CICLOFOSFAMIDA 50 MG',apresentacao:'DRAGEA',quantidade:360},
+  {nome:'CICLOSPORINA 25 MG',apresentacao:'CÁPSULA',quantidade:470},
+  {nome:'CICLOSPORINA 50 MG',apresentacao:'CÁPSULA',quantidade:3580},
+  {nome:'CICLOSPORINA 100 MG',apresentacao:'CÁPSULA',quantidade:3130},
+  {nome:'CICLOSPORINA 100 MG/ML 50 ML',apresentacao:'FRASCO',quantidade:21},
+  {nome:'CINACALCETE 30 MG',apresentacao:'COMPRIMIDO',quantidade:9570},
+  {nome:'CIPROFIBRATO 100 MG',apresentacao:'COMPRIMIDO',quantidade:2860},
+  {nome:'CLADRIBINA 10 MG',apresentacao:'COMPRIMIDO',quantidade:15},
+  {nome:'CLOBAZAM 10 MG',apresentacao:'COMPRIMIDO',quantidade:1880},
+  {nome:'CLOBETASOL 0,5 MG/G 30 G',apresentacao:'BISNAGA',quantidade:317},
+  {nome:'CLOPIDOGREL 75MG',apresentacao:'COMPRIMIDO',quantidade:11610},
+  {nome:'CLOZAPINA 100 MG',apresentacao:'COMPRIMIDO',quantidade:8430},
+  {nome:'CLOZAPINA 25 MG',apresentacao:'COMPRIMIDO',quantidade:570},
+  {nome:'COMPL ALIMENTAR 1-8 ANOS 500 GRAMAS',apresentacao:'LATA',quantidade:6},
+  {nome:'COMPL ALIMENTAR MAIOR 8 ANOS 500 GRAMAS',apresentacao:'LATA',quantidade:28},
+  {nome:'COMPL ALIMENTAR MENOR 1 ANO 500 GRAMAS',apresentacao:'LATA',quantidade:2},
+  {nome:'DAPAGLIFLOZINA 10MG',apresentacao:'COMPRIMIDO',quantidade:37980},
+  {nome:'DEFERASIROX 500 MG',apresentacao:'COMPRIMIDO',quantidade:1176},
+  {nome:'DEFERIPRONA 500MG',apresentacao:'COMPRIMIDO',quantidade:100},
+  {nome:'DESMOPRESSINA 0,1MG/ML NASAL 2,5ML',apresentacao:'FRASCO SPRAY',quantidade:102},
+  {nome:'DONEPEZILA 10MG',apresentacao:'COMPRIMIDO',quantidade:11910},
+  {nome:'DONEPEZILA 5MG',apresentacao:'COMPRIMIDO',quantidade:2320},
+  {nome:'ECULIZUMABE 300 MG',apresentacao:'FRASCO AMPOLA',quantidade:42},
+  {nome:'ELEXACAFTOR+TEZA+IVA 100+50+75+IVACAFTOR 150mg',apresentacao:'COMPRIMIDO',quantidade:588},
+  {nome:'ELEXACAFTOR+TEZA+IVA 50+25+37,5+IVACAFTOR 75mg',apresentacao:'COMPRIMIDO',quantidade:168},
+  {nome:'ELTROMBOPAGUE OLAMINA 25 MG',apresentacao:'N/D',quantidade:630},
+  {nome:'ENOXAPARINA SÓDICA 40mg/0,4mL SOL INJ (SER PREENC)',apresentacao:'SERINGA',quantidade:1075},
+  {nome:'ENOXAPARINA SÓDICA 60mg/0,6mL SOL INJ (SER PREENC)',apresentacao:'SERINGA',quantidade:80},
+  {nome:'ENTACAPONA 200 MG',apresentacao:'COMPRIMIDO',quantidade:5490},
+  {nome:'ETANERCEPTE 25MG',apresentacao:'FRASCO AMPOLA',quantidade:50},
+  {nome:'ETANERCEPTE 50 MG - BIO-MANGUINHOS',apresentacao:'SERINGA',quantidade:59},
+  {nome:'ETANERCEPTE 50 MG - ENBREL (PFIZER)',apresentacao:'SERINGA',quantidade:200},
+  {nome:'ETOSSUXIMIDA 50 MG/ML 120ML',apresentacao:'FRASCO',quantidade:41},
+  {nome:'EVEROLIMO 0,50 MG',apresentacao:'COMPRIMIDO',quantidade:445},
+  {nome:'EVEROLIMO 0,75 MG',apresentacao:'COMPRIMIDO',quantidade:165},
+  {nome:'EVEROLIMO 1 MG',apresentacao:'COMPRIMIDO',quantidade:90},
+  {nome:'FILGRASTIM 300MCG',apresentacao:'FRASCO',quantidade:27},
+  {nome:'FINGOLIMODE 0,5 MG',apresentacao:'CÁPSULA',quantidade:448},
+  {nome:'FLUTICASONA+UMECLIDINIO+VILANTEROL 30 DOSES',apresentacao:'FRASCO',quantidade:18},
+  {nome:'FORMOTEROL 12 MCG CAP INALANTE',apresentacao:'CÁPSULA',quantidade:1860},
+  {nome:'FORMOTEROL 12 MCG + BUDESONIDA 400 MCG CAP INALANTE 60 DOSES',apresentacao:'CÁPSULA',quantidade:2957},
+  {nome:'FORMOTEROL 6MCG + BUDESONIDA 200MCG CAP INALANTE 60 DOSES',apresentacao:'CÁPSULA',quantidade:461},
+  {nome:'FUMARATO DE DIMETILA 120 MG (POR CÁPSULA)',apresentacao:'CÁPSULA',quantidade:28},
+  {nome:'FUMARATO DE DIMETILA 240 MG (POR CÁPSULA)',apresentacao:'CÁPSULA',quantidade:952},
+  {nome:'GABAPENTINA 300 MG',apresentacao:'CÁPSULA',quantidade:420},
+  {nome:'GABAPENTINA 400 MG',apresentacao:'CÁPSULA',quantidade:180},
+  {nome:'GALANTAMINA ER 8MG (POR CAP DE LIB PROLON)',apresentacao:'CÁPSULA',quantidade:700},
+  {nome:'GALANTAMINA ER 16MG (POR CAP DE LIB PROLON)',apresentacao:'CÁPSULA',quantidade:308},
+  {nome:'GALANTAMINA ER 24MG (POR CAP DE LIB PROLON)',apresentacao:'CÁPSULA',quantidade:140},
+  {nome:'GLATIRAMER 40MG (POR SERINGA PREENCH) INJETÁVEL',apresentacao:'SERINGA',quantidade:495},
+  {nome:'GOLIMUMABE 50 MG INJETÁVEL (POR SERINGA PREENC)',apresentacao:'SERINGA',quantidade:110},
+  {nome:'GOSSERRELINA 10,80 MG',apresentacao:'SERINGA',quantidade:5},
+  {nome:'GOSSERRELINA 3,60MG',apresentacao:'FRASCO AMPOLA',quantidade:16},
+  {nome:'HIDROXICLOROQUINA 400 MG',apresentacao:'COMPRIMIDO',quantidade:16500},
+  {nome:'HIDROXIUREIA 500 MG',apresentacao:'CÁPSULA',quantidade:1570},
+  {nome:'HIDROXIUREIA 100 MG',apresentacao:'COMPRIMIDO',quantidade:180},
+  {nome:'IDURSULFASE ALFA 2MG/ML SOLUÇÃO INJETÁVEL (FRASCO 3 ML)',apresentacao:'FRASCO',quantidade:11},
+  {nome:'ILOPROSTA 10 MCG/ML 1 ML',apresentacao:'AMPOLA',quantidade:540},
+  {nome:'IMUNOGLOBULINA HUMANA 5,0 G',apresentacao:'FRASCO',quantidade:778},
+  {nome:'INFLIXIMABE 100 MG (BIO-MANGUINHOS)',apresentacao:'FRASCO AMPOLA',quantidade:309},
+  {nome:'INFLIXIMABE 100 MG - REMSIMA (CELLTRION)',apresentacao:'FRASCO AMPOLA',quantidade:1},
+  {nome:'INFLIXIMABE 100 MG - XILFYA (PFIZER)',apresentacao:'FRASCO AMPOLA',quantidade:56},
+  {nome:'INSULINA REFIL ANÁLOGA RÁPIDA (LISPRO-CEAF)',apresentacao:'N/D',quantidade:2862},
+  {nome:'ISOTRETINOINA 20 MG',apresentacao:'CÁPSULA',quantidade:2480},
+  {nome:'LAMOTRIGINA 25 MG',apresentacao:'COMPRIMIDO',quantidade:14460},
+  {nome:'LAMOTRIGINA 100 MG',apresentacao:'COMPRIMIDO',quantidade:50370},
+  {nome:'LANREOTIDA 120 MG',apresentacao:'SERINGA',quantidade:1},
+  {nome:'LEUPRORRELINA 3,75 MG',apresentacao:'FRASCO AMPOLA',quantidade:12},
+  {nome:'LEUPRORRELINA 45MG',apresentacao:'SERINGA',quantidade:1},
+  {nome:'LEVETIRACETAM 1.000 MG',apresentacao:'COMPRIMIDO',quantidade:1200},
+  {nome:'LEVETIRACETAM 100 MG/ML (FRASCO 150ML)',apresentacao:'FRASCO',quantidade:175},
+  {nome:'LEVETIRACETAM 250 MG',apresentacao:'COMPRIMIDO',quantidade:6720},
+  {nome:'LEVETIRACETAM 500 MG',apresentacao:'COMPRIMIDO',quantidade:3450},
+  {nome:'LEVETIRACETAM 750 MG',apresentacao:'COMPRIMIDO',quantidade:4680},
+  {nome:'MEMANTINA 10 MG',apresentacao:'COMPRIMIDO',quantidade:5700},
+  {nome:'MEPOLIZUMABE 100 MG',apresentacao:'SERINGA',quantidade:51},
+  {nome:'MESALAZINA 1000 MG',apresentacao:'SUPOSITÓRIO',quantidade:728},
+  {nome:'MESALAZINA 1G + DILUENTE 100ML',apresentacao:'FRASCO',quantidade:147},
+  {nome:'MESALAZINA 250 MG',apresentacao:'SUPOSITÓRIO',quantidade:1680},
+  {nome:'MESALAZINA 400 MG',apresentacao:'COMPRIMIDO',quantidade:570},
+  {nome:'MESALAZINA 500 MG',apresentacao:'COMPRIMIDO',quantidade:2250},
+  {nome:'MESALAZINA 800 MG',apresentacao:'COMPRIMIDO',quantidade:17580},
+  {nome:'METOTREXATO 25 MG/ML 2 ML',apresentacao:'FRASCO AMPOLA',quantidade:1095},
+  {nome:'METOTREXATO 2,5MG',apresentacao:'CÁPSULA',quantidade:10640},
+  {nome:'MICOFENOLATO DE MOFETILA 500 MG',apresentacao:'COMPRIMIDO',quantidade:13860},
+  {nome:'MICOFENOLATO DE SODIO 180 MG',apresentacao:'COMPRIMIDO',quantidade:1320},
+  {nome:'MICOFENOLATO DE SODIO 360 MG',apresentacao:'COMPRIMIDO',quantidade:14980},
+  {nome:'NAPROXENO 500 MG (POR COMPRIMIDO)',apresentacao:'COMPRIMIDO',quantidade:72},
+  {nome:'NATALIZUMABE 300MG',apresentacao:'FRASCO AMPOLA',quantidade:14},
+  {nome:'OCTREOTIDA LAR 20 MG',apresentacao:'FRASCO AMPOLA',quantidade:11},
+  {nome:'OCTREOTIDA LAR 30 MG',apresentacao:'FRASCO AMPOLA',quantidade:2},
+  {nome:'OLANZAPINA 10 MG',apresentacao:'COMPRIMIDO',quantidade:12690},
+  {nome:'OLANZAPINA 5 MG',apresentacao:'COMPRIMIDO',quantidade:1260},
+  {nome:'OMALIZUMABE 150 MG INJETÁVEL (POR SERINGA PREENC)',apresentacao:'SERINGA',quantidade:47},
+  {nome:'PAMIDRONATO 60 MG',apresentacao:'FRASCO AMPOLA',quantidade:3},
+  {nome:'PANCREATINA 10.000 UI',apresentacao:'CÁPSULA',quantidade:960},
+  {nome:'PANCREATINA 25.000 UI',apresentacao:'CÁPSULA',quantidade:6060},
+  {nome:'PARICALCITOL 5,0 MCG/ML 1ML',apresentacao:'AMPOLA',quantidade:1370},
+  {nome:'PENICILAMINA 250 MG',apresentacao:'CÁPSULA',quantidade:100},
+  {nome:'PIRIDOSTIGMINA 60MG',apresentacao:'COMPRIMIDO',quantidade:4860},
+  {nome:'PRAMIPEXOL 0,125 MG',apresentacao:'COMPRIMIDO',quantidade:940},
+  {nome:'PRAMIPEXOL 0,25 MG',apresentacao:'COMPRIMIDO',quantidade:13680},
+  {nome:'PRAMIPEXOL 1 MG',apresentacao:'COMPRIMIDO',quantidade:11720},
+  {nome:'PRIMIDONA 250 MG',apresentacao:'COMPRIMIDO',quantidade:420},
+  {nome:'QUETIAPINA 100MG',apresentacao:'COMPRIMIDO',quantidade:16380},
+  {nome:'QUETIAPINA 200MG',apresentacao:'COMPRIMIDO',quantidade:10080},
+  {nome:'QUETIAPINA 25 MG',apresentacao:'COMPRIMIDO',quantidade:10830},
+  {nome:'QUETIAPINA 300MG',apresentacao:'COMPRIMIDO',quantidade:3270},
+  {nome:'RALOXIFENO 60 MG',apresentacao:'COMPRIMIDO',quantidade:392},
+  {nome:'RASAGILINA 1 MG (POR COMPRIMIDO)',apresentacao:'COMPRIMIDO',quantidade:3600},
+  {nome:'RILUZOL 50 MG',apresentacao:'COMPRIMIDO',quantidade:672},
+  {nome:'RISANQUIZUMABE 150 MG CANETA',apresentacao:'N/D',quantidade:19},
+  {nome:'RISDIPLAM 0,75 MG/ML SOL. ORAL',apresentacao:'FRASCO',quantidade:19},
+  {nome:'RISEDRONATO 35MG COMP REV',apresentacao:'N/D',quantidade:492},
+  {nome:'RISPERIDONA 1 MG',apresentacao:'COMPRIMIDO',quantidade:650},
+  {nome:'RISPERIDONA 1 MG/ML 30 ML',apresentacao:'FRASCO',quantidade:448},
+  {nome:'RISPERIDONA 2 MG',apresentacao:'COMPRIMIDO',quantidade:1260},
+  {nome:'RISPERIDONA 3 MG',apresentacao:'COMPRIMIDO',quantidade:2520},
+  {nome:'RITUXIMABE 500 MG (BIO-MANGUINHOS)',apresentacao:'FRASCO AMPOLA',quantidade:6},
+  {nome:'RIVASTIGMINA 1,5 MG',apresentacao:'CÁPSULA',quantidade:1020},
+  {nome:'RIVASTIGMINA 18 MG (9,5mg/24h) ADESIVO TRANSDÉRMICO',apresentacao:'ADESIVO',quantidade:3570},
+  {nome:'RIVASTIGMINA 3 MG',apresentacao:'CÁPSULA',quantidade:900},
+  {nome:'RIVASTIGMINA 4,5 MG',apresentacao:'CÁPSULA',quantidade:120},
+  {nome:'RIVASTIGMINA 6 MG',apresentacao:'CÁPSULA',quantidade:120},
+  {nome:'RIVASTIGMINA 9 MG (4,6mg/24h) ADESIVO TRANSDÉRMICO',apresentacao:'ADESIVO',quantidade:60},
+  {nome:'ROMOSOZUMABE 90 MG/ML SOL. INJ 1,17 ML (105 MG)',apresentacao:'SERINGA',quantidade:25},
+  {nome:'SACARATO DE OXIDO FERRICO 100 MG 5ML',apresentacao:'FRASCO',quantidade:1046},
+  {nome:'SACUBITRIL VALSARTANA SÓDICA 100MG (49MG, 51MG)',apresentacao:'COMPRIMIDO',quantidade:17100},
+  {nome:'SACUBITRIL VALSARTANA SÓDICA 200MG (97MG, 103MG)',apresentacao:'COMPRIMIDO',quantidade:5220},
+  {nome:'SACUBITRIL VALSARTANA SÓDICA 50MG (24MG, 26MG)',apresentacao:'COMPRIMIDO',quantidade:11676},
+  {nome:'SAPROPTERINA 100 MG',apresentacao:'COMPRIMIDO',quantidade:1590},
+  {nome:'SECUQUINUMABE 150MG/ML SOLUÇÃO INJETÁVEL (SERINGA PREEN)',apresentacao:'SERINGA',quantidade:221},
+  {nome:'SEVELAMER 800 MG',apresentacao:'COMPRIMIDO',quantidade:29340},
+  {nome:'SILDENAFILA 20 MG',apresentacao:'COMPRIMIDO',quantidade:2145},
+  {nome:'SILDENAFILA 25 MG',apresentacao:'COMPRIMIDO',quantidade:1432},
+  {nome:'SILDENAFILA 50 MG',apresentacao:'COMPRIMIDO',quantidade:900},
+  {nome:'SIROLIMO 1 MG',apresentacao:'DRAGEA',quantidade:1540},
+  {nome:'SIROLIMO 2 MG',apresentacao:'DRAGEA',quantidade:340},
+  {nome:'SOMATROPINA 4 U.I',apresentacao:'FRASCO AMPOLA',quantidade:480},
+  {nome:'SOMATROPINA 12 UI (CEAF)',apresentacao:'FRASCO AMPOLA',quantidade:1617},
+  {nome:'SULFASSALAZINA 500 MG',apresentacao:'COMPRIMIDO',quantidade:6180},
+  {nome:'TACROLIMO 1 MG',apresentacao:'CÁPSULA',quantidade:29180},
+  {nome:'TACROLIMO 5 MG',apresentacao:'CÁPSULA',quantidade:1380},
+  {nome:'TERIFLUNOMIDA 14 MG (POR COMP)',apresentacao:'COMPRIMIDO',quantidade:90},
+  {nome:'TIOTRÓPIO 2,5MCG + OLODATEROL 2,5MCG 60 DOSES',apresentacao:'FRASCO',quantidade:419},
+  {nome:'TOBRAMICINA INALATÓRIA 300 MG 4ML a 5ML',apresentacao:'FRASCO AMPOLA',quantidade:168},
+  {nome:'TOCILIZUMABE 20 MG/ML INJETAVEL (FRASCO AMPOLA) 4 ML - 80 MG',apresentacao:'FRASCO AMPOLA',quantidade:579},
+  {nome:'TOFACITINIBE 5MG',apresentacao:'COMPRIMIDO',quantidade:3120},
+  {nome:'TOPIRAMATO 25 MG',apresentacao:'COMPRIMIDO',quantidade:1380},
+  {nome:'TOPIRAMATO 50 MG',apresentacao:'COMPRIMIDO',quantidade:840},
+  {nome:'TRIPTORRELINA 11,25MG',apresentacao:'FRASCO AMPOLA',quantidade:51},
+  {nome:'TRIPTORRELINA 3,75MG',apresentacao:'FRASCO AMPOLA',quantidade:2},
+  {nome:'UMECLIDÍNIO 62,5MCG + VILANTEROL 25MCG 30 DOSES',apresentacao:'FRASCO',quantidade:781},
+  {nome:'UPADACITINIBE 15 MG',apresentacao:'COMPRIMIDO',quantidade:4350},
+  {nome:'USTEQUINUMABE 45 MG/0,5ML SOL INJ (P/SER PREENC)',apresentacao:'FRASCO AMPOLA',quantidade:100},
+  {nome:'VEDOLIZUMABE 300MG',apresentacao:'FRASCO',quantidade:72},
+  {nome:'VIGABATRINA 500 MG',apresentacao:'COMPRIMIDO',quantidade:1500},
+  {nome:'ZIPRASIDONA 40MG',apresentacao:'CÁPSULA',quantidade:980},
+  {nome:'ZIPRASIDONA 80MG',apresentacao:'CÁPSULA',quantidade:1764}
+]
+};
+
+const PDF_SESA_URL = "https://www.documentador.pr.gov.br/documentador/pub.do?action=d&uuid=@gtf-escriba-sesa@/Documentador/Acervo/ASSIST%C3%8ANCIA%20FARMAC%C3%8AUTICA/DOCUMENTOS%20P%C3%9ABLICOS/ESTOQUE%20MEDICAMENTOS%20CEAF%20-%20LEI%2014654-23/RelEmitirEstoqueMedicamentoCeaf-atual.pdf";
+
+/* Parse plain text pasted from the PDF */
+function parseSesaText(raw) {
+  const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const meds = [];
+  let i = 0;
+  while (i < lines.length) {
+    const l = lines[i];
+    /* skip header/footer lines */
+    if (/^(farmácia|farmacia|página|pagina|data|relatório|relatorio|código|codigo|\/|\d{2}\/\d{2}\/\d{4})/i.test(l)) { i++; continue; }
+    /* line with a number at the end = qty */
+    const qtyMatch = l.match(/^(.+?)\s+(\d[\d.,]*)$/);
+    if (qtyMatch) {
+      const nome = qtyMatch[1].trim();
+      const qty  = parseInt(qtyMatch[2].replace(/[.,]/g,""), 10);
+      /* next line may be validade */
+      let val = "";
+      if (i+1 < lines.length && /^\d{2}\/\d{4}/.test(lines[i+1])) { val = lines[i+1].trim(); i++; }
+      if (nome.length > 4) meds.push({nome, quantidade: qty, validade: val, apresentacao:""});
+      i++; continue;
+    }
+    /* Try to find qty on next line */
+    if (i+1 < lines.length) {
+      const nextQty = lines[i+1].match(/^(\d[\d.,]*)$/);
+      if (nextQty) {
+        const nome = l.trim();
+        const qty  = parseInt(nextQty[1].replace(/[.,]/g,""), 10);
+        let val = "";
+        if (i+2 < lines.length && /^\d{2}\/\d{4}/.test(lines[i+2])) { val = lines[i+2].trim(); i++; }
+        if (nome.length > 4) meds.push({nome, quantidade: qty, validade: val, apresentacao:""});
+        i += 2; continue;
+      }
+    }
+    i++;
+  }
+  return meds;
+}
+
+function SesaView({f, t, theme, onSelectMed}) {
+  const isInd = theme === "industrial";
+  const [status,    setStatus]    = useState("idle");
+  const [sesaData,  setSesaData]  = useState(() => {
+    try { const c = localStorage.getItem("sesa_v3"); if(c){ const p=JSON.parse(c); if(Date.now()-p.ts<14*86400000) return p.data; } } catch{}
+    return SESA_DEFAULT;  /* usa dados embutidos como referência */
+  });
+  const [lastTs,    setLastTs]    = useState(() => {
+    try { const c=localStorage.getItem("sesa_v3"); if(c) return JSON.parse(c).ts; } catch{}
+    return null;  /* null = exibir data do relatório embutido */
+  });
+  const [apiKey,    setApiKey]    = useState(() => localStorage.getItem("pharma_api_key")||"");
+  const [showKey,   setShowKey]   = useState(false);
+  const [showPaste, setShowPaste] = useState(false);
+  const [pasteText, setPasteText] = useState("");
+  const [search,    setSearch]    = useState("");
+
+  const save = (data) => {
+    const obj = {data, ts: Date.now()};
+    localStorage.setItem("sesa_v3", JSON.stringify(obj));
+    setSesaData(data); setLastTs(Date.now());
+  };
+
+  /* ── Load via Claude API ── */
+  const loadFromAI = async () => {
+    const key = apiKey.trim();
+    if (!key) { setShowKey(true); return; }
+    setStatus("loading");
+    try {
+      let pdfB64 = null;
+      try {
+        const r = await fetch("https://corsproxy.io/?" + encodeURIComponent(PDF_SESA_URL));
+        if (r.ok) {
+          const buf = await r.arrayBuffer();
+          const bytes = new Uint8Array(buf);
+          let bin = ""; bytes.forEach(b => bin += String.fromCharCode(b));
+          pdfB64 = btoa(bin);
+        }
+      } catch(e) { console.log("proxy failed:", e.message); }
+
+      const PROMPT = "Extraia apenas os medicamentos da farmacia FE 10 RS CASCAVEL (paginas 424 a 427). Para cada item retorne nome completo, apresentacao (concentracao e forma farmaceutica), quantidade em estoque e validade. Responda SOMENTE com JSON: {\"data_relatorio\":\"DD/MM/AAAA\",\"medicamentos\":[{\"nome\":\"...\",\"apresentacao\":\"...\",\"quantidade\":0,\"validade\":\"MM/AAAA\"}]}";
+
+      const content = pdfB64
+        ? [{type:"document",source:{type:"base64",media_type:"application/pdf",data:pdfB64}},{type:"text",text:PROMPT}]
+        : PROMPT + " URL: " + PDF_SESA_URL;
+
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:4096,messages:[{role:"user",content}]})
+      });
+      if (!res.ok) throw new Error("API " + res.status);
+      const d   = await res.json();
+      const txt = d.content.map(b=>b.text||"").join("");
+      const parsed = JSON.parse(txt.replace(/```json|```/g,"").trim());
+      if (parsed.erro) throw new Error(parsed.erro);
+      save(parsed); setStatus("done");
+    } catch(e) { setStatus("error:" + e.message); }
+  };
+
+  /* ── Parse pasted text ── */
+  const handlePaste = () => {
+    if (!pasteText.trim()) return;
+    const meds = parseSesaText(pasteText);
+    if (meds.length === 0) { alert("Nenhum medicamento encontrado. Verifique o formato do texto colado."); return; }
+    save({data_relatorio: new Date().toLocaleDateString("pt-BR"), fonte:"texto_manual", medicamentos: meds});
+    setShowPaste(false); setPasteText(""); setStatus("done");
+  };
+
+  const filtered = (sesaData?.medicamentos||[]).filter(m =>
+    !search || m.nome.toLowerCase().includes(search.toLowerCase()) ||
+    (m.apresentacao||"").toLowerCase().includes(search.toLowerCase())
+  );
+
+  /* Try to match a SESA med to our DB */
+  const matchDB = (nome) => {
+    const n = nome.toLowerCase().replace(/\s+/g," ").trim();
+    const words = n.split(" ").slice(0,2);
+    return MEDS.find(m => {
+      const pa = m.pa.toLowerCase();
+      return words.every(w => w.length>3 && pa.includes(w)) ||
+             (m.comerciais||[]).some(c => n.includes(c.toLowerCase()));
+    });
+  };
+
+  const inp = {background:t["--surface2"],border:`1px solid ${t["--border"]}`,borderRadius:t["--radiusSm"],padding:"7px 10px",fontSize:12,color:t["--text"],outline:"none",fontFamily:t["--sans"],width:"100%"};
+  const loading = status === "loading";
+
+  return (
+    <div style={{animation:"pgFade .3s ease"}}>
+
+      {/* ── Header ── */}
+      <div style={{padding:"16px",marginBottom:16,borderRadius:t["--radius"],
+        background:"linear-gradient(135deg,#0c4a6e,#0369a1)",color:"white"}}>
+        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+          <span style={{fontSize:24}}>📦</span>
+          <div>
+            <div style={{fontWeight:700,fontSize:15,fontFamily:t["--sans"]}}>Estoque SESA-PR</div>
+            <div style={{fontSize:11,opacity:.85,fontFamily:t["--sans"]}}>CEAF — Lei 14.654/23 · Atualizado quinzenalmente</div>
+          </div>
+        </div>
+        <div style={{fontSize:12,opacity:.95,fontFamily:t["--sans"],
+          padding:"8px 11px",background:"rgba(255,255,255,.15)",borderRadius:t["--radiusSm"],marginBottom:12,
+          display:"flex",alignItems:"center",gap:7}}>
+          <span>📍</span>
+          <span><strong>Farmácia: FE 10 RS CASCAVEL</strong> · páginas 424–427 do relatório</span>
+        </div>
+        <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+          <button onClick={loadFromAI} disabled={loading}
+            style={{padding:"7px 14px",borderRadius:t["--radiusSm"],fontFamily:t["--sans"],fontSize:11.5,
+              fontWeight:700,cursor:loading?"not-allowed":"pointer",
+              background:loading?"rgba(255,255,255,.25)":"rgba(255,255,255,.95)",
+              color:"#0369a1",border:"none",display:"flex",alignItems:"center",gap:6}}>
+            {loading?"⏳ Carregando...":"🤖 Carregar via IA"}
+          </button>
+          <button onClick={()=>setShowPaste(p=>!p)}
+            style={{padding:"7px 14px",borderRadius:t["--radiusSm"],fontFamily:t["--sans"],fontSize:11.5,
+              fontWeight:600,cursor:"pointer",background:"rgba(255,255,255,.18)",
+              color:"white",border:"1px solid rgba(255,255,255,.4)"}}>
+            📋 Colar texto do PDF
+          </button>
+          <a href={PDF_SESA_URL} target="_blank" rel="noopener"
+            style={{padding:"7px 14px",borderRadius:t["--radiusSm"],fontFamily:t["--sans"],fontSize:11.5,
+              fontWeight:600,textDecoration:"none",cursor:"pointer",
+              background:"rgba(255,255,255,.1)",color:"white",border:"1px solid rgba(255,255,255,.3)"}}>
+            📄 Abrir PDF
+          </a>
+        </div>
+        <div style={{fontSize:10,opacity:.7,fontFamily:t["--sans"],marginTop:8}}>
+          {lastTs
+            ? (sesaData?.fonte==="texto_manual"?"✏️ Inserido manualmente — ":"🔄 Atualizado em ") + new Date(lastTs).toLocaleString("pt-BR")
+            : sesaData?.fonte==="pdf_embutido"
+              ? "📋 Dados de referência embutidos — Emissão: " + sesaData.data_relatorio
+              : ""}
+          {sesaData?.data_relatorio && lastTs
+            ? " · Relatório: " + sesaData.data_relatorio
+            : ""}
+        </div>
+      </div>
+
+      {/* ── API key ── */}
+      {showKey && (
+        <div style={{marginBottom:14,padding:"12px 14px",borderRadius:t["--radiusSm"],
+          background:t["--warnBg"],border:`1px solid ${t["--warnBrd"]}`}}>
+          <div style={{fontSize:12,color:t["--warnTxt"],fontFamily:t["--sans"],marginBottom:7,fontWeight:600}}>
+            🔑 Chave API Anthropic para carregar via IA:
+          </div>
+          <div style={{display:"flex",gap:6}}>
+            <input type="password" placeholder="sk-ant-..." value={apiKey}
+              onChange={e=>{setApiKey(e.target.value);localStorage.setItem("pharma_api_key",e.target.value);}}
+              style={{...inp,flex:1}}/>
+            <button onClick={()=>{setShowKey(false);loadFromAI();}}
+              style={{padding:"7px 12px",background:t["--accentBg"],border:`1px solid ${t["--accentBrd"]}`,
+                borderRadius:t["--radiusSm"],color:t["--accentText"],cursor:"pointer",
+                fontFamily:t["--sans"],fontSize:12,fontWeight:600}}>Carregar</button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Paste area ── */}
+      {showPaste && (
+        <div style={{marginBottom:14,padding:"14px",borderRadius:t["--radius"],
+          background:t["--surface2"],border:`1.5px solid ${t["--border"]}`}}>
+          <div style={{fontSize:12.5,fontWeight:700,color:t["--text"],fontFamily:t["--sans"],marginBottom:6}}>
+            📋 Cole o texto copiado das páginas 424–427 do PDF
+          </div>
+          <div style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--sans"],marginBottom:8,lineHeight:1.6}}>
+            Abra o PDF, navegue até as páginas 424–427 (FE 10 RS CASCAVEL), selecione e copie o texto, depois cole abaixo:
+          </div>
+          <textarea value={pasteText} onChange={e=>setPasteText(e.target.value)}
+            rows={10} placeholder={"ADALIMUMABE 40MG/0,8ML INJ SOL\n150\n10/2025\nATENOLOL 25MG COMP\n2500\n06/2026\n..."}
+            style={{...inp,resize:"vertical",lineHeight:1.5,fontFamily:"monospace",fontSize:11}}/>
+          <div style={{display:"flex",gap:7,marginTop:8}}>
+            <button onClick={handlePaste}
+              style={{padding:"8px 16px",background:t["--accentBg"],border:`1px solid ${t["--accentBrd"]}`,
+                borderRadius:t["--radiusSm"],color:t["--accentText"],cursor:"pointer",
+                fontFamily:t["--sans"],fontSize:12,fontWeight:700}}>✓ Importar Lista</button>
+            <button onClick={()=>{setShowPaste(false);setPasteText("");}}
+              style={{padding:"8px 14px",background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,
+                borderRadius:t["--radiusSm"],color:t["--dangerTxt"],cursor:"pointer",
+                fontFamily:t["--sans"],fontSize:12}}>Cancelar</button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Notice when using embedded data ── */}
+      {!lastTs && sesaData?.fonte==="pdf_embutido" && (
+        <div style={{marginBottom:12,padding:"9px 13px",borderRadius:t["--radiusSm"],
+          background:"rgba(3,105,161,.07)",border:"1px solid rgba(3,105,161,.25)",
+          fontSize:11,color:"#0369a1",fontFamily:t["--sans"],lineHeight:1.65}}>
+          📋 <strong>Dados de referência:</strong> lista embutida com {SESA_DEFAULT.medicamentos.length} itens (emissão 01/05/2026).
+          Clique em <strong>🔄 Atualizar</strong> para carregar o estoque mais recente diretamente do site da SESA/PR.
+        </div>
+      )}
+      {/* ── Error ── */}
+      {status.startsWith("error") && (
+        <div style={{marginBottom:14,padding:"10px 13px",borderRadius:t["--radiusSm"],
+          background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,
+          fontSize:11.5,color:t["--dangerTxt"],fontFamily:t["--sans"],lineHeight:1.65}}>
+          ⚠️ Não foi possível carregar via IA ({status.replace("error:","")}).<br/>
+          Use <strong>📋 Colar texto do PDF</strong> como alternativa: abra o PDF, vá até as páginas 424–427 e cole o texto aqui.
+        </div>
+      )}
+
+      {/* ── No data yet ── */}
+      {!sesaData && !loading && (
+        <div style={{textAlign:"center",padding:"40px 20px",animation:"pgFade .3s ease"}}>
+          <div style={{fontSize:32,marginBottom:14}}>📋</div>
+          <div style={{fontSize:14,fontWeight:700,color:t["--textMuted"],fontFamily:t["--sans"],marginBottom:8}}>
+            Nenhum dado carregado ainda
+          </div>
+          <div style={{fontSize:12,color:t["--textDim"],fontFamily:t["--sans"],lineHeight:1.7,maxWidth:320,margin:"0 auto",marginBottom:20}}>
+            Para ver o estoque real de Cascavel (FE 10 RS CASCAVEL), use uma das opções abaixo:
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:10,maxWidth:300,margin:"0 auto",textAlign:"left"}}>
+            {[
+              ["🤖 Carregar via IA","Requer chave API Anthropic. O sistema busca e interpreta o PDF automaticamente."],
+              ["📋 Colar texto do PDF","Copie o texto das páginas 424–427 e cole diretamente. Sem necessidade de API."],
+              ["📄 Abrir PDF","Acesse o relatório completo no site da SESA/PR para consulta manual."],
+            ].map(([title, desc]) => (
+              <div key={title} style={{padding:"10px 13px",borderRadius:t["--radiusSm"],
+                background:t["--surface2"],border:`1px solid ${t["--border"]}`}}>
+                <div style={{fontSize:12,fontWeight:700,color:t["--text"],fontFamily:t["--sans"],marginBottom:3}}>{title}</div>
+                <div style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--sans"],lineHeight:1.5}}>{desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Loaded data ── */}
+      {sesaData && sesaData.medicamentos && (
+        <>
+          {/* summary */}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",
+            marginBottom:12,flexWrap:"wrap",gap:8}}>
+            <div>
+              <div style={{fontSize:14,fontWeight:700,color:t["--text"],fontFamily:t["--sans"]}}>
+                FE 10 RS CASCAVEL — Estoque Atual
+              </div>
+              <div style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--sans"]}}>
+                {sesaData.medicamentos.length} itens · {sesaData.medicamentos.filter(m=>m.quantidade>0).length} em estoque · {sesaData.medicamentos.filter(m=>!m.quantidade||m.quantidade<=0).length} zerados
+              </div>
+            </div>
+            <div style={{display:"flex",gap:14}}>
+              <div style={{textAlign:"center"}}>
+                <div style={{fontSize:20,fontWeight:700,color:"#059669",fontFamily:"monospace"}}>
+                  {sesaData.medicamentos.filter(m=>m.quantidade>0).length}
+                </div>
+                <div style={{fontSize:9.5,color:t["--textMuted"],fontFamily:t["--sans"],textTransform:"uppercase"}}>Em estoque</div>
+              </div>
+              <div style={{textAlign:"center"}}>
+                <div style={{fontSize:20,fontWeight:700,color:"#dc2626",fontFamily:"monospace"}}>
+                  {sesaData.medicamentos.filter(m=>!m.quantidade||m.quantidade<=0).length}
+                </div>
+                <div style={{fontSize:9.5,color:t["--textMuted"],fontFamily:t["--sans"],textTransform:"uppercase"}}>Zerados</div>
+              </div>
+            </div>
+          </div>
+
+          {/* search */}
+          <input type="text" placeholder="🔍  Buscar medicamento..." value={search}
+            onChange={e=>setSearch(e.target.value)} style={{...inp,marginBottom:12}}/>
+
+          {/* list */}
+          <div style={{display:"flex",flexDirection:"column",gap:7}}>
+            {filtered.map((med,i) => {
+              const inStock = med.quantidade > 0;
+              const dbMed   = matchDB(med.nome);
+              const r       = dbMed ? [1,3,5].map(x=>parseInt((dbMed.cor||"#10b981").slice(x,x+2),16)).join(",") : "5,150,105";
+              return (
+                <div key={i}
+                  onClick={dbMed&&onSelectMed ? ()=>onSelectMed(dbMed) : undefined}
+                  style={{padding:"11px 14px",borderRadius:t["--radiusSm"],
+                    background:inStock?`rgba(${r},.05)`:t["--surface2"],
+                    border:inStock?`1.5px solid rgba(${r},.25)`:`1px solid ${t["--border"]}`,
+                    cursor:dbMed&&onSelectMed?"pointer":"default",
+                    transition:"all .16s",opacity:inStock?1:.7}}
+                  onMouseEnter={e=>{if(dbMed)e.currentTarget.style.filter="brightness(.96)";}}
+                  onMouseLeave={e=>{e.currentTarget.style.filter="none";}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10}}>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontFamily:"'JetBrains Mono',monospace",fontWeight:700,fontSize:13,
+                        color:inStock?(dbMed?dbMed.cor:"#059669"):t["--textMuted"],
+                        marginBottom:med.apresentacao?3:0,lineHeight:1.3}}>
+                        {med.nome}
+                      </div>
+                      {med.apresentacao && (
+                        <div style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--sans"]}}>{med.apresentacao}</div>
+                      )}
+                      {dbMed && onSelectMed && (
+                        <div style={{fontSize:10,color:dbMed.cor,fontFamily:t["--sans"],marginTop:3}}>
+                          → {dbMed.pa} · clique para detalhes
+                        </div>
+                      )}
+                    </div>
+                    <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
+                      <span style={{fontSize:12,fontWeight:700,padding:"3px 9px",
+                        borderRadius:t["--radiusSm"],fontFamily:"monospace",
+                        background:inStock?"rgba(5,150,105,.12)":"rgba(220,38,38,.08)",
+                        color:inStock?"#059669":"#dc2626",whiteSpace:"nowrap"}}>
+                        {inStock ? `✅ ${med.quantidade.toLocaleString("pt-BR")} un.` : "❌ Sem estoque"}
+                      </span>
+                      {med.validade && (
+                        <span style={{fontSize:10,color:t["--textDim"],fontFamily:t["--sans"]}}>
+                          Val: {med.validade}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {filtered.length === 0 && search && (
+            <div style={{textAlign:"center",padding:"30px",color:t["--textMuted"],fontFamily:t["--sans"],fontSize:12}}>
+              Nenhum medicamento encontrado para "{search}"
+            </div>
+          )}
+        </>
+      )}
+
+      <div style={{marginTop:18,padding:"10px 13px",borderRadius:t["--radiusSm"],
+        background:t["--warnBg"],border:`1px solid ${t["--warnBrd"]}`,
+        fontSize:11,color:t["--warnTxt"],lineHeight:1.7,fontFamily:t["--sans"]}}>
+        ⚠️ Medicamentos CEAF exigem cadastro no sistema SESA-PR e documentação clínica (laudo, receita especial, exames). Atualização quinzenal às segundas e quintas-feiras.
+      </div>
+      <div style={{height:20}}/>
+    </div>
+  );
+}
+
 function FarmaciaONG(){
   const[theme,setTheme]=useState("light");
-  const[mode,setMode]=useState("symptoms");
+  const[mode,setMode]=useState("symptoms"); // symptoms | catalog | sesa
   const[tab,setTab]=useState("conv");
   const[medStack,setMedStack]=useState([]);
   const openMedDetail =useCallback(med=>setMedStack(p=>[...p,med]),[]);
@@ -2205,12 +2870,38 @@ function FarmaciaONG(){
                   <div style={{fontSize:10,color:t["--textDim"],fontFamily:t["--sans"]}}>{mode==="catalog"?`${MEDS.length} no catálogo · clique para voltar`:`Ver ${MEDS.length} medicamentos cadastrados`}</div>
                 </div>
               </button>
+              {/* ── SESA nav button ── */}
+              <button
+                className="pg-nav"
+                onClick={()=>setMode(m=>m==="sesa"?"symptoms":"sesa")}
+                style={{
+                  width:"100%",padding:"12px 15px",
+                  background:mode==="sesa"?"rgba(3,105,161,.12)":t["--surface"],
+                  border:"none",cursor:"pointer",
+                  display:"flex",alignItems:"center",gap:10,
+                  transition:"all .18s",fontFamily:t["--sans"],
+                  borderTop:mode==="sesa"?"2px solid rgba(3,105,161,.5)":"1px solid "+t["--border"],
+                }}>
+                <div style={{width:32,height:32,borderRadius:t["--radiusSm"],
+                  background:mode==="sesa"?"#0369a1":t["--surface3"],
+                  display:"flex",alignItems:"center",justifyContent:"center",
+                  fontSize:15,flexShrink:0,transition:"background .18s"}}>📦</div>
+                <div style={{textAlign:"left"}}>
+                  <div style={{fontSize:11.5,fontWeight:700,letterSpacing:".05em",
+                    textTransform:"uppercase",
+                    color:mode==="sesa"?"#0369a1":t["--textMuted"],
+                    fontFamily:t["--sans"]}}>Estoque SESA</div>
+                  <div style={{fontSize:10,color:t["--textDim"],fontFamily:t["--sans"]}}>
+                    {mode==="sesa"?"CEAF/SESA-PR · clique para voltar":`CEAF · ${MEDS.filter(m=>m.sesa).length} medicamentos`}
+                  </div>
+                </div>
+              </button>
             </div>
           </div>
 
           {/* RIGHT PANEL */}
           <div className="pg-sc" onClick={()=>{if(isMobile&&sidebarOpen)setSidebarOpen(false);}} style={{flex:1,overflowY:"auto",padding:"18px 20px"}}>
-            {mode==="catalog"?<CatalogView f={f} t={t} theme={theme} onSelectMed={openMedDetail}/>
+            {mode==="sesa"?<SesaView f={f} t={t} theme={theme} onSelectMed={openMedDetail}/>:mode==="catalog"?<CatalogView f={f} t={t} theme={theme} onSelectMed={openMedDetail}/>
             :!sel.size?<Empty t={t}/>
             :(
               <>
