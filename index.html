@@ -1736,13 +1736,14 @@ function CatalogView({f,t,theme,onSelectMed}){
 }
 
 /* ════════════════════════ TAB BAR ════════════════════════ */
-function TabBar({tab,setTab,todosCount,convCount,fitoCount,vitCount,fpCount,susCount,t,theme}){
+function TabBar({tab,setTab,todosCount,convCount,fitoCount,vitCount,sesaTabCount,fpCount,susCount,t,theme}){
   const isInd=theme==="industrial";
   const tabs=[
     {id:"todos",lbl:"Todos",              ico:"◉",  cnt:todosCount,bg:t["--surface3"],  clr:t["--text"],       brd:t["--border2"]},
     {id:"conv", lbl:"Medicamentos",       ico:"💊", cnt:convCount, bg:t["--accentBg"],  clr:t["--accentText"], brd:t["--accentBrd"]},
     {id:"fito", lbl:"Fitoterápicos",       ico:"🌿", cnt:fitoCount, bg:t["--fitoBg"],   clr:t["--fitoText"],  brd:t["--fitoBrd"]},
-    {id:"vit",  lbl:"Vitaminas",           ico:"💛", cnt:vitCount,  bg:"#fef3c7",       clr:"#92400e",        brd:"#fcd34d"},
+    {id:"vit",      lbl:"Vitaminas",       ico:"💛", cnt:vitCount,      bg:"#fef3c7",       clr:"#92400e",        brd:"#fcd34d"},
+    {id:"sesa_tab", lbl:"SESA-PR",         ico:"📦", cnt:sesaTabCount,  bg:"rgba(3,105,161,.1)",clr:"#0c4a6e",   brd:"rgba(3,105,161,.4)"},
     {id:"fp",   lbl:"Farmácia Popular",    ico:"🏛️", cnt:fpCount,   bg:t["--fpBg"]||t["--blueBg"], clr:t["--fpTxt"]||t["--blueTxt"], brd:t["--fpBrd"]||t["--blue"]},
     {id:"sus",  lbl:"Farmácia Básica SUS", ico:"🏥", cnt:susCount,  bg:t["--susBg"]||t["--accentBg"], clr:t["--susTxt"]||t["--accentText"], brd:t["--susBrd"]||t["--accentBrd"]},
   ];
@@ -1782,6 +1783,19 @@ function VitEmpty({t}){
       <p style={{fontSize:13,fontWeight:600,color:"#92400e",fontFamily:t["--sans"]}}>Nenhuma vitamina para estes sintomas</p>
       <p style={{fontSize:11.5,color:t["--textMuted"],lineHeight:1.65,maxWidth:240,textAlign:"center",fontFamily:t["--sans"]}}>
         Use o grupo <strong>💊 Vitaminas & Suplementos</strong> no menu lateral para selecionar a condição adequada.
+      </p>
+    </div>
+  );
+}
+function SesaTabEmpty({t}){
+  return(
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+      padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}>
+      <div style={{width:52,height:52,borderRadius:"50%",background:"rgba(3,105,161,.1)",
+        border:"1.5px solid rgba(3,105,161,.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>📦</div>
+      <p style={{fontSize:13,fontWeight:600,color:"#0c4a6e",fontFamily:t["--sans"]}}>Nenhum medicamento CEAF para estes sintomas</p>
+      <p style={{fontSize:11.5,color:t["--textMuted"],lineHeight:1.65,maxWidth:260,textAlign:"center",fontFamily:t["--sans"]}}>
+        Estes sintomas não possuem correspondência na lista SESA. Veja as abas Medicamentos ou Farmácia Popular.
       </p>
     </div>
   );
@@ -2033,6 +2047,49 @@ function DrugDetailPanel({stack,onClose,onBack,onOpen,f}){
               </div>
             </PanelSection>
           )}
+
+          {/* SESA Stock availability */}
+          {(()=>{
+            const words=(med.pa||"").toLowerCase().replace(/[()]/g,"").split(/\s+/).filter(w=>w.length>4);
+            const matches=(SESA_DEFAULT?.medicamentos||[]).filter(s=>words.some(w=>s.nome.toLowerCase().includes(w)));
+            if(!matches.length) return null;
+            const total=matches.reduce((a,b)=>a+(b.quantidade||0),0);
+            return(
+              <PanelSection title="Estoque SESA — FE 10 RS CASCAVEL" icon="📦" t={t}>
+                <div style={{padding:"10px 12px",borderRadius:t["--radiusSm"],
+                  background:"rgba(3,105,161,.07)",border:"1px solid rgba(3,105,161,.25)",marginBottom:8}}>
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+                    <span style={{fontSize:11,color:"#0369a1",fontFamily:t["--sans"],fontWeight:700}}>
+                      📅 Emissão: {SESA_DEFAULT.data_relatorio}
+                    </span>
+                    <span style={{fontSize:12,fontWeight:700,fontFamily:"monospace",
+                      color:total>0?"#059669":"#dc2626",
+                      padding:"2px 8px",borderRadius:t["--radiusSm"],
+                      background:total>0?"rgba(5,150,105,.1)":"rgba(220,38,38,.08)"}}>
+                      {total>0?`✅ ${total.toLocaleString("pt-BR")} un. total`:"❌ Sem estoque"}
+                    </span>
+                  </div>
+                  {matches.map((m,i)=>(
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",
+                      alignItems:"center",padding:"5px 0",
+                      borderTop:i>0?`1px solid rgba(3,105,161,.12)`:"none",gap:8}}>
+                      <div>
+                        <div style={{fontSize:11,color:"#0c4a6e",fontFamily:"monospace",fontWeight:600}}>{m.nome}</div>
+                        <div style={{fontSize:10,color:"#0369a1",fontFamily:t["--sans"]}}>{m.apresentacao}</div>
+                      </div>
+                      <span style={{fontSize:12,fontWeight:700,fontFamily:"monospace",
+                        color:m.quantidade>0?"#059669":"#dc2626",whiteSpace:"nowrap"}}>
+                        {m.quantidade>0?m.quantidade.toLocaleString("pt-BR")+" un.":"—"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{fontSize:10.5,color:"#0369a1",fontFamily:t["--sans"],lineHeight:1.6}}>
+                  ⚠️ Exige cadastro no SESA-PR, laudo médico (LME) e receita especial. Dispensação na FE 10 RS CASCAVEL.
+                </div>
+              </PanelSection>
+            );
+          })()}
 
           {/* Program availability */}
           {(med.fp||med.sus)&&(
@@ -2491,7 +2548,13 @@ function SesaView({f, t, theme, onSelectMed}) {
             style={{padding:"7px 14px",borderRadius:t["--radiusSm"],fontFamily:t["--sans"],fontSize:11.5,
               fontWeight:600,textDecoration:"none",cursor:"pointer",
               background:"rgba(255,255,255,.1)",color:"white",border:"1px solid rgba(255,255,255,.3)"}}>
-            📄 Abrir PDF
+            📄 Abrir PDF Estoque
+          </a>
+          <a href="https://farmaciacidada.es.gov.br/Media/farmaciacidada/Cidada%20Estadual/LME%20-%20Atualizado%20-%206%20meses.pdf" target="_blank" rel="noopener"
+            style={{padding:"7px 14px",borderRadius:t["--radiusSm"],fontFamily:t["--sans"],fontSize:11.5,
+              fontWeight:600,textDecoration:"none",cursor:"pointer",
+              background:"rgba(255,255,255,.08)",color:"white",border:"1px solid rgba(255,255,255,.25)"}}>
+            📝 Modelo LME (PDF)
           </a>
         </div>
         <div style={{fontSize:10,opacity:.7,fontFamily:t["--sans"],marginTop:8}}>
@@ -2734,10 +2797,17 @@ function FarmaciaONG(){
   const VIT_IDS=new Set(["vitd3","acido_folico","vitb12","complexo_b","calcio_vitd","magnesio","vite","biotina","vita","vitk","vitc","sulfato_fe","zinc"]);
   const convRanked=useMemo(()=>allRanked.filter(x=>!x.m.fito&&!VIT_IDS.has(x.m.id)),[allRanked]);
   const fitoRanked=useMemo(()=>allRanked.filter(x=>x.m.fito),[allRanked]);
-  const vitRanked =useMemo(()=>allRanked.filter(x=>VIT_IDS.has(x.m.id)),[allRanked]);
+  const vitRanked    =useMemo(()=>allRanked.filter(x=>VIT_IDS.has(x.m.id)),[allRanked]);
+  const sesaTabRanked=useMemo(()=>{
+    const meds=SESA_DEFAULT?.medicamentos||[];
+    return allRanked.filter(x=>{
+      const words=x.m.pa.toLowerCase().replace(/[()]/g,"").split(" ").filter(w=>w.length>4);
+      return words.some(w=>meds.some(s=>s.nome.toLowerCase().includes(w)));
+    });
+  },[allRanked]);
   const fpRanked  =useMemo(()=>allRanked.filter(x=>x.m.fp),  [allRanked]);
   const susRanked =useMemo(()=>allRanked.filter(x=>x.m.sus), [allRanked]);
-  const ranked=tab==="todos"?allRanked:tab==="fito"?fitoRanked:tab==="vit"?vitRanked:tab==="fp"?fpRanked:tab==="sus"?susRanked:convRanked;
+  const ranked=tab==="todos"?allRanked:tab==="fito"?fitoRanked:tab==="vit"?vitRanked:tab==="sesa_tab"?sesaTabRanked:tab==="fp"?fpRanked:tab==="sus"?susRanked:convRanked;
   const maxScore=ranked.length?ranked[0].score:1;
 
   const toggle=useCallback(id=>{setSel(p=>{const n=new Set(p);n.has(id)?n.delete(id):n.add(id);return n;});},[]);
@@ -2901,11 +2971,24 @@ function FarmaciaONG(){
 
           {/* RIGHT PANEL */}
           <div className="pg-sc" onClick={()=>{if(isMobile&&sidebarOpen)setSidebarOpen(false);}} style={{flex:1,overflowY:"auto",padding:"18px 20px"}}>
+            {/* ── Back button for catalog / SESA ── */}
+            {(mode==="catalog"||mode==="sesa")&&(
+              <button onClick={()=>setMode("symptoms")}
+                style={{display:"inline-flex",alignItems:"center",gap:7,
+                  padding:"7px 14px",marginBottom:16,cursor:"pointer",
+                  background:t["--surface2"],border:`1px solid ${t["--border"]}`,
+                  borderRadius:t["--radiusSm"],fontFamily:t["--sans"],fontSize:12,
+                  color:t["--textMuted"],fontWeight:600,transition:"all .17s"}}
+                onMouseEnter={e=>e.currentTarget.style.background=t["--surface3"]}
+                onMouseLeave={e=>e.currentTarget.style.background=t["--surface2"]}>
+                ← Voltar para Sintomas
+              </button>
+            )}
             {mode==="sesa"?<SesaView f={f} t={t} theme={theme} onSelectMed={openMedDetail}/>:mode==="catalog"?<CatalogView f={f} t={t} theme={theme} onSelectMed={openMedDetail}/>
             :!sel.size?<Empty t={t}/>
             :(
               <>
-                <TabBar tab={tab} setTab={setTab} todosCount={allRanked.length} convCount={convRanked.length} fitoCount={fitoRanked.length} vitCount={vitRanked.length} fpCount={fpRanked.length} susCount={susRanked.length} t={t} theme={theme}/>
+                <TabBar tab={tab} setTab={setTab} todosCount={allRanked.length} convCount={convRanked.length} fitoCount={fitoRanked.length} vitCount={vitRanked.length} sesaTabCount={sesaTabRanked.length} fpCount={fpRanked.length} susCount={susRanked.length} t={t} theme={theme}/>
                 <ChronicBanner sel={sel} t={t}/>
                 {tab==="todos"&&(
                   <div style={{marginBottom:14,padding:"12px 15px",borderRadius:t["--radius"],background:t["--surface3"],border:`1.5px solid ${t["--border2"]}`,display:"flex",gap:10,alignItems:"flex-start"}}>
@@ -2943,6 +3026,26 @@ function FarmaciaONG(){
                     <div style={{fontSize:11,color:t["--accent"],lineHeight:1.65,fontFamily:t["--sans"]}}>Medicamentos alopáticos correspondentes aos sintomas. <strong>Verifique alergias, interações e perfil do paciente.</strong></div></div>
                   </div>
                 )}
+                {tab==="sesa_tab"&&(
+                  <div style={{marginBottom:14,padding:"12px 15px",borderRadius:t["--radius"],
+                    background:"rgba(3,105,161,.07)",border:"1.5px solid rgba(3,105,161,.3)",
+                    display:"flex",gap:10,alignItems:"flex-start"}}>
+                    <span style={{fontSize:20}}>📦</span>
+                    <div>
+                      <div style={{fontWeight:700,fontSize:12.5,color:"#0c4a6e",fontFamily:t["--sans"],marginBottom:2}}>
+                        Medicamentos CEAF / SESA-PR
+                      </div>
+                      <div style={{fontSize:11,color:"#0369a1",lineHeight:1.65,fontFamily:t["--sans"],marginBottom:4}}>
+                        Medicamentos do banco de dados que possuem correspondência na lista da <strong>FE 10 RS CASCAVEL</strong>.
+                        Clique em qualquer card para ver o estoque disponível.
+                      </div>
+                      <div style={{fontSize:10.5,color:"#0c4a6e",fontFamily:t["--sans"],
+                        padding:"5px 9px",background:"rgba(3,105,161,.07)",borderRadius:t["--radiusSm"]}}>
+                        📅 Dados de referência: emissão 01/05/2026 · Atualizado quinzenalmente
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {tab==="fp"&&(
                   <div style={{marginBottom:14,padding:"12px 15px",borderRadius:t["--radius"],background:t["--fpBg"]||t["--blueBg"],border:`1.5px solid ${t["--fpBrd"]||t["--blue"]}`,display:"flex",gap:10,alignItems:"flex-start"}}>
                     <span style={{fontSize:20}}>🏛️</span>
@@ -2972,13 +3075,13 @@ function FarmaciaONG(){
                   </div>
                 )}
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:11,flexWrap:"wrap",gap:8}}>
-                  <div><h2 style={{fontSize:15,fontWeight:700,marginBottom:2,fontFamily:t["--sans"],color:t["--text"],letterSpacing:isInd?".04em":"normal",textTransform:isInd?"uppercase":"none"}}>{tab==="todos"?"◉ Todos os Resultados":tab==="fito"?"🌿 Fitoterápicos":tab==="vit"?"💛 Vitaminas e Suplementos":tab==="fp"?"🏛️ Farmácia Popular":tab==="sus"?"🏥 Farmácia Básica SUS":"💊 Medicamentos Sugeridos"}</h2><p style={{fontSize:10.5,color:t["--textMuted"],fontFamily:t["--sans"]}}>Ordenados por relevância · Clique no card para expandir</p></div>
+                  <div><h2 style={{fontSize:15,fontWeight:700,marginBottom:2,fontFamily:t["--sans"],color:t["--text"],letterSpacing:isInd?".04em":"normal",textTransform:isInd?"uppercase":"none"}}>{tab==="todos"?"◉ Todos os Resultados":tab==="fito"?"🌿 Fitoterápicos":tab==="vit"?"💛 Vitaminas e Suplementos":tab==="sesa_tab"?"📦 SESA-PR / CEAF":tab==="fp"?"🏛️ Farmácia Popular":tab==="sus"?"🏥 Farmácia Básica SUS":"💊 Medicamentos Sugeridos"}</h2><p style={{fontSize:10.5,color:t["--textMuted"],fontFamily:t["--sans"]}}>Ordenados por relevância · Clique no card para expandir</p></div>
                   <span style={{fontSize:10,padding:"3px 10px",borderRadius:20,background:tab==="fito"?t["--fitoBg"]:t["--tagBg"],color:tab==="fito"?t["--fitoText"]:t["--tagTxt"],border:`1px solid ${tab==="fito"?t["--fitoBrd"]:t["--tagBrd"]}`,fontFamily:t["--mono"],flexShrink:0}}>{ranked.length} resultado{ranked.length!==1?"s":""}</span>
                 </div>
                 <div style={{display:"flex",flexWrap:"wrap",gap:5,marginBottom:12}}>
                   {[...sel].map(s=>{const label=ALL.find(i=>i.id===s)?.label||s;const isChr=CHRONIC_IDS.has(s);return(<span key={s} className="pg-pill" onClick={()=>toggle(s)} style={{fontSize:10.5,padding:"3px 10px",borderRadius:isInd?"2px":"20px",background:isChr?t["--chronicBg"]:t["--accentBg"],color:isChr?t["--chronicText"]:t["--accentText"],border:`1px solid ${isChr?t["--chronicBrd"]:t["--accentBrd"]}`,cursor:"pointer",transition:"opacity .15s",fontFamily:t["--sans"]}} title="Clique para remover">{label} ×</span>);})}
                 </div>
-                {ranked.length===0?(tab==="fito"?<FitoEmpty t={t}/>:tab==="vit"?<VitEmpty t={t}/>:tab==="fp"?<ProgramEmpty tipo="fp" t={t}/>:tab==="sus"?<ProgramEmpty tipo="sus" t={t}/>:<ConvEmpty t={t}/>):(
+                {ranked.length===0?(tab==="fito"?<FitoEmpty t={t}/>:tab==="vit"?<VitEmpty t={t}/>:tab==="sesa_tab"?<SesaTabEmpty t={t}/>:tab==="fp"?<ProgramEmpty tipo="fp" t={t}/>:tab==="sus"?<ProgramEmpty tipo="sus" t={t}/>:<ConvEmpty t={t}/>):(
                   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))",gap:9}}>
                     {ranked.map(({m,score})=><MedCard key={m.id} m={m} score={score} max={maxScore} f={f} sel={sel} onSelectMed={openMedDetail}/>)}
                   </div>
