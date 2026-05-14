@@ -2870,6 +2870,7 @@
 
 
 /* ════════════════════════ SESA ESTOQUE VIEW ════════════════════════ */
+    const PDF_SESA_URL = "https://www.saude.pr.gov.br/sites/default/arquivos_restritos/files/documento/2026-05/estoque_medicamentos_ceaf.pdf"; // Substitua pela URL real do PDF da SESA
 
     function parseSesaText(raw) {
       const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
