@@ -1829,364 +1829,9 @@ function ThemeBtn({id,current,onChange}){
    MAIN APP
 ════════════════════════════════════════ */
 
-/* ════════════════════════ DRUG DETAIL HELPERS ════════════════════════ */
-function PanelSection({title,icon,warn,t,children}){
-  return(
-    <div style={{marginBottom:18}}>
-      <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:9,
-        paddingBottom:6,borderBottom:`1px solid ${t["--border"]}`}}>
-        <span style={{fontSize:14}}>{icon}</span>
-        <span style={{fontSize:10,fontWeight:700,letterSpacing:".09em",textTransform:"uppercase",
-          color:warn?t["--warn"]:t["--textDim"],fontFamily:t["--sans"]}}>{title}</span>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function PanelDoseCard({safeDose,dose,f,t,safeCor}){
-  const r=rgb(safeCor);
-  return(
-    <div style={{borderRadius:t["--radiusSm"],overflow:"hidden",border:`1.5px solid rgba(${r},.25)`}}>
-      <div style={{padding:"11px 14px",background:`rgba(${r},.07)`,borderBottom:`1px solid rgba(${r},.15)`}}>
-        <div style={{fontSize:9.5,color:t["--textDim"],fontWeight:700,letterSpacing:".07em",
-          textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>
-          {f.isC&&safeDose.p?"Dose Pediátrica":"Dose — Adulto"}
-        </div>
-        <div style={{fontFamily:t["--mono"],fontSize:13.5,color:t["--text"],lineHeight:1.5}}>{dose}</div>
-        {safeDose.max&&<div style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--mono"],marginTop:3}}>{safeDose.max}</div>}
-      </div>
-      {!f.isC&&safeDose.p&&(
-        <div style={{padding:"11px 14px"}}>
-          <div style={{fontSize:9.5,color:t["--blue"],fontWeight:700,letterSpacing:".07em",
-            textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>Dose Pediátrica</div>
-          <div style={{fontFamily:t["--mono"],fontSize:12.5,color:t["--textMuted"],lineHeight:1.5}}>{safeDose.p}</div>
-        </div>
-      )}
-      {f.isC&&safeDose.a&&safeDose.p&&(
-        <div style={{padding:"11px 14px"}}>
-          <div style={{fontSize:9.5,color:t["--textDim"],fontWeight:700,letterSpacing:".07em",
-            textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>Referência Adulto</div>
-          <div style={{fontFamily:t["--mono"],fontSize:12,color:t["--textMuted"],lineHeight:1.5}}>{safeDose.a}</div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ════════════════════════ DRUG DETAIL PANEL ════════════════════════ */
-function DrugDetailPanel({stack,onClose,onBack,onOpen,f}){
-  const theme=useContext(Ctx);
-  const t=THEMES[theme]?.vars||THEMES.light.vars;
-  const isInd=theme==="industrial";
-  const med=stack[stack.length-1];
-  if(!med) return null;
-
-  const safeCor = med.cor||"#10b981";
-  const safeAl  = Array.isArray(med.al)?med.al:[];
-  const safeCom = Array.isArray(med.comerciais)?med.comerciais:[];
-  const safeSyms= Array.isArray(med.syms)?med.syms:[];
-  const safeDose= med.dose||{a:"—",max:"",p:""};
-  const safeVia = med.via||"Oral";
-  const dose    = (f.isC&&safeDose.p)?safeDose.p:(safeDose.a||"—");
-  const ws      = getWarns(med,f);
-  const alts    = getAlts(med.id);
-  const r       = rgb(safeCor);
-  const panelW  = typeof window!=="undefined"?Math.min(500,window.innerWidth):400;
-
-  const breadcrumb = stack.length>1
-    ? stack.slice(0,-1).map(m=>m.pa.split(" ").slice(0,3).join(" ")).join(" › ")
-    : null;
-
-  return(
-    <>
-      {/* Backdrop */}
-      <div onClick={onClose} style={{position:"fixed",inset:0,
-        background:"rgba(0,0,0,.5)",zIndex:498,animation:"pgFade .22s ease"}}/>
-
-      {/* Sliding panel */}
-      <div style={{
-        position:"fixed",top:0,right:0,
-        width:panelW,height:"100vh",
-        background:t["--surface"],
-        zIndex:499,
-        display:"flex",flexDirection:"column",
-        boxShadow:"-6px 0 32px rgba(0,0,0,.22)",
-        animation:"pgPanelIn .26s ease",
-      }}>
-
-        {/* Panel header */}
-        <div style={{
-          height:52,flexShrink:0,padding:"0 14px",
-          display:"flex",alignItems:"center",justifyContent:"space-between",
-          borderBottom:`${isInd?"2px":"1px"} solid ${t["--border"]}`,
-          background:t["--hdrBg"],gap:10,
-        }}>
-          <div style={{display:"flex",alignItems:"center",gap:8,minWidth:0,flex:1}}>
-            {stack.length>1&&(
-              <button onClick={e=>{e.stopPropagation();onBack();}}
-                style={{background:t["--surface2"],border:`1px solid ${t["--border"]}`,
-                  borderRadius:isInd?"2px":"8px",padding:"5px 9px",cursor:"pointer",
-                  color:t["--textMuted"],fontFamily:t["--sans"],fontSize:13,flexShrink:0,
-                  display:"flex",alignItems:"center",gap:4}}>
-                ← <span style={{fontSize:11}}>Voltar</span>
-              </button>
-            )}
-            <div style={{minWidth:0,overflow:"hidden"}}>
-              {breadcrumb&&(
-                <div style={{fontSize:9.5,color:t["--textDim"],fontFamily:t["--sans"],
-                  whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",
-                  marginBottom:1}}>{breadcrumb} ›</div>
-              )}
-              <div style={{fontSize:11,fontWeight:700,letterSpacing:".04em",
-                textTransform:"uppercase",color:t["--textMuted"],fontFamily:t["--sans"],
-                whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
-                Detalhe do Medicamento
-              </div>
-            </div>
-          </div>
-          <button onClick={onClose}
-            style={{background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,
-              borderRadius:isInd?"2px":"8px",width:32,height:32,cursor:"pointer",
-              color:t["--dangerTxt"],fontSize:15,flexShrink:0,display:"flex",
-              alignItems:"center",justifyContent:"center"}}>✕</button>
-        </div>
-
-        {/* Scrollable body */}
-        <div className="pg-sc" style={{flex:1,overflowY:"auto",padding:"18px 16px"}}>
-
-          {/* Drug hero card */}
-          <div style={{padding:"16px",marginBottom:20,borderRadius:t["--radius"],
-            background:`rgba(${r},.06)`,border:`2px solid rgba(${r},.28)`}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10}}>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{fontFamily:t["--mono"],fontWeight:700,fontSize:17,
-                  color:safeCor,lineHeight:1.25,marginBottom:5}}>{med.pa}</div>
-                {med.fito&&med.planta&&(
-                  <div style={{fontSize:11,color:t["--fito"],fontStyle:"italic",
-                    marginBottom:5,fontFamily:t["--sans"]}}>{med.planta} · {med.parte}</div>
-                )}
-                <div style={{fontSize:10.5,color:t["--textMuted"],textTransform:"uppercase",
-                  letterSpacing:".06em",marginBottom:9,fontFamily:t["--sans"]}}>{med.classe}</div>
-                <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
-                  {safeCom.map(n=>(
-                    <span key={n} style={{fontSize:11,padding:"3px 9px",
-                      background:`rgba(${r},.13)`,color:safeCor,
-                      borderRadius:t["--radiusSm"],fontWeight:500,fontFamily:t["--sans"]}}>{n}</span>
-                  ))}
-                </div>
-              </div>
-              <div style={{display:"flex",flexDirection:"column",gap:5,alignItems:"flex-end",flexShrink:0}}>
-                {med.fito&&<span style={{fontSize:9.5,padding:"2px 7px",borderRadius:t["--radiusSm"],
-                  background:t["--fitoBg"],color:t["--fitoText"],border:`1px solid ${t["--fitoBrd"]}`,
-                  fontWeight:700,fontFamily:t["--sans"]}}>🌿 fito</span>}
-                {med.chronic&&<span style={{fontSize:9.5,padding:"2px 7px",borderRadius:t["--radiusSm"],
-                  background:t["--chronicBg"],color:t["--chronicText"],border:`1px solid ${t["--chronicBrd"]}`,
-                  fontWeight:700,fontFamily:t["--sans"]}}>🏥 crônico</span>}
-                {med.sesa&&<span style={{fontSize:9.5,padding:"2px 7px",borderRadius:t["--radiusSm"],
-                  background:"rgba(3,105,161,.1)",color:"#0369a1",border:"1px solid rgba(3,105,161,.3)",
-                  fontWeight:700,fontFamily:t["--sans"]}}>🏥 SESA-PR</span>}
-                <span style={{fontSize:10.5,padding:"3px 9px",border:`1px solid ${t["--border"]}`,
-                  borderRadius:t["--radiusSm"],color:t["--textMuted"],fontFamily:t["--sans"]}}>{safeVia}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Posologia */}
-          <PanelSection title="Posologia" icon="💊" t={t}>
-            <PanelDoseCard safeDose={safeDose} dose={dose} f={f} t={t} safeCor={safeCor}/>
-          </PanelSection>
-
-          {/* Patient warnings */}
-          {ws.length>0&&(
-            <PanelSection title="Alertas de Perfil" icon="👤" t={t} warn>
-              {ws.map((w,i)=>(
-                <div key={i} style={{fontSize:12.5,padding:"9px 12px",borderRadius:t["--radiusSm"],
-                  marginBottom:5,background:w.d?t["--dangerBg"]:t["--warnBg"],
-                  border:`1px solid ${w.d?t["--dangerBrd"]:t["--warnBrd"]}`,
-                  color:w.d?t["--dangerTxt"]:t["--warnTxt"],fontFamily:t["--sans"]}}>
-                  {w.d?"🚫":"⚠️"} {w.s}
-                </div>
-              ))}
-            </PanelSection>
-          )}
-
-          {/* Mechanism */}
-          <PanelSection title="Mecanismo de Ação" icon="⚗️" t={t}>
-            <p style={{fontSize:13,color:t["--text"],lineHeight:1.75,fontFamily:t["--sans"]}}>{med.mec||"—"}</p>
-          </PanelSection>
-
-          {/* Contraindications */}
-          <PanelSection title="Contraindicações" icon="🚫" t={t} warn>
-            <p style={{fontSize:12.5,color:t["--warnTxt"],lineHeight:1.75,fontFamily:t["--sans"]}}>{med.ci||"—"}</p>
-          </PanelSection>
-
-          {/* Alerts */}
-          {safeAl.length>0&&(
-            <PanelSection title="Alertas Importantes" icon="⚠️" t={t} warn>
-              {safeAl.map((a,i)=>(
-                <div key={i} style={{fontSize:12.5,padding:"9px 12px",borderRadius:t["--radiusSm"],
-                  marginBottom:5,background:t["--warnBg"],border:`1px solid ${t["--warnBrd"]}`,
-                  color:t["--warnTxt"],fontFamily:t["--sans"]}}>⚠️ {a}</div>
-              ))}
-            </PanelSection>
-          )}
-
-          {/* Symptoms covered */}
-          {safeSyms.length>0&&(
-            <PanelSection title="Indicado Para" icon="🩺" t={t}>
-              <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                {safeSyms.map(s=>{
-                  const lbl=ALL.find(i=>i.id===s)?.label||s;
-                  return(
-                    <span key={s} style={{fontSize:11.5,padding:"4px 11px",borderRadius:20,
-                      background:t["--accentBg"],color:t["--accentText"],
-                      border:`1px solid ${t["--accentBrd"]}`,fontFamily:t["--sans"]}}>{lbl}</span>
-                  );
-                })}
-              </div>
-            </PanelSection>
-          )}
-
-          {/* SESA Stock availability */}
-          {(()=>{
-            const words=(med.pa||"").toLowerCase().replace(/[()]/g,"").split(/\s+/).filter(w=>w.length>4);
-            const matches=(SESA_DEFAULT?.medicamentos||[]).filter(s=>words.some(w=>s.nome.toLowerCase().includes(w)));
-            if(!matches.length) return null;
-            const total=matches.reduce((a,b)=>a+(b.quantidade||0),0);
-            return(
-              <PanelSection title="Estoque SESA — FE 10 RS CASCAVEL" icon="📦" t={t}>
-                <div style={{padding:"10px 12px",borderRadius:t["--radiusSm"],
-                  background:"rgba(3,105,161,.07)",border:"1px solid rgba(3,105,161,.25)",marginBottom:8}}>
-                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
-                    <span style={{fontSize:11,color:"#0369a1",fontFamily:t["--sans"],fontWeight:700}}>
-                      📅 Emissão: {SESA_DEFAULT.data_relatorio}
-                    </span>
-                    <span style={{fontSize:12,fontWeight:700,fontFamily:"monospace",
-                      color:total>0?"#059669":"#dc2626",
-                      padding:"2px 8px",borderRadius:t["--radiusSm"],
-                      background:total>0?"rgba(5,150,105,.1)":"rgba(220,38,38,.08)"}}>
-                      {total>0?`✅ ${total.toLocaleString("pt-BR")} un. total`:"❌ Sem estoque"}
-                    </span>
-                  </div>
-                  {matches.map((m,i)=>(
-                    <div key={i} style={{display:"flex",justifyContent:"space-between",
-                      alignItems:"center",padding:"5px 0",
-                      borderTop:i>0?`1px solid rgba(3,105,161,.12)`:"none",gap:8}}>
-                      <div>
-                        <div style={{fontSize:11,color:"#0c4a6e",fontFamily:"monospace",fontWeight:600}}>{m.nome}</div>
-                        <div style={{fontSize:10,color:"#0369a1",fontFamily:t["--sans"]}}>{m.apresentacao}</div>
-                      </div>
-                      <span style={{fontSize:12,fontWeight:700,fontFamily:"monospace",
-                        color:m.quantidade>0?"#059669":"#dc2626",whiteSpace:"nowrap"}}>
-                        {m.quantidade>0?m.quantidade.toLocaleString("pt-BR")+" un.":"—"}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div style={{fontSize:10.5,color:"#0369a1",fontFamily:t["--sans"],lineHeight:1.6}}>
-                  ⚠️ Exige cadastro no SESA-PR, laudo médico (LME) e receita especial. Dispensação na FE 10 RS CASCAVEL.
-                </div>
-              </PanelSection>
-            );
-          })()}
-
-          {/* Program availability */}
-          {(med.fp||med.sus)&&(
-            <PanelSection title="Disponível Gratuitamente" icon="🏛️" t={t}>
-              <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                {med.fp&&(
-                  <div style={{padding:"11px 14px",borderRadius:t["--radiusSm"],
-                    background:t["--fpBg"],border:`1.5px solid ${t["--fpBrd"]}`}}>
-                    <div style={{fontWeight:700,fontSize:12.5,color:t["--fpTxt"],fontFamily:t["--sans"],marginBottom:4,display:"flex",alignItems:"center",gap:6}}>
-                      <span>🏛️</span> Farmácia Popular (Aqui Tem Farmácia Popular)
-                    </div>
-                    <div style={{fontSize:11.5,color:t["--fp"],lineHeight:1.65,fontFamily:t["--sans"],marginBottom:5}}>
-                      <strong>100% gratuito</strong> — apresentar receita médica válida (SUS ou particular) + documento com foto e CPF em qualquer farmácia credenciada com o selo "Aqui Tem Farmácia Popular".
-                    </div>
-                    <div style={{fontSize:11,color:t["--fpTxt"],fontFamily:t["--sans"],opacity:.8}}>
-                      📍 Em Cascavel-PR: consulte farmácias credenciadas em <strong>consultafp.saude.gov.br</strong> ou ligue <strong>136</strong> (Ministério da Saúde).
-                    </div>
-                  </div>
-                )}
-                {med.sus&&(
-                  <div style={{padding:"11px 14px",borderRadius:t["--radiusSm"],
-                    background:t["--susBg"],border:`1.5px solid ${t["--susBrd"]}`}}>
-                    <div style={{fontWeight:700,fontSize:12.5,color:t["--susTxt"],fontFamily:t["--sans"],marginBottom:4,display:"flex",alignItems:"center",gap:6}}>
-                      <span>💊</span> Farmácia Básica SUS — UBS / CBAF
-                    </div>
-                    <div style={{fontSize:11.5,color:t["--sus"],lineHeight:1.65,fontFamily:t["--sans"],marginBottom:5}}>
-                      <strong>Gratuito na UBS</strong> — retirar na Unidade Básica de Saúde (Posto de Saúde) do bairro. Apresentar receita médica + CPF + Cartão SUS.
-                    </div>
-                    <div style={{fontSize:11,color:t["--susTxt"],fontFamily:t["--sans"],opacity:.8}}>
-                      📍 <strong>Cascavel-PR — Farmácia Básica:</strong> Av. Tancredo Neves, 1453 · WhatsApp: <strong>(45) 3321-5529</strong>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </PanelSection>
-          )}
-
-          {/* Substitutes — clickable */}
-          {alts.length>0&&(
-            <PanelSection title="Substitutos em Caso de Falta" icon="🔄" t={t}>
-              <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                {alts.map(alt=>{
-                  const ar=rgb(alt.cor||"#10b981");
-                  return(
-                    <button key={alt.id}
-                      onClick={()=>onOpen(alt)}
-                      style={{display:"flex",alignItems:"center",gap:10,
-                        padding:"12px 14px",borderRadius:t["--radius"],
-                        background:`rgba(${ar},.06)`,border:`1.5px solid rgba(${ar},.25)`,
-                        cursor:"pointer",textAlign:"left",width:"100%",
-                        transition:"all .18s",fontFamily:t["--sans"]}}
-                      onMouseEnter={e=>{e.currentTarget.style.background=`rgba(${ar},.14)`;e.currentTarget.style.borderColor=`rgba(${ar},.55)`;}}
-                      onMouseLeave={e=>{e.currentTarget.style.background=`rgba(${ar},.06)`;e.currentTarget.style.borderColor=`rgba(${ar},.25)`;}}
-                    >
-                      <div style={{width:4,height:44,borderRadius:2,
-                        background:alt.cor||"#10b981",flexShrink:0}}/>
-                      <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontFamily:t["--mono"],fontWeight:700,fontSize:13.5,
-                          color:alt.cor||"#10b981",marginBottom:3,lineHeight:1.2}}>{alt.pa}</div>
-                        <div style={{fontSize:10,color:t["--textMuted"],textTransform:"uppercase",
-                          letterSpacing:".05em",marginBottom:4,fontFamily:t["--sans"]}}>{alt.classe}</div>
-                        <div style={{fontSize:11.5,color:t["--textDim"],fontFamily:t["--mono"]}}>
-                          {(alt.dose?.a)||"—"}
-                          {alt.dose?.max&&<span style={{color:t["--textDim"],marginLeft:7,fontSize:10}}>· {alt.dose.max}</span>}
-                        </div>
-                      </div>
-                      <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",
-                        gap:5,flexShrink:0}}>
-                        {(alt.comerciais||[]).slice(0,2).map(n=>(
-                          <span key={n} style={{fontSize:10,padding:"2px 7px",
-                            background:`rgba(${ar},.13)`,color:alt.cor||"#10b981",
-                            borderRadius:t["--radiusSm"],fontWeight:500,fontFamily:t["--sans"]}}>{n}</span>
-                        ))}
-                        {alt.fito&&<span style={{fontSize:9,padding:"1px 5px",borderRadius:t["--radiusSm"],
-                          background:t["--fitoBg"],color:t["--fitoText"],
-                          border:`1px solid ${t["--fitoBrd"]}`,fontWeight:700,fontFamily:t["--sans"]}}>🌿</span>}
-                        {alt.chronic&&<span style={{fontSize:9,padding:"1px 5px",borderRadius:t["--radiusSm"],
-                          background:t["--chronicBg"],color:t["--chronicText"],
-                          border:`1px solid ${t["--chronicBrd"]}`,fontWeight:700,fontFamily:t["--sans"]}}>🏥</span>}
-                        <span style={{fontSize:18,color:`rgba(${ar},.6)`,lineHeight:1}}>›</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </PanelSection>
-          )}
-
-          <div style={{height:24}}/>
-        </div>
-      </div>
-    </>
-  );
-}
 
 
-/* ════════════════════════ SESA ESTOQUE VIEW ════════════════════════ */
+
 /* Dados reais — FE 10 RS CASCAVEL — Emissão 01/05/2026 (páginas 424-427) */
 const SESA_DEFAULT = {
   data_relatorio: "01/05/2026",
@@ -2384,9 +2029,870 @@ const SESA_DEFAULT = {
 ]
 };
 
-const PDF_SESA_URL = "https://www.documentador.pr.gov.br/documentador/pub.do?action=d&uuid=@gtf-escriba-sesa@/Documentador/Acervo/ASSIST%C3%8ANCIA%20FARMAC%C3%8AUTICA/DOCUMENTOS%20P%C3%9ABLICOS/ESTOQUE%20MEDICAMENTOS%20CEAF%20-%20LEI%2014654-23/RelEmitirEstoqueMedicamentoCeaf-atual.pdf";
+/* ════════════════════════ DRUG DETAIL HELPERS ════════════════════════ */
+function PanelSection({title,icon,warn,t,children}){
+  return(
+    <div style={{marginBottom:18}}>
+      <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:9,
+        paddingBottom:6,borderBottom:`1px solid ${t["--border"]}`}}>
+        <span style={{fontSize:14}}>{icon}</span>
+        <span style={{fontSize:10,fontWeight:700,letterSpacing:".09em",textTransform:"uppercase",
+          color:warn?t["--warn"]:t["--textDim"],fontFamily:t["--sans"]}}>{title}</span>
+      </div>
+      {children}
+    </div>
+  );
+}
 
-/* Parse plain text pasted from the PDF */
+function PanelDoseCard({safeDose,dose,f,t,safeCor}){
+  const r=rgb(safeCor);
+  return(
+    <div style={{borderRadius:t["--radiusSm"],overflow:"hidden",border:`1.5px solid rgba(${r},.25)`}}>
+      <div style={{padding:"11px 14px",background:`rgba(${r},.07)`,borderBottom:`1px solid rgba(${r},.15)`}}>
+        <div style={{fontSize:9.5,color:t["--textDim"],fontWeight:700,letterSpacing:".07em",
+          textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>
+          {f.isC&&safeDose.p?"Dose Pediátrica":"Dose — Adulto"}
+        </div>
+        <div style={{fontFamily:t["--mono"],fontSize:13.5,color:t["--text"],lineHeight:1.5}}>{dose}</div>
+        {safeDose.max&&<div style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--mono"],marginTop:3}}>{safeDose.max}</div>}
+      </div>
+      {!f.isC&&safeDose.p&&(
+        <div style={{padding:"11px 14px"}}>
+          <div style={{fontSize:9.5,color:t["--blue"],fontWeight:700,letterSpacing:".07em",
+            textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>Dose Pediátrica</div>
+          <div style={{fontFamily:t["--mono"],fontSize:12.5,color:t["--textMuted"],lineHeight:1.5}}>{safeDose.p}</div>
+        </div>
+      )}
+      {f.isC&&safeDose.a&&safeDose.p&&(
+        <div style={{padding:"11px 14px"}}>
+          <div style={{fontSize:9.5,color:t["--textDim"],fontWeight:700,letterSpacing:".07em",
+            textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>Referência Adulto</div>
+          <div style={{fontFamily:t["--mono"],fontSize:12,color:t["--textMuted"],lineHeight:1.5}}>{safeDose.a}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════ DRUG DETAIL PANEL ════════════════════════ */
+function DrugDetailPanel({stack,onClose,onBack,onOpen,f}){
+  const theme=useContext(Ctx);
+  const t=THEMES[theme]?.vars||THEMES.light.vars;
+  const isInd=theme==="industrial";
+  const med=stack[stack.length-1];
+  if(!med) return null;
+
+  const safeCor = med.cor||"#10b981";
+  const safeAl  = Array.isArray(med.al)?med.al:[];
+  const safeCom = Array.isArray(med.comerciais)?med.comerciais:[];
+  const safeSyms= Array.isArray(med.syms)?med.syms:[];
+  const safeDose= med.dose||{a:"—",max:"",p:""};
+  const safeVia = med.via||"Oral";
+  const dose    = (f.isC&&safeDose.p)?safeDose.p:(safeDose.a||"—");
+  const ws      = getWarns(med,f);
+  const alts    = getAlts(med.id);
+  const r       = rgb(safeCor);
+  const panelW  = typeof window!=="undefined"?Math.min(500,window.innerWidth):400;
+
+  const breadcrumb = stack.length>1
+    ? stack.slice(0,-1).map(m=>m.pa.split(" ").slice(0,3).join(" ")).join(" › ")
+    : null;
+
+  return(
+    <>
+      {/* Backdrop */}
+      <div onClick={onClose} style={{position:"fixed",inset:0,
+        background:"rgba(0,0,0,.5)",zIndex:498,animation:"pgFade .22s ease"}}/>
+
+      {/* Sliding panel */}
+      <div style={{
+        position:"fixed",top:0,right:0,
+        width:panelW,height:"100vh",
+        background:t["--surface"],
+        zIndex:499,
+        display:"flex",flexDirection:"column",
+        boxShadow:"-6px 0 32px rgba(0,0,0,.22)",
+        animation:"pgPanelIn .26s ease",
+      }}>
+
+        {/* Panel header */}
+        <div style={{
+          height:52,flexShrink:0,padding:"0 14px",
+          display:"flex",alignItems:"center",justifyContent:"space-between",
+          borderBottom:`${isInd?"2px":"1px"} solid ${t["--border"]}`,
+          background:t["--hdrBg"],gap:10,
+        }}>
+          <div style={{display:"flex",alignItems:"center",gap:8,minWidth:0,flex:1}}>
+            {stack.length>1&&(
+              <button onClick={e=>{e.stopPropagation();onBack();}}
+                style={{background:t["--surface2"],border:`1px solid ${t["--border"]}`,
+                  borderRadius:isInd?"2px":"8px",padding:"5px 9px",cursor:"pointer",
+                  color:t["--textMuted"],fontFamily:t["--sans"],fontSize:13,flexShrink:0,
+                  display:"flex",alignItems:"center",gap:4}}>
+                ← <span style={{fontSize:11}}>Voltar</span>
+              </button>
+            )}
+            <div style={{minWidth:0,overflow:"hidden"}}>
+              {breadcrumb&&(
+                <div style={{fontSize:9.5,color:t["--textDim"],fontFamily:t["--sans"],
+                  whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",
+                  marginBottom:1}}>{breadcrumb} ›</div>
+              )}
+              <div style={{fontSize:11,fontWeight:700,letterSpacing:".04em",
+                textTransform:"uppercase",color:t["--textMuted"],fontFamily:t["--sans"],
+                whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
+                Detalhe do Medicamento
+              </div>
+            </div>
+          </div>
+          <button onClick={onClose}
+            style={{background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,
+              borderRadius:isInd?"2px":"8px",width:32,height:32,cursor:"pointer",
+              color:t["--dangerTxt"],fontSize:15,flexShrink:0,display:"flex",
+              alignItems:"center",justifyContent:"center"}}>✕</button>
+        </div>
+
+        {/* Scrollable body */}
+        <div className="pg-sc" style={{flex:1,overflowY:"auto",padding:"18px 16px"}}>
+
+          {/* Drug hero card */}
+          <div style={{padding:"16px",marginBottom:20,borderRadius:t["--radius"],
+            background:`rgba(${r},.06)`,border:`2px solid rgba(${r},.28)`}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10}}>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontFamily:t["--mono"],fontWeight:700,fontSize:17,
+                  color:safeCor,lineHeight:1.25,marginBottom:5}}>{med.pa}</div>
+                {med.fito&&med.planta&&(
+                  <div style={{fontSize:11,color:t["--fito"],fontStyle:"italic",
+                    marginBottom:5,fontFamily:t["--sans"]}}>{med.planta} · {med.parte}</div>
+                )}
+                <div style={{fontSize:10.5,color:t["--textMuted"],textTransform:"uppercase",
+                  letterSpacing:".06em",marginBottom:9,fontFamily:t["--sans"]}}>{med.classe}</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
+                  {safeCom.map(n=>(
+                    <span key={n} style={{fontSize:11,padding:"3px 9px",
+                      background:`rgba(${r},.13)`,color:safeCor,
+                      borderRadius:t["--radiusSm"],fontWeight:500,fontFamily:t["--sans"]}}>{n}</span>
+                  ))}
+                </div>
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:5,alignItems:"flex-end",flexShrink:0}}>
+                {med.fito&&<span style={{fontSize:9.5,padding:"2px 7px",borderRadius:t["--radiusSm"],
+                  background:t["--fitoBg"],color:t["--fitoText"],border:`1px solid ${t["--fitoBrd"]}`,
+                  fontWeight:700,fontFamily:t["--sans"]}}>🌿 fito</span>}
+                {med.chronic&&<span style={{fontSize:9.5,padding:"2px 7px",borderRadius:t["--radiusSm"],
+                  background:t["--chronicBg"],color:t["--chronicText"],border:`1px solid ${t["--chronicBrd"]}`,
+                  fontWeight:700,fontFamily:t["--sans"]}}>🏥 crônico</span>}
+                {med.sesa&&<span style={{fontSize:9.5,padding:"2px 7px",borderRadius:t["--radiusSm"],
+                  background:"rgba(3,105,161,.1)",color:"#0369a1",border:"1px solid rgba(3,105,161,.3)",
+                  fontWeight:700,fontFamily:t["--sans"]}}>🏥 SESA-PR</span>}
+                <span style={{fontSize:10.5,padding:"3px 9px",border:`1px solid ${t["--border"]}`,
+                  borderRadius:t["--radiusSm"],color:t["--textMuted"],fontFamily:t["--sans"]}}>{safeVia}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ── SESA Stock — shown immediately after hero ── */}
+          {(()=>{
+            const sesaMeds = SESA_DEFAULT?.medicamentos||[];
+            const paWords = (med.pa||"").toLowerCase()
+              .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+              .replace(/[(),.]/g," ").split(/\s+/)
+              .filter(w=>w.length>3 && !/^(mg|ml|mcg|ui|cr|sr|xr|er|lp|os|iv|sc|im|vo)$/i.test(w));
+            const matches = sesaMeds.filter(s=>{
+              const sNome = s.nome.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+              return paWords.some(w=>sNome.includes(w));
+            });
+            if(!matches.length) return null;
+            const total = matches.reduce((acc,m)=>acc+(m.quantidade||0),0);
+            return(
+              <div style={{marginBottom:18,padding:"14px",borderRadius:t["--radius"],
+                background:"rgba(3,105,161,.07)",
+                border:`2px solid rgba(3,105,161,${total>0?".35":".15"})`,
+                animation:"pgFade .3s ease"}}>
+                {/* Header */}
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",
+                  marginBottom:10,flexWrap:"wrap",gap:6}}>
+                  <div style={{display:"flex",alignItems:"center",gap:7}}>
+                    <span style={{fontSize:16}}>📦</span>
+                    <div>
+                      <div style={{fontSize:12,fontWeight:700,color:"#0c4a6e",fontFamily:t["--sans"]}}>
+                        Estoque SESA — FE 10 RS CASCAVEL
+                      </div>
+                      <div style={{fontSize:10,color:"#0369a1",fontFamily:t["--sans"]}}>
+                        Emissão: {SESA_DEFAULT.data_relatorio}
+                      </div>
+                    </div>
+                  </div>
+                  <span style={{fontSize:13,fontWeight:700,fontFamily:"monospace",
+                    padding:"4px 10px",borderRadius:t["--radiusSm"],
+                    background:total>0?"rgba(5,150,105,.12)":"rgba(220,38,38,.08)",
+                    color:total>0?"#059669":"#dc2626",whiteSpace:"nowrap"}}>
+                    {total>0?`✅ ${total.toLocaleString("pt-BR")} un.`:"❌ Sem estoque"}
+                  </span>
+                </div>
+                {/* Items */}
+                <div style={{display:"flex",flexDirection:"column",gap:0,
+                  borderRadius:t["--radiusSm"],overflow:"hidden",
+                  border:"1px solid rgba(3,105,161,.18)"}}>
+                  {matches.map((m,i)=>(
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",
+                      alignItems:"center",padding:"8px 10px",gap:8,
+                      background:i%2===0?"rgba(3,105,161,.04)":"rgba(3,105,161,.02)",
+                      borderBottom:i<matches.length-1?"1px solid rgba(3,105,161,.1)":"none"}}>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:11.5,color:"#0c4a6e",fontFamily:"'JetBrains Mono',monospace",
+                          fontWeight:600,lineHeight:1.3}}>{m.nome}</div>
+                        <div style={{fontSize:10,color:"#0369a1",fontFamily:t["--sans"],marginTop:2}}>
+                          {m.apresentacao}
+                        </div>
+                      </div>
+                      <span style={{fontSize:13,fontWeight:700,fontFamily:"monospace",
+                        color:m.quantidade>0?"#059669":"#dc2626",
+                        whiteSpace:"nowrap",flexShrink:0}}>
+                        {m.quantidade>0?m.quantidade.toLocaleString("pt-BR")+" un.":"—"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{fontSize:10.5,color:"#0369a1",fontFamily:t["--sans"],
+                  lineHeight:1.6,marginTop:8}}>
+                  ⚠️ Medicamento CEAF — exige laudo médico (LME), cadastro SESA-PR e receita especial.
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Posologia */}
+          <PanelSection title="Posologia" icon="💊" t={t}>
+            <PanelDoseCard safeDose={safeDose} dose={dose} f={f} t={t} safeCor={safeCor}/>
+          </PanelSection>
+
+          {/* Patient warnings */}
+          {ws.length>0&&(
+            <PanelSection title="Alertas de Perfil" icon="👤" t={t} warn>
+              {ws.map((w,i)=>(
+                <div key={i} style={{fontSize:12.5,padding:"9px 12px",borderRadius:t["--radiusSm"],
+                  marginBottom:5,background:w.d?t["--dangerBg"]:t["--warnBg"],
+                  border:`1px solid ${w.d?t["--dangerBrd"]:t["--warnBrd"]}`,
+                  color:w.d?t["--dangerTxt"]:t["--warnTxt"],fontFamily:t["--sans"]}}>
+                  {w.d?"🚫":"⚠️"} {w.s}
+                </div>
+              ))}
+            </PanelSection>
+          )}
+
+          {/* Mechanism */}
+          <PanelSection title="Mecanismo de Ação" icon="⚗️" t={t}>
+            <p style={{fontSize:13,color:t["--text"],lineHeight:1.75,fontFamily:t["--sans"]}}>{med.mec||"—"}</p>
+          </PanelSection>
+
+          {/* Contraindications */}
+          <PanelSection title="Contraindicações" icon="🚫" t={t} warn>
+            <p style={{fontSize:12.5,color:t["--warnTxt"],lineHeight:1.75,fontFamily:t["--sans"]}}>{med.ci||"—"}</p>
+          </PanelSection>
+
+          {/* Alerts */}
+          {safeAl.length>0&&(
+            <PanelSection title="Alertas Importantes" icon="⚠️" t={t} warn>
+              {safeAl.map((a,i)=>(
+                <div key={i} style={{fontSize:12.5,padding:"9px 12px",borderRadius:t["--radiusSm"],
+                  marginBottom:5,background:t["--warnBg"],border:`1px solid ${t["--warnBrd"]}`,
+                  color:t["--warnTxt"],fontFamily:t["--sans"]}}>⚠️ {a}</div>
+              ))}
+            </PanelSection>
+          )}
+
+          {/* Symptoms covered */}
+          {safeSyms.length>0&&(
+            <PanelSection title="Indicado Para" icon="🩺" t={t}>
+              <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                {safeSyms.map(s=>{
+                  const lbl=ALL.find(i=>i.id===s)?.label||s;
+                  return(
+                    <span key={s} style={{fontSize:11.5,padding:"4px 11px",borderRadius:20,
+                      background:t["--accentBg"],color:t["--accentText"],
+                      border:`1px solid ${t["--accentBrd"]}`,fontFamily:t["--sans"]}}>{lbl}</span>
+                  );
+                })}
+              </div>
+            </PanelSection>
+          )}
+
+          {/* Program availability */}
+          {(med.fp||med.sus)&&(
+            <PanelSection title="Disponível Gratuitamente" icon="🏛️" t={t}>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {med.fp&&(
+                  <div style={{padding:"11px 14px",borderRadius:t["--radiusSm"],
+                    background:t["--fpBg"],border:`1.5px solid ${t["--fpBrd"]}`}}>
+                    <div style={{fontWeight:700,fontSize:12.5,color:t["--fpTxt"],fontFamily:t["--sans"],marginBottom:4,display:"flex",alignItems:"center",gap:6}}>
+                      <span>🏛️</span> Farmácia Popular (Aqui Tem Farmácia Popular)
+                    </div>
+                    <div style={{fontSize:11.5,color:t["--fp"],lineHeight:1.65,fontFamily:t["--sans"],marginBottom:5}}>
+                      <strong>100% gratuito</strong> — apresentar receita médica válida (SUS ou particular) + documento com foto e CPF em qualquer farmácia credenciada com o selo "Aqui Tem Farmácia Popular".
+                    </div>
+                    <div style={{fontSize:11,color:t["--fpTxt"],fontFamily:t["--sans"],opacity:.8}}>
+                      📍 Em Cascavel-PR: consulte farmácias credenciadas em <strong>consultafp.saude.gov.br</strong> ou ligue <strong>136</strong> (Ministério da Saúde).
+                    </div>
+                  </div>
+                )}
+                {med.sus&&(
+                  <div style={{padding:"11px 14px",borderRadius:t["--radiusSm"],
+                    background:t["--susBg"],border:`1.5px solid ${t["--susBrd"]}`}}>
+                    <div style={{fontWeight:700,fontSize:12.5,color:t["--susTxt"],fontFamily:t["--sans"],marginBottom:4,display:"flex",alignItems:"center",gap:6}}>
+                      <span>💊</span> Farmácia Básica SUS — UBS / CBAF
+                    </div>
+                    <div style={{fontSize:11.5,color:t["--sus"],lineHeight:1.65,fontFamily:t["--sans"],marginBottom:5}}>
+                      <strong>Gratuito na UBS</strong> — retirar na Unidade Básica de Saúde (Posto de Saúde) do bairro. Apresentar receita médica + CPF + Cartão SUS.
+                    </div>
+                    <div style={{fontSize:11,color:t["--susTxt"],fontFamily:t["--sans"],opacity:.8}}>
+                      📍 <strong>Cascavel-PR — Farmácia Básica:</strong> Av. Tancredo Neves, 1453 · WhatsApp: <strong>(45) 3321-5529</strong>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </PanelSection>
+          )}
+
+          {/* Substitutes — clickable */}
+          {alts.length>0&&(
+            <PanelSection title="Substitutos em Caso de Falta" icon="🔄" t={t}>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {alts.map(alt=>{
+                  const ar=rgb(alt.cor||"#10b981");
+                  return(
+                    <button key={alt.id}
+                      onClick={()=>onOpen(alt)}
+                      style={{display:"flex",alignItems:"center",gap:10,
+                        padding:"12px 14px",borderRadius:t["--radius"],
+                        background:`rgba(${ar},.06)`,border:`1.5px solid rgba(${ar},.25)`,
+                        cursor:"pointer",textAlign:"left",width:"100%",
+                        transition:"all .18s",fontFamily:t["--sans"]}}
+                      onMouseEnter={e=>{e.currentTarget.style.background=`rgba(${ar},.14)`;e.currentTarget.style.borderColor=`rgba(${ar},.55)`;}}
+                      onMouseLeave={e=>{e.currentTarget.style.background=`rgba(${ar},.06)`;e.currentTarget.style.borderColor=`rgba(${ar},.25)`;}}
+                    >
+                      <div style={{width:4,height:44,borderRadius:2,
+                        background:alt.cor||"#10b981",flexShrink:0}}/>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontFamily:t["--mono"],fontWeight:700,fontSize:13.5,
+                          color:alt.cor||"#10b981",marginBottom:3,lineHeight:1.2}}>{alt.pa}</div>
+                        <div style={{fontSize:10,color:t["--textMuted"],textTransform:"uppercase",
+                          letterSpacing:".05em",marginBottom:4,fontFamily:t["--sans"]}}>{alt.classe}</div>
+                        <div style={{fontSize:11.5,color:t["--textDim"],fontFamily:t["--mono"]}}>
+                          {(alt.dose?.a)||"—"}
+                          {alt.dose?.max&&<span style={{color:t["--textDim"],marginLeft:7,fontSize:10}}>· {alt.dose.max}</span>}
+                        </div>
+                      </div>
+                      <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",
+                        gap:5,flexShrink:0}}>
+                        {(alt.comerciais||[]).slice(0,2).map(n=>(
+                          <span key={n} style={{fontSize:10,padding:"2px 7px",
+                            background:`rgba(${ar},.13)`,color:alt.cor||"#10b981",
+                            borderRadius:t["--radiusSm"],fontWeight:500,fontFamily:t["--sans"]}}>{n}</span>
+                        ))}
+                        {alt.fito&&<span style={{fontSize:9,padding:"1px 5px",borderRadius:t["--radiusSm"],
+                          background:t["--fitoBg"],color:t["--fitoText"],
+                          border:`1px solid ${t["--fitoBrd"]}`,fontWeight:700,fontFamily:t["--sans"]}}>🌿</span>}
+                        {alt.chronic&&<span style={{fontSize:9,padding:"1px 5px",borderRadius:t["--radiusSm"],
+                          background:t["--chronicBg"],color:t["--chronicText"],
+                          border:`1px solid ${t["--chronicBrd"]}`,fontWeight:700,fontFamily:t["--sans"]}}>🏥</span>}
+                        <span style={{fontSize:18,color:`rgba(${ar},.6)`,lineHeight:1}}>›</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </PanelSection>
+          )}
+
+          <div style={{height:24}}/>
+        </div>
+      </div>
+    </>
+  );
+}
+
+
+/* ════════════════════════ SESA ESTOQUE VIEW ════════════════════════ */port { useState, useMemo, useCallback, createContext, useContext, useEffect } from "react";
+
+/* ═══════════════ THEMES ═══════════════ */
+const THEMES = {
+  light:{name:"Claro",icon:"○",vars:{
+    "--bg":"#f0f4f9","--surface":"#ffffff","--surface2":"#f5f8fc","--surface3":"#eaeff6",
+    "--border":"#dde6f0","--border2":"#c4d2e4",
+    "--text":"#1a2535","--textMuted":"#627080","--textDim":"#9aaabb",
+    "--accent":"#0a7c52","--accentBg":"#edfaf4","--accentBrd":"#9fe8c8","--accentText":"#065f3c",
+    "--blue":"#1d4ed8","--blueBg":"#eff6ff","--blueTxt":"#1e40af",
+    "--warn":"#b45309","--warnBg":"#fffbeb","--warnBrd":"#fcd34d","--warnTxt":"#92400e",
+    "--danger":"#b91c1c","--dangerBg":"#fef2f2","--dangerBrd":"#fca5a5","--dangerTxt":"#991b1b",
+    "--fito":"#15803d","--fitoBg":"#f0fdf4","--fitoBrd":"#86efac","--fitoText":"#14532d",
+    "--chronic":"#7c3aed","--chronicBg":"#faf5ff","--chronicBrd":"#c4b5fd","--chronicText":"#4c1d95",
+    "--mono":"'JetBrains Mono',monospace","--sans":"'Sora',sans-serif",
+    "--radius":"13px","--radiusSm":"8px",
+    "--hdrBg":"#ffffff","--hdrBrd":"#e2eaf4",
+    "--tagBg":"#edfaf4","--tagTxt":"#065f3c","--tagBrd":"#9fe8c8","--doseBg":"#f1f5fb","--fp":"#1d4ed8","--fpBg":"#eff6ff","--fpBrd":"#bfdbfe","--fpTxt":"#1e3a8a","--sus":"#047857","--susBg":"#ecfdf5","--susBrd":"#6ee7b7","--susTxt":"#065f3c",
+  }},
+  dark:{name:"Escuro",icon:"◐",vars:{
+    "--bg":"#07090d","--surface":"#0c1018","--surface2":"#101520","--surface3":"#141b25",
+    "--border":"#1a2535","--border2":"#243040",
+    "--text":"#d8e2ee","--textMuted":"#4a6070","--textDim":"#2e3e50",
+    "--accent":"#059669","--accentBg":"#042912","--accentBrd":"#065f46","--accentText":"#34d399",
+    "--blue":"#3b82f6","--blueBg":"#0a1628","--blueTxt":"#60a5fa",
+    "--warn":"#d97706","--warnBg":"rgba(245,158,11,.08)","--warnBrd":"rgba(245,158,11,.22)","--warnTxt":"#fbbf24",
+    "--danger":"#dc2626","--dangerBg":"rgba(239,68,68,.08)","--dangerBrd":"rgba(239,68,68,.22)","--dangerTxt":"#f87171",
+    "--fito":"#16a34a","--fitoBg":"#052e16","--fitoBrd":"#166534","--fitoText":"#4ade80",
+    "--chronic":"#a78bfa","--chronicBg":"#1a0a2e","--chronicBrd":"#6d28d9","--chronicText":"#c4b5fd",
+    "--mono":"'JetBrains Mono',monospace","--sans":"'Sora',sans-serif",
+    "--radius":"13px","--radiusSm":"8px",
+    "--hdrBg":"#0a0e16","--hdrBrd":"#141e2e",
+    "--tagBg":"#0a1f1a","--tagTxt":"#34d399","--tagBrd":"#064e3b","--doseBg":"#060a0e","--fp":"#60a5fa","--fpBg":"#0a1628","--fpBrd":"#1e40af","--fpTxt":"#93c5fd","--sus":"#34d399","--susBg":"#052e16","--susBrd":"#065f46","--susTxt":"#6ee7b7",
+  }},
+  industrial:{name:"Industrial",icon:"◧",vars:{
+    "--bg":"#e9e4da","--surface":"#f0ebe1","--surface2":"#e4dfd5","--surface3":"#dbd5ca",
+    "--border":"#b5a990","--border2":"#8a7d68",
+    "--text":"#1a1612","--textMuted":"#5a5045","--textDim":"#8a7d68",
+    "--accent":"#9a3a0a","--accentBg":"#fdf0e6","--accentBrd":"#d4824a","--accentText":"#7c2d0a",
+    "--blue":"#1e4d8c","--blueBg":"#e8f0fb","--blueTxt":"#153670",
+    "--warn":"#92400e","--warnBg":"#fdf0e2","--warnBrd":"#d4a27a","--warnTxt":"#7c2d0a",
+    "--danger":"#991b1b","--dangerBg":"#fdf0f0","--dangerBrd":"#d4a0a0","--dangerTxt":"#7c1a1a",
+    "--fito":"#3d6b1a","--fitoBg":"#f0f5e8","--fitoBrd":"#9ab870","--fitoText":"#2a4a10",
+    "--chronic":"#5b21b6","--chronicBg":"#f3f0fa","--chronicBrd":"#a78bfa","--chronicText":"#3b0764",
+    "--mono":"'Courier New',monospace","--sans":"'Georgia',serif",
+    "--radius":"4px","--radiusSm":"2px",
+    "--hdrBg":"#1a1612","--hdrBrd":"#3a3028",
+    "--tagBg":"#fdf0e6","--tagTxt":"#7c2d0a","--tagBrd":"#d4824a","--doseBg":"#dbd5ca","--fp":"#1e3a8a","--fpBg":"#e8f0fb","--fpBrd":"#93c5fd","--fpTxt":"#1e3a8a","--sus":"#14532d","--susBg":"#f0f5e8","--susBrd":"#86efac","--susTxt":"#14532d",
+  }},
+};
+
+if(!document.getElementById("pg-sty")){
+  const s=document.createElement("style");s.id="pg-sty";
+  s.textContent=`
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+    @keyframes pgSlide{from{opacity:0;transform:translateY(7px) scale(.988)}to{opacity:1;transform:none}}
+    @keyframes pgFade{from{opacity:0}to{opacity:1}}
+    .pg-med{animation:pgSlide .22s ease both}
+    .pg-med:nth-child(1){animation-delay:.00s}.pg-med:nth-child(2){animation-delay:.03s}
+    .pg-med:nth-child(3){animation-delay:.06s}.pg-med:nth-child(4){animation-delay:.09s}
+    .pg-med:nth-child(5){animation-delay:.12s}.pg-med:nth-child(6){animation-delay:.15s}
+    .pg-med:nth-child(7){animation-delay:.18s}.pg-med:nth-child(8){animation-delay:.21s}
+    .pg-med:nth-child(9){animation-delay:.24s}.pg-med:nth-child(10){animation-delay:.27s}
+    .pg-med:nth-child(11){animation-delay:.30s}.pg-med:nth-child(12){animation-delay:.33s}
+    .pg-sc::-webkit-scrollbar{width:4px}
+    .pg-sc::-webkit-scrollbar-thumb{background:var(--border,#dde6f0);border-radius:2px}
+    .pg-grp:hover{background:var(--surface3)!important}
+    .pg-sym:hover{background:var(--surface3)!important;border-color:var(--border2)!important}
+    .pg-pill:hover{opacity:.65!important}
+    .pg-clr:hover{filter:brightness(.88)}
+    .pg-theme:hover{background:var(--surface3)!important}
+    .pg-nav:hover{filter:brightness(.93)}
+    @keyframes sidebarSlide{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+    @keyframes pgPanelIn{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:none}}
+    .pg-nav:focus{outline:none}
+    .pg-sidebar{animation:sidebarSlide .22s ease}
+    .pg-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:198;animation:pgFade .2s ease}
+    .pg-menu-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:none;cursor:pointer;transition:background .18s;flex-shrink:0}
+    .pg-menu-btn:hover{filter:brightness(.88)}
+    .fp-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px!important;padding:2px 6px;border-radius:4px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+  `;
+  document.head.appendChild(s);
+}
+
+const Ctx=createContext("light");
+
+/* ═══════════════════════════════════════════════
+   MEDICATION DATABASE
+   fito:true = fitoterápico
+   chronic:true = indicado para condições crônicas
+═══════════════════════════════════════════════ */
+function MedCard({m,score,max,f,sel,catalog=false,onSelectMed=null}){
+  const[open,setOpen]=useState(false);
+  const theme=useContext(Ctx);
+  const t=THEMES[theme]?.vars||THEMES.light.vars;
+
+  // ── DEFENSIVE GUARDS ──
+  if(!m||!m.pa) return null;
+  const safeF    = f    || {isG:false,isL:false,isC:false,isI:false};
+  const safeSel  = sel  || new Set();
+  const safeSyms = Array.isArray(m.syms)      ? m.syms      : [];
+  const safeAl   = Array.isArray(m.al)        ? m.al        : [];
+  const safeCom  = Array.isArray(m.comerciais)? m.comerciais: [];
+  const safeDose = m.dose || {a:"—",max:"",p:""};
+  const safeCor  = m.cor  || "#10b981";
+  const safeVia  = m.via  || "Oral";
+  const safeMec  = m.mec  || "—";
+  const safeCi   = m.ci   || "—";
+
+  const ws     = getWarns(m, safeF);
+  const danger = ws.some(w=>w.d);
+  const r      = rgb(safeCor);
+  const dose   = (safeF.isC && safeDose.p) ? safeDose.p : (safeDose.a||"—");
+  const matched= safeSyms.filter(s=>safeSel.has(s)).map(s=>ALL.find(i=>i.id===s)?.label||s);
+  const alts   = getAlts(m.id);
+  const isInd  = theme==="industrial";
+
+  const cardBg    = `rgba(${r},.05)`;
+  const cardBd    = `${isInd?"2px":"1.5px"} solid rgba(${r},.2)`;
+  const cardBdHov = `rgba(${r},.5)`;
+  const cardBgHov = `rgba(${r},.1)`;
+
+  return(
+    <div className="pg-med"
+      onClick={e=>{e.stopPropagation();setOpen(o=>!o);}}
+      onMouseEnter={e=>{e.currentTarget.style.background=cardBgHov;e.currentTarget.style.borderColor=cardBdHov;}}
+      onMouseLeave={e=>{e.currentTarget.style.background=cardBg;e.currentTarget.style.borderColor=`rgba(${r},.2)`;}}
+      style={{background:cardBg,border:cardBd,borderRadius:t["--radius"],
+        padding:"14px 16px",cursor:"pointer",transition:"all .18s",opacity:danger?.55:1}}>
+
+      {/* ── TOP ROW ── */}
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10}}>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2,flexWrap:"wrap"}}>
+            <span style={{fontFamily:t["--mono"],fontWeight:700,fontSize:16,color:safeCor,letterSpacing:".01em",lineHeight:1.3}}>{m.pa}</span>
+            {m.fito&&<span style={{fontSize:9,padding:"1px 5px",borderRadius:t["--radiusSm"],background:t["--fitoBg"],color:t["--fitoText"],border:`1px solid ${t["--fitoBrd"]}`,fontWeight:700,letterSpacing:".05em",textTransform:"uppercase",fontFamily:t["--sans"],flexShrink:0}}>🌿 fito</span>}
+            {m.chronic&&<span style={{fontSize:9,padding:"1px 5px",borderRadius:t["--radiusSm"],background:t["--chronicBg"],color:t["--chronicText"],border:`1px solid ${t["--chronicBrd"]}`,fontWeight:700,letterSpacing:".05em",textTransform:"uppercase",fontFamily:t["--sans"],flexShrink:0}}>🏥 crônico</span>}
+            {m.fp&&<span className="fp-badge" style={{background:t["--fpBg"],color:t["--fpTxt"],border:`1px solid ${t["--fpBrd"]}`}}>🏛️ Farm. Popular</span>}
+            {m.sus&&<span className="fp-badge" style={{background:t["--susBg"],color:t["--susTxt"],border:`1px solid ${t["--susBrd"]}`}}>💊 Farmácia Básica</span>}
+            {m.sesa&&<span className="fp-badge" style={{background:"rgba(3,105,161,.1)",color:"#0369a1",border:"1px solid rgba(3,105,161,.3)"}}>🏥 SESA</span>}
+          </div>
+          {m.fito&&m.planta&&<div style={{fontSize:9.5,color:t["--fito"],fontStyle:"italic",marginBottom:3,fontFamily:t["--sans"],opacity:.85}}>{m.planta} · {m.parte}</div>}
+          <div style={{fontSize:10,color:t["--textMuted"],textTransform:"uppercase",letterSpacing:".06em",marginBottom:5,fontFamily:t["--sans"]}}>{m.classe}</div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:3}}>
+            {safeCom.slice(0,3).map(n=><span key={n} style={{fontSize:9.5,padding:"1px 6px",background:`rgba(${r},.12)`,color:safeCor,borderRadius:t["--radiusSm"],fontWeight:500,fontFamily:t["--sans"]}}>{n}</span>)}
+          </div>
+        </div>
+        <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
+          {score!==undefined&&!catalog&&max>0&&(
+            <div style={{display:"flex",alignItems:"center",gap:4}}>
+              <div style={{width:40,height:3,background:t["--border"],borderRadius:2,overflow:"hidden"}}>
+                <div style={{width:`${Math.min((score/max)*100,100)}%`,height:"100%",background:safeCor,borderRadius:2}}/>
+              </div>
+              <span style={{fontSize:9.5,color:t["--textMuted"],fontFamily:t["--mono"]}}>{score}/{max}</span>
+            </div>
+          )}
+          <span style={{fontSize:9.5,color:t["--textMuted"],padding:"2px 6px",border:`1px solid ${t["--border"]}`,borderRadius:t["--radiusSm"],fontFamily:t["--sans"]}}>{safeVia}</span>
+          <span style={{fontSize:12,color:t["--textMuted"],display:"block",transform:open?"rotate(180deg)":"none",transition:"transform .2s"}}>▾</span>
+        </div>
+      </div>
+
+      {/* ── DOSE BAR ── */}
+      <div style={{marginTop:9,padding:"7px 10px",background:t["--doseBg"],borderRadius:t["--radiusSm"],
+        display:"flex",gap:7,alignItems:"flex-start",border:isInd?`1px solid ${t["--border"]}`:"none"}}>
+        <span style={{fontSize:9.5,color:t["--textDim"],flexShrink:0,paddingTop:2,fontWeight:700,letterSpacing:".06em",fontFamily:t["--sans"]}}>DOSE</span>
+        <span style={{fontFamily:t["--mono"],fontSize:11,color:t["--textMuted"],lineHeight:1.5}}>
+          {dose}{safeDose.max&&<span style={{color:t["--textDim"],marginLeft:6}}>· {safeDose.max}</span>}
+        </span>
+      </div>
+
+      {/* ── PATIENT WARNINGS ── */}
+      {ws.length>0&&(
+        <div style={{marginTop:6,display:"flex",flexDirection:"column",gap:3}}>
+          {ws.map((w,i)=>(
+            <div key={i} style={{fontSize:10,padding:"3px 8px",borderRadius:t["--radiusSm"],
+              background:w.d?t["--dangerBg"]:t["--warnBg"],
+              border:`1px solid ${w.d?t["--dangerBrd"]:t["--warnBrd"]}`,
+              color:w.d?t["--dangerTxt"]:t["--warnTxt"],fontFamily:t["--sans"]}}>
+              {w.d?"🚫":"⚠️"} {w.s}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── EXPANDED DETAILS ── */}
+      {open&&(
+        <div style={{marginTop:11,borderTop:`1px solid ${t["--border"]}`,paddingTop:11,
+          display:"flex",flexDirection:"column",gap:7}}>
+
+          {matched.length>0&&<DR l="Indicado para" v={matched.join(", ")} c={safeCor} t={t}/>}
+          <DR l="Mecanismo" v={safeMec} t={t}/>
+          <DR l="Contraindicações" v={safeCi} warn t={t}/>
+          {safeAl.length>0&&<DR l="Alertas" v={safeAl.join(" · ")} warn t={t}/>}
+          {safeF.isC&&safeDose.p&&<DR l="Dose Pediátrica" v={safeDose.p} c={t["--blue"]} t={t}/>}
+
+          {/* sintomas cobertos (somente no catálogo) */}
+          {catalog&&safeSyms.length>0&&(
+            <div>
+              <div style={{fontSize:9,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",
+                color:t["--textDim"],marginBottom:5,fontFamily:t["--sans"]}}>Sintomas cobertos</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+                {safeSyms.map(s=>{
+                  const lbl=ALL.find(i=>i.id===s)?.label||s;
+                  return(
+                    <span key={s} style={{fontSize:9.5,padding:"1px 7px",borderRadius:20,
+                      background:t["--accentBg"],color:t["--accentText"],
+                      border:`1px solid ${t["--accentBrd"]}`,fontFamily:t["--sans"]}}>{lbl}</span>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* ── ALTERNATIVAS ── */}
+          {alts.length>0&&(
+            <div style={{marginTop:2}}>
+              <div style={{fontSize:9,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",
+                color:t["--warn"],marginBottom:6,fontFamily:t["--sans"],
+                display:"flex",alignItems:"center",gap:5}}>
+                <span>🔄</span> Substitutos em falta
+                {onSelectMed&&<span style={{fontSize:8.5,color:t["--textDim"],fontWeight:400,textTransform:"none",letterSpacing:0}}>— clique para ver detalhes</span>}
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                {alts.map(alt=>{
+                  const ar=rgb(alt.cor||"#10b981");
+                  const clickable=!!onSelectMed;
+                  return(
+                    <div key={alt.id}
+                      onClick={clickable?(e=>{e.stopPropagation();onSelectMed(alt);}):undefined}
+                      style={{display:"flex",alignItems:"center",gap:8,
+                        padding:"9px 11px",borderRadius:t["--radiusSm"],
+                        background:`rgba(${ar},.06)`,
+                        border:`1.5px solid rgba(${ar},.22)`,
+                        cursor:clickable?"pointer":"default",
+                        transition:clickable?"all .16s":"none",
+                        position:"relative"}}>
+                      <div style={{width:3,height:38,borderRadius:2,background:alt.cor||"#10b981",flexShrink:0}}/>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontFamily:t["--mono"],fontSize:12,fontWeight:700,
+                          color:alt.cor||"#10b981",lineHeight:1.2,marginBottom:2}}>{alt.pa}</div>
+                        <div style={{fontSize:9.5,color:t["--textMuted"],fontFamily:t["--sans"],
+                          textTransform:"uppercase",letterSpacing:".05em",marginBottom:3}}>{alt.classe}</div>
+                        <div style={{fontSize:10.5,color:t["--textDim"],fontFamily:t["--mono"]}}>
+                          {(alt.dose?.a)||"—"}
+                        </div>
+                      </div>
+                      <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
+                        {(alt.comerciais||[]).slice(0,1).map(n=>(
+                          <span key={n} style={{fontSize:9,padding:"2px 6px",
+                            background:`rgba(${ar},.13)`,color:alt.cor||"#10b981",
+                            borderRadius:t["--radiusSm"],fontFamily:t["--sans"],fontWeight:500}}>{n}</span>
+                        ))}
+                        {alt.fito&&<span style={{fontSize:8,padding:"1px 5px",borderRadius:t["--radiusSm"],
+                          background:t["--fitoBg"],color:t["--fitoText"],
+                          border:`1px solid ${t["--fitoBrd"]}`,fontWeight:700,fontFamily:t["--sans"]}}>🌿</span>}
+                        {clickable&&<span style={{fontSize:13,color:`rgba(${ar},.7)`,marginTop:2}}>›</span>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DR({l,v,c,warn,t}){
+  if(!t) return null;
+  return(
+    <div style={{display:"flex",gap:9,alignItems:"flex-start"}}>
+      <span style={{fontSize:9,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",
+        color:warn?t["--warn"]:(c||t["--textDim"]),flexShrink:0,width:88,
+        paddingTop:2,lineHeight:1.4,fontFamily:t["--sans"]}}>{l}</span>
+      <span style={{fontSize:11,color:warn?t["--warnTxt"]:t["--textMuted"],
+        lineHeight:1.6,fontFamily:t["--sans"]}}>{v||"—"}</span>
+    </div>
+  );
+}
+
+/* ════════════════════════ CHRONIC WARNING BANNER ════════════════════════ */
+function ChronicBanner({sel,t}){
+  const hasChronic=[...sel].some(s=>CHRONIC_IDS.has(s));
+  if(!hasChronic) return null;
+  return(
+    <div style={{marginBottom:14,padding:"12px 15px",borderRadius:t["--radius"],
+      background:t["--chronicBg"],border:`2px solid ${t["--chronicBrd"]}`,
+      display:"flex",gap:11,alignItems:"flex-start"}}>
+      <span style={{fontSize:20,flexShrink:0}}>🏥</span>
+      <div>
+        <div style={{fontWeight:700,fontSize:12.5,color:t["--chronicText"],fontFamily:t["--sans"],marginBottom:3}}>
+          Condição Crônica Detectada
+        </div>
+        <div style={{fontSize:11.5,color:t["--chronic"],lineHeight:1.65,fontFamily:t["--sans"]}}>
+          Pressão alta, diabetes e colesterol/triglicerídios elevados <strong>requerem acompanhamento médico e tratamento farmacológico prescrito</strong>.
+          Os fitoterápicos listados são <strong>recursos complementares</strong>, não substitutos de medicamentos prescritos.
+          Sempre oriente o paciente a manter consultas regulares e nunca suspender medicamentos sem orientação médica.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════ CATALOG VIEW ════════════════════════ */
+function CatalogView({f,t,theme,onSelectMed}){
+  const[cSearch,setCSearch]=useState("");
+  const[cFilter,setCFilter]=useState("all");
+  const isInd=theme==="industrial";
+  const filtered=useMemo(()=>{
+    const q=cSearch.toLowerCase();
+    return MEDS.filter(m=>{
+      if(cFilter==="conv"&&m.fito) return false;
+      if(cFilter==="fito"&&!m.fito) return false;
+      if(cFilter==="chronic"&&!m.chronic) return false;
+      if(cFilter==="fp"&&!m.fp) return false;
+      if(cFilter==="sus"&&!m.sus) return false;
+      if(cFilter==="sesa"&&!m.sesa) return false;
+      if(cFilter==="vit"){const V=new Set(["vitd3","acido_folico","vitb12","complexo_b","calcio_vitd","magnesio","vite","biotina","vita","vitk","vitc","sulfato_fe","zinc"]);if(!V.has(m.id)) return false;}
+      if(!q) return true;
+      return m.pa.toLowerCase().includes(q)||m.classe.toLowerCase().includes(q)||m.comerciais.some(c=>c.toLowerCase().includes(q));
+    }).sort((a,b)=>a.pa.localeCompare(b.pa,"pt-BR"));
+  },[cSearch,cFilter]);
+  const btnS=(active,color)=>({padding:"5px 12px",cursor:"pointer",fontFamily:t["--sans"],fontSize:11,fontWeight:active?700:400,borderRadius:isInd?"2px":"20px",transition:"all .16s",background:active?(color||t["--accentBg"]):"transparent",color:active?(color?t["--chronicText"]:t["--accentText"]):t["--textMuted"],border:`1px solid ${active?(color||t["--accentBrd"]):t["--border"]}`,});
+  return(
+    <>
+      <div style={{marginBottom:14}}>
+        <h2 style={{fontSize:15.5,fontWeight:700,marginBottom:2,fontFamily:t["--sans"],color:t["--text"],letterSpacing:isInd?".04em":"normal",textTransform:isInd?"uppercase":"none"}}>Catálogo Completo</h2>
+        <p style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--sans"]}}>{MEDS.length} medicamentos · {MEDS.filter(m=>m.fito).length} fitoterápicos · {MEDS.filter(m=>m.chronic).length} para condições crônicas · Clique para detalhes</p>
+      </div>
+      <div style={{display:"flex",gap:7,flexWrap:"wrap",marginBottom:12,alignItems:"center"}}>
+        {[["all","Todos"],["conv","Convencionais"],["fito","🌿 Fitoterápicos"],["sesa","🏥 SESA-PR"],["vit","💛 Vitaminas"],["fp","🏛️ Farmácia Popular"],["sus","💊 Farmácia Básica SUS"],["chronic","🏥 Crônicos"]].map(([id,lbl])=>(
+          <button key={id} onClick={()=>setCFilter(id)} style={btnS(cFilter===id, id==="chronic"?t["--chronicBg"]:null)}>{lbl}</button>
+        ))}
+        <div style={{flex:1,minWidth:150}}>
+          <input type="text" placeholder="🔍  Buscar..." value={cSearch} onChange={e=>setCSearch(e.target.value)}
+            style={{width:"100%",background:t["--surface2"],border:`1px solid ${t["--border"]}`,borderRadius:t["--radiusSm"],padding:"6px 10px",fontSize:12,color:t["--text"],outline:"none",fontFamily:t["--sans"]}}/>
+        </div>
+      </div>
+      <div style={{marginBottom:12,display:"flex",justifyContent:"flex-end"}}>
+        <span style={{fontSize:10.5,padding:"3px 10px",borderRadius:20,background:t["--tagBg"],color:t["--tagTxt"],border:`1px solid ${t["--tagBrd"]}`,fontFamily:t["--mono"]}}>{filtered.length} resultado{filtered.length!==1?"s":""}</span>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))",gap:9}}>
+        {filtered.map(m=><MedCard key={m.id} m={m} f={f} sel={new Set()} catalog={true} onSelectMed={onSelectMed}/>)}
+      </div>
+      <div style={{marginTop:20,padding:"10px 13px",borderRadius:t["--radiusSm"],background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,fontSize:11.5,color:t["--dangerTxt"],lineHeight:1.7,fontFamily:t["--sans"]}}>
+        <strong>⚕️ Aviso:</strong> Catálogo de referência auxiliar. Sempre confirme alergias, interações e condições especiais do paciente. Condições crônicas requerem acompanhamento médico.
+      </div>
+      <div style={{height:20}}/>
+    </>
+  );
+}
+
+/* ════════════════════════ TAB BAR ════════════════════════ */
+function TabBar({tab,setTab,todosCount,convCount,fitoCount,vitCount,sesaTabCount,fpCount,susCount,t,theme}){
+  const isInd=theme==="industrial";
+  const tabs=[
+    {id:"todos",lbl:"Todos",              ico:"◉",  cnt:todosCount,bg:t["--surface3"],  clr:t["--text"],       brd:t["--border2"]},
+    {id:"conv", lbl:"Medicamentos",       ico:"💊", cnt:convCount, bg:t["--accentBg"],  clr:t["--accentText"], brd:t["--accentBrd"]},
+    {id:"fito", lbl:"Fitoterápicos",       ico:"🌿", cnt:fitoCount, bg:t["--fitoBg"],   clr:t["--fitoText"],  brd:t["--fitoBrd"]},
+    {id:"vit",      lbl:"Vitaminas",       ico:"💛", cnt:vitCount,      bg:"#fef3c7",       clr:"#92400e",        brd:"#fcd34d"},
+    {id:"sesa_tab", lbl:"SESA-PR",         ico:"📦", cnt:sesaTabCount,  bg:"rgba(3,105,161,.1)",clr:"#0c4a6e",   brd:"rgba(3,105,161,.4)"},
+    {id:"fp",   lbl:"Farmácia Popular",    ico:"🏛️", cnt:fpCount,   bg:t["--fpBg"]||t["--blueBg"], clr:t["--fpTxt"]||t["--blueTxt"], brd:t["--fpBrd"]||t["--blue"]},
+    {id:"sus",  lbl:"Farmácia Básica SUS", ico:"🏥", cnt:susCount,  bg:t["--susBg"]||t["--accentBg"], clr:t["--susTxt"]||t["--accentText"], brd:t["--susBrd"]||t["--accentBrd"]},
+  ];
+  return(
+    <div style={{display:"flex",gap:5,marginBottom:14,flexWrap:"wrap"}}>
+      {tabs.map(tb=>{
+        const active=tab===tb.id;
+        return(
+          <button key={tb.id} onClick={()=>setTab(tb.id)}
+            style={{display:"flex",alignItems:"center",gap:5,padding:"7px 12px",cursor:"pointer",
+              transition:"all .17s",fontFamily:t["--sans"],fontSize:11.5,fontWeight:active?700:400,
+              borderRadius:isInd?"2px":"9px",
+              background:active?tb.bg:t["--surface2"],
+              color:active?tb.clr:t["--textMuted"],
+              border:`${active?"2px":"1px"} solid ${active?tb.brd:t["--border"]}`,
+              boxShadow:active?"0 2px 8px rgba(0,0,0,.1)":"none"}}>
+            <span style={{fontSize:14}}>{tb.ico}</span>
+            {tb.lbl}
+            <span style={{fontSize:9.5,padding:"1px 6px",borderRadius:20,fontWeight:700,
+              background:active?tb.brd:t["--border"],
+              color:active?tb.bg:t["--textMuted"],
+              minWidth:18,textAlign:"center"}}>{tb.cnt}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function Empty({t}){return(<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"56px 20px",gap:14,animation:"pgFade .4s ease"}}><div style={{width:60,height:60,borderRadius:"50%",background:t["--surface2"],border:`1.5px solid ${t["--border"]}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26}}>💊</div><p style={{fontSize:13,fontWeight:600,color:t["--textMuted"],fontFamily:t["--sans"]}}>Nenhum sintoma selecionado</p><p style={{fontSize:11.5,color:t["--textDim"],lineHeight:1.7,maxWidth:230,textAlign:"center",fontFamily:t["--sans"]}}>Selecione sintomas ao lado para ver sugestões em tempo real, ou use <strong>MEDICAMENTOS</strong> no menu para o catálogo completo.</p></div>);}
+function FitoEmpty({t}){return(<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}><div style={{width:52,height:52,borderRadius:"50%",background:t["--fitoBg"],border:`1.5px solid ${t["--fitoBrd"]}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>🌿</div><p style={{fontSize:13,fontWeight:600,color:t["--fito"],fontFamily:t["--sans"]}}>Nenhum fitoterápico para estes sintomas</p></div>);}
+
+function VitEmpty({t}){
+  return(
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}>
+      <div style={{width:52,height:52,borderRadius:"50%",background:"#fef3c7",border:"1.5px solid #fcd34d",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>💛</div>
+      <p style={{fontSize:13,fontWeight:600,color:"#92400e",fontFamily:t["--sans"]}}>Nenhuma vitamina para estes sintomas</p>
+      <p style={{fontSize:11.5,color:t["--textMuted"],lineHeight:1.65,maxWidth:240,textAlign:"center",fontFamily:t["--sans"]}}>
+        Use o grupo <strong>💊 Vitaminas & Suplementos</strong> no menu lateral para selecionar a condição adequada.
+      </p>
+    </div>
+  );
+}
+function SesaTabEmpty({t}){
+  return(
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+      padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}>
+      <div style={{width:52,height:52,borderRadius:"50%",background:"rgba(3,105,161,.1)",
+        border:"1.5px solid rgba(3,105,161,.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>📦</div>
+      <p style={{fontSize:13,fontWeight:600,color:"#0c4a6e",fontFamily:t["--sans"]}}>Nenhum medicamento CEAF para estes sintomas</p>
+      <p style={{fontSize:11.5,color:t["--textMuted"],lineHeight:1.65,maxWidth:260,textAlign:"center",fontFamily:t["--sans"]}}>
+        Estes sintomas não possuem correspondência na lista SESA. Veja as abas Medicamentos ou Farmácia Popular.
+      </p>
+    </div>
+  );
+}
+function ConvEmpty({t}){return(<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}><div style={{width:52,height:52,borderRadius:"50%",background:t["--accentBg"],border:`1.5px solid ${t["--accentBrd"]}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>💊</div><p style={{fontSize:13,fontWeight:600,color:t["--accentText"],fontFamily:t["--sans"]}}>Nenhum medicamento para estes sintomas</p><p style={{fontSize:11.5,color:t["--textMuted"],lineHeight:1.65,maxWidth:230,textAlign:"center",fontFamily:t["--sans"]}}>Os sintomas selecionados não possuem medicamentos convencionais cadastrados. Experimente a aba Fitoterápicos.</p></div>);}
+function ProgramEmpty({tipo,t}){
+  const isFP=tipo==="fp";
+  const bg =isFP?(t["--fpBg"]||t["--blueBg"]):(t["--susBg"]||t["--accentBg"]);
+  const brd=isFP?(t["--fpBrd"]||t["--blue"]) :(t["--susBrd"]||t["--accentBrd"]);
+  const clr=isFP?(t["--fpTxt"]||t["--blueTxt"]):(t["--susTxt"]||t["--accentText"]);
+  const lbl=isFP?"Farmácia Popular":"Farmácia Básica SUS";
+  return(
+    <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"44px 20px",gap:12,animation:"pgFade .3s ease"}}>
+      <div style={{width:52,height:52,borderRadius:"50%",background:bg,border:`1.5px solid ${brd}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>
+        {isFP?"🏛️":"🏥"}
+      </div>
+      <p style={{fontSize:13,fontWeight:600,color:clr,fontFamily:t["--sans"]}}>Nenhum medicamento do {lbl} para estes sintomas</p>
+      <p style={{fontSize:11.5,color:t["--textMuted"],lineHeight:1.65,maxWidth:260,textAlign:"center",fontFamily:t["--sans"]}}>
+        Experimente selecionar outros sintomas ou veja as abas Medicamentos e Fitoterápicos.
+      </p>
+    </div>
+  );
+}
+
+function ThemeBtn({id,current,onChange}){
+  const th=THEMES[id];const active=current===id;const t=THEMES[current].vars;
+  return(<button className="pg-theme" onClick={()=>onChange(id)} style={{padding:"5px 10px",cursor:"pointer",fontFamily:t["--sans"],fontSize:11,fontWeight:active?700:400,background:active?t["--accentBg"]:"transparent",color:active?t["--accentText"]:t["--textMuted"],border:`1px solid ${active?t["--accentBrd"]:t["--border"]}`,borderRadius:t["--radiusSm"],transition:"all .17s",display:"flex",alignItems:"center",gap:5}}><span style={{fontSize:11}}>{th.icon}</span>{th.name}</button>);
+}
+
+/* ════════════════════════════════════════
+   MAIN APP
+════════════════════════════════════════ */
+
+function PanelDoseCard({safeDose,dose,f,t,safeCor}){
+  const r=rgb(safeCor);
+  return(
+    <div style={{borderRadius:t["--radiusSm"],overflow:"hidden",border:`1.5px solid rgba(${r},.25)`}}>
+      <div style={{padding:"11px 14px",background:`rgba(${r},.07)`,borderBottom:`1px solid rgba(${r},.15)`}}>
+        <div style={{fontSize:9.5,color:t["--textDim"],fontWeight:700,letterSpacing:".07em",
+          textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>
+          {f.isC&&safeDose.p?"Dose Pediátrica":"Dose — Adulto"}
+        </div>
+        <div style={{fontFamily:t["--mono"],fontSize:13.5,color:t["--text"],lineHeight:1.5}}>{dose}</div>
+        {safeDose.max&&<div style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--mono"],marginTop:3}}>{safeDose.max}</div>}
+      </div>
+      {!f.isC&&safeDose.p&&(
+        <div style={{padding:"11px 14px"}}>
+          <div style={{fontSize:9.5,color:t["--blue"],fontWeight:700,letterSpacing:".07em",
+            textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>Dose Pediátrica</div>
+          <div style={{fontFamily:t["--mono"],fontSize:12.5,color:t["--textMuted"],lineHeight:1.5}}>{safeDose.p}</div>
+        </div>
+      )}
+      {f.isC&&safeDose.a&&safeDose.p&&(
+        <div style={{padding:"11px 14px"}}>
+          <div style={{fontSize:9.5,color:t["--textDim"],fontWeight:700,letterSpacing:".07em",
+            textTransform:"uppercase",fontFamily:t["--sans"],marginBottom:5}}>Referência Adulto</div>
+          <div style={{fontFamily:t["--mono"],fontSize:12,color:t["--textMuted"],lineHeight:1.5}}>{safeDose.a}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function parseSesaText(raw) {
   const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   const meds = [];
@@ -2518,16 +3024,17 @@ function SesaView({f, t, theme, onSelectMed}) {
       <div style={{padding:"16px",marginBottom:16,borderRadius:t["--radius"],
         background:"linear-gradient(135deg,#0c4a6e,#0369a1)",color:"white"}}>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
-          <span style={{fontSize:24}}>BOX</span>
+          <span style={{fontSize:24}}>📦</span>
           <div>
             <div style={{fontWeight:700,fontSize:15,fontFamily:t["--sans"]}}>Estoque SESA-PR</div>
-            <div style={{fontSize:11,opacity:.85,fontFamily:t["--sans"]}}>CEAF - Lei 14.654/23 - Atualizado quinzenalmente</div>
+            <div style={{fontSize:11,opacity:.85,fontFamily:t["--sans"]}}>CEAF — Lei 14.654/23 · Atualizado quinzenalmente</div>
           </div>
         </div>
         <div style={{fontSize:12,opacity:.95,fontFamily:t["--sans"],
           padding:"8px 11px",background:"rgba(255,255,255,.15)",borderRadius:t["--radiusSm"],marginBottom:12,
           display:"flex",alignItems:"center",gap:7}}>
-          <span>Farmacia: FE 10 RS CASCAVEL - paginas 424-427 do relatorio</span>
+          <span>📍</span>
+          <span><strong>Farmácia: FE 10 RS CASCAVEL</strong> · páginas 424–427 do relatório</span>
         </div>
         <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
           <button onClick={loadFromAI} disabled={loading}
@@ -2535,35 +3042,35 @@ function SesaView({f, t, theme, onSelectMed}) {
               fontWeight:700,cursor:loading?"not-allowed":"pointer",
               background:loading?"rgba(255,255,255,.25)":"rgba(255,255,255,.95)",
               color:"#0369a1",border:"none",display:"flex",alignItems:"center",gap:6}}>
-            {loading?"( ) Carregando...":"[ ] Carregar via IA"}
+            {loading?"⏳ Carregando...":"🤖 Carregar via IA"}
           </button>
           <button onClick={()=>setShowPaste(p=>!p)}
             style={{padding:"7px 14px",borderRadius:t["--radiusSm"],fontFamily:t["--sans"],fontSize:11.5,
               fontWeight:600,cursor:"pointer",background:"rgba(255,255,255,.18)",
               color:"white",border:"1px solid rgba(255,255,255,.4)"}}>
-            [ ] Colar texto do PDF
+            📋 Colar texto do PDF
           </button>
           <a href={PDF_SESA_URL} target="_blank" rel="noopener"
             style={{padding:"7px 14px",borderRadius:t["--radiusSm"],fontFamily:t["--sans"],fontSize:11.5,
               fontWeight:600,textDecoration:"none",cursor:"pointer",
               background:"rgba(255,255,255,.1)",color:"white",border:"1px solid rgba(255,255,255,.3)"}}>
-            [ ] Abrir PDF Estoque
+            📄 Abrir PDF Estoque
           </a>
           <a href="https://farmaciacidada.es.gov.br/Media/farmaciacidada/Cidada%20Estadual/LME%20-%20Atualizado%20-%206%20meses.pdf" target="_blank" rel="noopener"
             style={{padding:"7px 14px",borderRadius:t["--radiusSm"],fontFamily:t["--sans"],fontSize:11.5,
               fontWeight:600,textDecoration:"none",cursor:"pointer",
               background:"rgba(255,255,255,.08)",color:"white",border:"1px solid rgba(255,255,255,.25)"}}>
-            [ ] Modelo LME (PDF)
+            📝 Modelo LME (PDF)
           </a>
         </div>
         <div style={{fontSize:10,opacity:.7,fontFamily:t["--sans"],marginTop:8}}>
           {lastTs
-            ? (sesaData?.fonte==="texto_manual"?"Inserido manualmente - ":"Atualizado em ") + new Date(lastTs).toLocaleString("pt-BR")
+            ? (sesaData?.fonte==="texto_manual"?"✏️ Inserido manualmente — ":"🔄 Atualizado em ") + new Date(lastTs).toLocaleString("pt-BR")
             : sesaData?.fonte==="pdf_embutido"
-              ? "Dados de referencia embutidos - Emissao: " + sesaData.data_relatorio
+              ? "📋 Dados de referência embutidos — Emissão: " + sesaData.data_relatorio
               : ""}
           {sesaData?.data_relatorio && lastTs
-            ? " - Relatorio: " + sesaData.data_relatorio
+            ? " · Relatório: " + sesaData.data_relatorio
             : ""}
         </div>
       </div>
@@ -2573,7 +3080,7 @@ function SesaView({f, t, theme, onSelectMed}) {
         <div style={{marginBottom:14,padding:"12px 14px",borderRadius:t["--radiusSm"],
           background:t["--warnBg"],border:`1px solid ${t["--warnBrd"]}`}}>
           <div style={{fontSize:12,color:t["--warnTxt"],fontFamily:t["--sans"],marginBottom:7,fontWeight:600}}>
-            [*] Chave API Anthropic para carregar via IA:
+            🔑 Chave API Anthropic para carregar via IA:
           </div>
           <div style={{display:"flex",gap:6}}>
             <input type="password" placeholder="sk-ant-..." value={apiKey}
@@ -2592,23 +3099,23 @@ function SesaView({f, t, theme, onSelectMed}) {
         <div style={{marginBottom:14,padding:"14px",borderRadius:t["--radius"],
           background:t["--surface2"],border:`1.5px solid ${t["--border"]}`}}>
           <div style={{fontSize:12.5,fontWeight:700,color:t["--text"],fontFamily:t["--sans"],marginBottom:6}}>
-            [ ] Cole o texto copiado das paginas 424-427 do PDF
+            📋 Cole o texto copiado das páginas 424–427 do PDF
           </div>
           <div style={{fontSize:11,color:t["--textMuted"],fontFamily:t["--sans"],marginBottom:8,lineHeight:1.6}}>
             Abra o PDF, navegue até as páginas 424–427 (FE 10 RS CASCAVEL), selecione e copie o texto, depois cole abaixo:
           </div>
           <textarea value={pasteText} onChange={e=>setPasteText(e.target.value)}
             rows={10} placeholder={"ADALIMUMABE 40MG/0,8ML INJ SOL\n150\n10/2025\nATENOLOL 25MG COMP\n2500\n06/2026\n..."}
-            style={{...inp,resize:"vertical",lineHeight:1.5,fontFamily:"monospace",fontSize:11}}></textarea>
+            style={{...inp,resize:"vertical",lineHeight:1.5,fontFamily:"monospace",fontSize:11}}/>
           <div style={{display:"flex",gap:7,marginTop:8}}>
             <button onClick={handlePaste}
               style={{padding:"8px 16px",background:t["--accentBg"],border:`1px solid ${t["--accentBrd"]}`,
                 borderRadius:t["--radiusSm"],color:t["--accentText"],cursor:"pointer",
-                fontFamily:t["--sans"],fontSize:12,fontWeight:700 }}> Importar Lista</button>
+                fontFamily:t["--sans"],fontSize:12,fontWeight:700}}>✓ Importar Lista</button>
             <button onClick={()=>{setShowPaste(false);setPasteText("");}}
               style={{padding:"8px 14px",background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,
                 borderRadius:t["--radiusSm"],color:t["--dangerTxt"],cursor:"pointer",
-                fontFamily:t["--sans"],fontSize:12 }}>Cancelar</button>
+                fontFamily:t["--sans"],fontSize:12}}>Cancelar</button>
           </div>
         </div>
       )}
@@ -2618,8 +3125,8 @@ function SesaView({f, t, theme, onSelectMed}) {
         <div style={{marginBottom:12,padding:"9px 13px",borderRadius:t["--radiusSm"],
           background:"rgba(3,105,161,.07)",border:"1px solid rgba(3,105,161,.25)",
           fontSize:11,color:"#0369a1",fontFamily:t["--sans"],lineHeight:1.65}}>
-          [ ] Dados de referencia: lista embutida com {SESA_DEFAULT.medicamentos.length} itens (emissao 01/05/2026).
-          Clique em Atualizar para carregar o estoque mais recente diretamente do site da SESA/PR.
+          📋 <strong>Dados de referência:</strong> lista embutida com {SESA_DEFAULT.medicamentos.length} itens (emissão 01/05/2026).
+          Clique em <strong>🔄 Atualizar</strong> para carregar o estoque mais recente diretamente do site da SESA/PR.
         </div>
       )}
       {/* ── Error ── */}
@@ -2627,8 +3134,8 @@ function SesaView({f, t, theme, onSelectMed}) {
         <div style={{marginBottom:14,padding:"10px 13px",borderRadius:t["--radiusSm"],
           background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,
           fontSize:11.5,color:t["--dangerTxt"],fontFamily:t["--sans"],lineHeight:1.65}}>
-          [!] Nao foi possivel carregar via IA ({status.replace("error:","")}).<br/>
-          Use Colar texto do PDF como alternativa: abra o PDF, va ate as paginas 424-427 e cole o texto aqui.
+          ⚠️ Não foi possível carregar via IA ({status.replace("error:","")}).<br/>
+          Use <strong>📋 Colar texto do PDF</strong> como alternativa: abra o PDF, vá até as páginas 424–427 e cole o texto aqui.
         </div>
       )}
 
@@ -2835,8 +3342,55 @@ function FarmaciaONG(){
             <span style={{fontWeight:700,fontSize:14.5,color:isInd?t["--bg"]:t["--text"],fontFamily:isInd?"'Georgia',serif":t["--sans"],letterSpacing:isInd?".05em":".01em",textTransform:isInd?"uppercase":"none"}}>Guia Farmácia</span>
             <span style={{fontSize:9,padding:"3px 7px",borderRadius:isInd?"2px":"4px",background:t["--tagBg"],color:t["--tagTxt"],border:`1px solid ${t["--tagBrd"]}`,letterSpacing:".08em",fontWeight:700,textTransform:"uppercase",fontFamily:t["--sans"],display:isMobile?"none":"inline-block"}}>ONG · Dispensação</span>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:7}}>
-            {mode==="symptoms"&&sel.size>0&&<span style={{fontSize:10.5,color:t["--textMuted"],marginRight:2,fontFamily:t["--sans"],display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}><span style={{color:t["--accentText"]}}>{sel.size} sint.</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--blue"]}}>💊{convRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--fito"]}}>🌿{fitoRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:"#d97706"}}>💛{vitRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--fp"]||t["--blue"]}}>🏛️{fpRanked.length}</span><span style={{color:t["--border2"]}}>·</span><span style={{color:t["--sus"]||t["--accent"]}}>UBS {susRanked.length}</span></span>}
+          <div style={{display:"flex",alignItems:"center",gap:5}}>
+
+            {/* ── status counter (desktop only) ── */}
+            {!isMobile&&mode==="symptoms"&&sel.size>0&&(
+              <span style={{fontSize:10,color:t["--textMuted"],marginRight:4,fontFamily:t["--sans"],
+                display:"flex",alignItems:"center",gap:4}}>
+                <span style={{color:t["--accentText"]}}>{sel.size} sint.</span>
+                <span style={{color:t["--border2"]}}>·</span>
+                <span style={{color:t["--blue"]}}>💊{convRanked.length}</span>
+                <span style={{color:t["--border2"]}}>·</span>
+                <span style={{color:t["--fito"]}}>🌿{fitoRanked.length}</span>
+              </span>
+            )}
+
+            {/* ── MEDICAMENTOS + SESA quick-nav buttons ── */}
+            <div style={{display:"flex",alignItems:"center",gap:4}}>
+              {/* MEDICAMENTOS */}
+              <button onClick={()=>setMode(m=>m==="catalog"?"symptoms":"catalog")}
+                style={{display:"flex",alignItems:"center",gap:isMobile?0:5,
+                  padding:isMobile?"7px":"6px 11px",
+                  borderRadius:isInd?"2px":"8px",cursor:"pointer",
+                  background:mode==="catalog"?t["--accentBg"]:t["--surface2"],
+                  border:`1.5px solid ${mode==="catalog"?t["--accentBrd"]:t["--border"]}`,
+                  color:mode==="catalog"?t["--accentText"]:t["--textMuted"],
+                  fontFamily:t["--sans"],fontSize:11,fontWeight:mode==="catalog"?700:500,
+                  transition:"all .17s",minWidth:isMobile?34:0}}>
+                <span style={{fontSize:15}}>📋</span>
+                {!isMobile&&<span>Medicamentos</span>}
+              </button>
+
+              {/* SESA */}
+              <button onClick={()=>setMode(m=>m==="sesa"?"symptoms":"sesa")}
+                style={{display:"flex",alignItems:"center",gap:isMobile?0:5,
+                  padding:isMobile?"7px":"6px 11px",
+                  borderRadius:isInd?"2px":"8px",cursor:"pointer",
+                  background:mode==="sesa"?"rgba(3,105,161,.12)":t["--surface2"],
+                  border:`1.5px solid ${mode==="sesa"?"rgba(3,105,161,.45)":t["--border"]}`,
+                  color:mode==="sesa"?"#0369a1":t["--textMuted"],
+                  fontFamily:t["--sans"],fontSize:11,fontWeight:mode==="sesa"?700:500,
+                  transition:"all .17s",minWidth:isMobile?34:0}}>
+                <span style={{fontSize:15}}>📦</span>
+                {!isMobile&&<span>SESA</span>}
+              </button>
+            </div>
+
+            {/* ── Separator ── */}
+            <div style={{width:1,height:22,background:t["--border2"],margin:"0 3px",flexShrink:0}}/>
+
+            {/* ── Theme buttons ── */}
             {Object.keys(THEMES).map(id=><ThemeBtn key={id} id={id} current={theme} onChange={setTheme}/>)}
           </div>
         </div>
@@ -2929,42 +3483,12 @@ function FarmaciaONG(){
             {mode==="catalog"&&<div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px",flexDirection:"column",gap:10}}><span style={{fontSize:28}}>📋</span><p style={{fontSize:11.5,color:t["--textMuted"],textAlign:"center",lineHeight:1.7,fontFamily:t["--sans"]}}>Catálogo completo ativo.<br/><span style={{fontSize:10.5,color:t["--textDim"]}}>Volte ao modo de sintomas para filtrar por condição.</span></p></div>}
             {/* clear */}
             {mode==="symptoms"&&sel.size>0&&<div style={{padding:"9px 13px",borderTop:`1px solid ${t["--border"]}`,flexShrink:0}}><button className="pg-clr" onClick={()=>{setSel(new Set());setTab("conv");}} style={{width:"100%",padding:"7px",borderRadius:t["--radiusSm"],background:t["--dangerBg"],border:`1px solid ${t["--dangerBrd"]}`,color:t["--dangerTxt"],fontSize:11.5,fontWeight:600,cursor:"pointer",fontFamily:t["--sans"]}}>✕ Limpar seleção ({sel.size})</button></div>}
-            {/* MEDICAMENTOS nav */}
-            <div style={{borderTop:`${isInd?"2px":"1px"} solid ${t["--border"]}`,flexShrink:0}}>
-              <button className="pg-nav" onClick={()=>setMode(m=>m==="catalog"?"symptoms":"catalog")}
-                style={{width:"100%",padding:"12px 15px",background:mode==="catalog"?t["--accentBg"]:t["--surface"],border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:10,transition:"all .18s",fontFamily:t["--sans"],borderTop:mode==="catalog"?`2px solid ${t["--accentBrd"]}`:"2px solid transparent"}}>
-                <div style={{width:32,height:32,borderRadius:t["--radiusSm"],background:mode==="catalog"?t["--accent"]:t["--surface3"],display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,flexShrink:0,transition:"background .18s"}}>📋</div>
-                <div style={{textAlign:"left"}}>
-                  <div style={{fontSize:11.5,fontWeight:700,letterSpacing:".05em",textTransform:"uppercase",color:mode==="catalog"?t["--accentText"]:t["--textMuted"],fontFamily:t["--sans"]}}>Medicamentos</div>
-                  <div style={{fontSize:10,color:t["--textDim"],fontFamily:t["--sans"]}}>{mode==="catalog"?`${MEDS.length} no catálogo · clique para voltar`:`Ver ${MEDS.length} medicamentos cadastrados`}</div>
-                </div>
-              </button>
-              {/* ── SESA nav button ── */}
-              <button
-                className="pg-nav"
-                onClick={()=>setMode(m=>m==="sesa"?"symptoms":"sesa")}
-                style={{
-                  width:"100%",padding:"12px 15px",
-                  background:mode==="sesa"?"rgba(3,105,161,.12)":t["--surface"],
-                  border:"none",cursor:"pointer",
-                  display:"flex",alignItems:"center",gap:10,
-                  transition:"all .18s",fontFamily:t["--sans"],
-                  borderTop:mode==="sesa"?"2px solid rgba(3,105,161,.5)":"1px solid "+t["--border"],
-                }}>
-                <div style={{width:32,height:32,borderRadius:t["--radiusSm"],
-                  background:mode==="sesa"?"#0369a1":t["--surface3"],
-                  display:"flex",alignItems:"center",justifyContent:"center",
-                  fontSize:15,flexShrink:0,transition:"background .18s"}}>📦</div>
-                <div style={{textAlign:"left"}}>
-                  <div style={{fontSize:11.5,fontWeight:700,letterSpacing:".05em",
-                    textTransform:"uppercase",
-                    color:mode==="sesa"?"#0369a1":t["--textMuted"],
-                    fontFamily:t["--sans"]}}>Estoque SESA</div>
-                  <div style={{fontSize:10,color:t["--textDim"],fontFamily:t["--sans"]}}>
-                    {mode==="sesa"?"CEAF/SESA-PR · clique para voltar":`CEAF · ${MEDS.filter(m=>m.sesa).length} medicamentos`}
-                  </div>
-                </div>
-              </button>
+            {/* ── Hint: nav buttons moved to header ── */}
+            <div style={{padding:"8px 13px",borderTop:`1px solid ${t["--border"]}`,flexShrink:0,
+              display:"flex",gap:6,alignItems:"center"}}>
+              <span style={{fontSize:9.5,color:t["--textDim"],fontFamily:t["--sans"],flex:1,lineHeight:1.5}}>
+                📋 Medicamentos e 📦 SESA disponíveis no topo ↑
+              </span>
             </div>
           </div>
 
