@@ -2443,6 +2443,8 @@ function DrugDetailPanel({stack,onClose,onBack,onOpen,f}){
 
 
 
+const PDF_SESA_URL = "https://www.documentador.pr.gov.br/documentador/pub.do?action=d&uuid=@gtf-escriba-sesa@/Documentador/Acervo/ASSIST%C3%8ANCIA%20FARMAC%C3%8AUTICA/DOCUMENTOS%20P%C3%9ABLICOS/ESTOQUE%20MEDICAMENTOS%20CEAF%20-%20LEI%2014654-23/RelEmitirEstoqueMedicamentoCeaf-atual.pdf";
+
 function parseSesaText(raw) {
   const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   const meds = [];
