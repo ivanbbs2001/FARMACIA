@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Guia Farmácia ONG</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" crossorigin></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" crossorigin></script>
@@ -925,6 +924,153 @@ const MEDS=[
    al:["Causa sedação intensa — iniciar com dose baixa","Síndrome metabólica — monitorar glicemia e lipídeos","Hipotensão ortostática — levantar devagar","Não suspender abruptamente"],
    ci:"Hipersensibilidade, QT longo, uso com CYP3A4 fortes (azóis, macrolídeos) sem ajuste",
    mec:"Antagonismo D2/5-HT2A/H1/α1 → efeito antipsicótico, estabilizador de humor e sedativo; perfil receptor amplo"},
+
+  /* ═══════════════════════════════════════
+     MEDICAMENTOS DAS FOTOS — FARMÁCIA ONG
+  ═══════════════════════════════════════ */
+
+  /* ── Fertilidade & Gestação ── */
+  {id:"megafert",pa:"MegaFert® (Ácido Fólico + Ferro + Vitaminas)",comerciais:["MegaFert","Gestafol","Materna"],
+   classe:"Suplemento Gestacional · Multivitamínico Pré-natal",cor:"#f43f5e",fito:false,chronic:false,fp:false,sus:true,
+   syms:["fertilidade","gestacao_vit","anemia","fraqueza"],
+   dose:{a:"1–2 comprimidos/dia com refeição",max:"conforme produto",p:"Não aplicável — uso materno"},
+   via:"Oral",gS:true,lS:true,cS:false,
+   al:["Iniciar pelo menos 3 meses antes da gestação","Ácido fólico essencial para prevenção de DTN"],
+   ci:"Hipersensibilidade a algum componente",
+   mec:"Ácido fólico previne defeitos do tubo neural; ferro previne anemia gestacional; iodo apoia função tireoidiana fetal"},
+
+  /* ── Saúde Intestinal / Probióticos ── */
+  {id:"probio_gg",pa:"Probiótico LGG (Lactobacillus rhamnosus GG)",comerciais:["ProVance GG","Bifilac Mind","Biotix 25B","Endorus"],
+   classe:"Probiótico · Modulador da Microbiota",cor:"#84cc16",fito:true,chronic:false,fp:false,sus:false,
+   syms:["saude_intestinal","diarreia","constipacao","baixa_imunidade"],
+   dose:{a:"1–2 cápsulas/sachês 1–2×/dia, preferencialmente em jejum",max:"conforme produto",p:"Formulação pediátrica (>6 meses)"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Manter refrigerado","Separar ≥2h de antibióticos"],
+   ci:"Imunossupressão grave, cateter venoso central",
+   mec:"Lactobacillus rhamnosus GG coloniza transitoriamente o intestino → compete com patógenos, modula resposta imune e restaura barreira intestinal",
+   planta:"Lactobacillus rhamnosus GG",parte:"Cultura bacteriana liofilizada"},
+
+  {id:"floratil",pa:"Saccharomyces boulardii (Floratil®)",comerciais:["Floratil","Floratil 250","Lacteol"],
+   classe:"Probiótico · Levedura Medicinal",cor:"#f97316",fito:true,chronic:false,fp:false,sus:false,
+   syms:["saude_intestinal","diarreia"],
+   dose:{a:"250–500 mg (1–2 cápsulas) 2×/dia",max:"1 g/dia",p:"250 mg 1–2×/dia (>2 anos)"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Não é afetado por antibióticos (é levedura)","Pode ser tomado junto com antibioticoterapia"],
+   ci:"Imunossupressão grave, pacientes com cateter venoso central",
+   mec:"Saccharomyces boulardii inibe toxinas bacterianas, estimula IgA secretora e reduz permeabilidade intestinal",
+   planta:"Saccharomyces boulardii",parte:"Levedura liofilizada"},
+
+  {id:"biofemina",pa:"Biofemina® (Lactobacillus acidophilus + crispatus)",comerciais:["Biofemina","Flora Íntima","Lactobacillus Vaginal"],
+   classe:"Probiótico Feminino · Modulador da Flora Vaginal",cor:"#ec4899",fito:true,chronic:false,fp:false,sus:false,
+   syms:["candidíase_vaginal","saude_intestinal"],
+   dose:{a:"1 cápsula vaginal ou oral 1×/dia por 7–14 dias",max:"conforme indicação",p:"Não indicado <18 anos"},
+   via:"Oral / Vaginal",gS:true,lS:true,cS:false,
+   al:["Refrigerado","Associar com antifúngico na candidíase aguda"],
+   ci:"Hipersensibilidade",
+   mec:"Lactobacillus produz ácido láctico → pH vaginal ácido (<4,5) → inibe Candida e Gardnerella → restaura eubiose vaginal",
+   planta:"Lactobacillus acidophilus + L. crispatus",parte:"Cultura bacteriana liofilizada"},
+
+  /* ── Gastrointestinal ── */
+  {id:"sucralfato",pa:"Sucralfato (Sucrafilm®)",comerciais:["Sucrafilm","Sucrafilm 200mg/mL","Ulsafate"],
+   classe:"Gastroprotetor · Antiulcerogênico · Polímero Alumínio-Sacarose",cor:"#3b82f6",fito:false,chronic:false,fp:false,sus:false,
+   syms:["azia_refluxo","dor_abdominal"],
+   dose:{a:"1 g (10 mL suspensão ou 1 comp.) 4×/dia, 1h antes das refeições e ao deitar",max:"4 g/dia",p:"40–80 mg/kg/dia ÷ 4 doses"},
+   via:"Oral",gS:false,lS:false,cS:true,
+   al:["Tomar em jejum, 1h antes das refeições","Separar ≥2h de outros medicamentos","Pode causar constipação (alumínio)"],
+   ci:"Insuf. renal grave, diálise",
+   mec:"Forma gel viscoso aderente à mucosa úlcera → barreira protetora física + estimula síntese de prostaglandinas e muco local"},
+
+  {id:"glicel",pa:"Glicel® (Glicerina) — Supositório",comerciais:["Glicel","Glicerina Supositório","Glecerol"],
+   classe:"Laxante Lubrificante · Supositório",cor:"#a3a3a3",fito:false,chronic:false,fp:false,sus:true,
+   syms:["constipacao"],
+   dose:{a:"1 supositório retal adulto quando necessário",max:"1 supositório/dia",p:"1 supositório pediátrico (lactentes/crianças)"},
+   via:"Retal",gS:true,lS:true,cS:true,
+   al:["Não usar mais de 3 dias seguidos","Não substituir tratamento da causa base"],
+   ci:"Obstrução intestinal, fissura anal ativa",
+   mec:"Glicerina hipertônica atrai água para o reto por osmose + lubrifica → estimula evacuação em 15–30 min"},
+
+  {id:"fontelax",pa:"Fontelax® (Fibras Solúveis + Plantago ovata)",comerciais:["Fontelax","BeneFlora","Fibralem"],
+   classe:"Laxante Volumoso · Fibras Solúveis",cor:"#65a30d",fito:true,chronic:false,fp:false,sus:false,
+   syms:["constipacao","saude_intestinal","colesterol"],
+   dose:{a:"1 sachê em 200 mL água 1–2×/dia (antes das refeições)",max:"conforme produto",p:"(>6 anos) com bastante água"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["SEMPRE tomar com ≥200 mL de água","Separar ≥2h de outros medicamentos"],
+   ci:"Obstrução intestinal, disfagia",
+   mec:"Fibras solúveis formam gel viscoso → aumentam volume fecal, regulam trânsito intestinal e reduzem absorção de colesterol",
+   planta:"Plantago ovata + fibras vegetais",parte:"Tegumento da semente"},
+
+  {id:"bulcero",pa:"Bulcero® (Omeprazol 20 mg ou Pantoprazol 20 mg)",comerciais:["Bulcero","Pantocal","Pantoprazol Genérico"],
+   classe:"IBP — Inibidor da Bomba de Prótons · Gastroprotetor",cor:"#8b5cf6",fito:false,chronic:false,fp:false,sus:true,
+   syms:["azia_refluxo","dor_abdominal"],
+   dose:{a:"20 mg 1×/dia em jejum (30–60 min antes do café)",max:"40 mg/dia",p:"0,5–1 mg/kg/dia (>1 ano)"},
+   via:"Oral",gS:false,lS:false,cS:true,
+   al:["Tomar 30–60 min antes do café da manhã","Uso >14 dias: orientação médica"],
+   ci:"Hipersensibilidade a benzimidazóis",
+   mec:"Inibe irreversivelmente H⁺/K⁺-ATPase → supressão potente e prolongada da secreção ácida gástrica"},
+
+  /* ── Vitaminas e Suplementos das Fotos ── */
+  {id:"aidetres",pa:"Aidê 3® (Colecalciferol — Vitamina D3)",comerciais:["Aidê 3","Simpl-D","D3 Gotas"],
+   classe:"Vitamina D3 · Imunomodulador · Saúde Óssea",cor:"#f59e0b",fito:false,chronic:false,fp:false,sus:true,
+   syms:["vit_d_def","ossos","fraqueza","baixa_imunidade","fertilidade","gestacao_vit"],
+   dose:{a:"1000–2000 UI/dia (manutenção); 50.000 UI/semana por 8 semanas (deficiência)",max:"4000 UI/dia sem prescrição",p:"400 UI/dia (<1 ano); 600–1000 UI/dia (1–18 anos)"},
+   via:"Oral (gotas/cápsulas)",gS:true,lS:true,cS:true,
+   al:["Dosar 25-OH vitamina D antes e após reposição","Doses altas: monitorar calcemia"],
+   ci:"Hipercalcemia, sarcoidose, tuberculose ativa",
+   mec:"Calcitriol (metabólito ativo) regula absorção intestinal de Ca²⁺, função imune via receptores VDR e síntese de hormônios"},
+
+  {id:"calcos",pa:"Calcos® (Carbonato de Cálcio 1250 mg + Vitamina D3)",comerciais:["Calcos","Caltrate","CalcioVit D3"],
+   classe:"Suplemento de Cálcio · Saúde Óssea",cor:"#94a3b8",fito:false,chronic:true,fp:false,sus:true,
+   syms:["ossos","caimbra","osteoporose","vit_d_def","menopausa"],
+   dose:{a:"1 comprimido mastigável 2×/dia com refeição (fornece 500 mg Ca + 200 UI D3 por comprimido)",max:"1200 mg Ca/dia",p:"Conforme faixa etária"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Tomar com refeição","Separar ≥2h de ferro, tireoide e bisfosfonatos","Ingestão >1200 mg/dia: risco de cálculo renal"],
+   ci:"Hipercalcemia, hipercalciúria, litíase renal de oxalato, insuf. renal grave",
+   mec:"Cálcio elementar é cofator estrutural de ossos e dentes; D3 regula absorção intestinal de Ca²⁺ e mineralização óssea"},
+
+  {id:"ainofer",pa:"Ainofer® (Ferro Quelato Aminoácido — Bisglicianato)",comerciais:["Ainofer","Ferrochel","Noripurum Quelato"],
+   classe:"Suplemento de Ferro · Antianêmico",cor:"#b45309",fito:false,chronic:false,fp:false,sus:true,
+   syms:["anemia","fraqueza","fertilidade","gestacao_vit"],
+   dose:{a:"25–50 mg Fe elementar 1×/dia em jejum",max:"conforme hemograma",p:"1–2 mg/kg/dia Fe elementar"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Melhor tolerância GI que sulfato ferroso","Tomar em jejum ou com vitamina C","Fezes escuras (normal)"],
+   ci:"Hemocromatose, anemia não ferropriva",
+   mec:"Ferro bisglicianato (quelato) é absorvido por rota independente de pH → maior biodisponibilidade e menor irritação GI vs. sulfato ferroso"},
+
+  {id:"vitacolin",pa:"VitaColin® (Colágeno Hidrolisado + Vitamina C + Zinco)",comerciais:["VitaColin","Colágeno Activ","Collagen Plus"],
+   classe:"Suplemento de Colágeno · Dermatoprotetor · Articular",cor:"#f97316",fito:false,chronic:false,fp:false,sus:false,
+   syms:["pele_cabelo","caimbra","ossos","dor_cronica"],
+   dose:{a:"10 g (1 sachê) 1×/dia em 200 mL de água",max:"conforme produto",p:"Não recomendado <12 anos"},
+   via:"Oral",gS:false,lS:false,cS:false,
+   al:["Efeito visível após 3–6 meses de uso contínuo","Vitamina C potencializa síntese de colágeno"],
+   ci:"Hipersensibilidade, insuf. renal (zinco)"},
+
+  {id:"puravit",pa:"PuraVit® (Multivitamínico Completo)",comerciais:["PuraVit","Centrum","Supravit"],
+   classe:"Multivitamínico · Suplemento Polivitamínico",cor:"#06b6d4",fito:false,chronic:false,fp:false,sus:false,
+   syms:["fraqueza","baixa_imunidade","vit_d_def"],
+   dose:{a:"1 comprimido/cápsula 1×/dia com refeição",max:"conforme produto",p:"Formulação infantil (>2 anos)"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Tomar com refeição","Vitaminas lipossolúveis (A, D, E, K): cautela com superdosagem"],
+   ci:"Hipervitaminose A ou D, hipersensibilidade",
+   mec:"Repõe micronutrientes essenciais: vitaminas A, C, D, E, K, complexo B e minerais (zinco, selênio, magnésio)"},
+
+  {id:"puravit_adz",pa:"PuraVit ADZ® (Vitaminas A + D + Zinco)",comerciais:["PuraVit ADZ","ADZ Gotas","Vitamineral ADZ"],
+   classe:"Vitaminas A, D e Zinco · Imunomodulador",cor:"#eab308",fito:false,chronic:false,fp:false,sus:true,
+   syms:["fraqueza","baixa_imunidade","vit_d_def","gestacao_vit"],
+   dose:{a:"1 cápsula ou conforme gotas/produto 1×/dia",max:"conforme produto",p:"Gotas pediátricas: conforme peso"},
+   via:"Oral",gS:true,lS:true,cS:true,
+   al:["Vitamina A TERATOGÊNICA em altas doses — gestantes: máx 5000 UI/dia","Não superdosar"],
+   ci:"Hipervitaminose A, gestação (doses altas de vit A)",
+   mec:"Vit A: diferenciação epitelial, visão e imunidade · Vit D: absorção de Ca e modulação imune · Zinco: cofator enzimático e cicatrização"},
+
+  {id:"urocran",pa:"Urocran® (Cranberry + Vitamina C)",comerciais:["Urocran","Cran-Urin","Cranberry UTI"],
+   classe:"Fitoterápico · Profilaxia Urológica · Anti-adesão",cor:"#dc2626",fito:true,chronic:false,fp:false,sus:false,
+   syms:["infeccao_urinaria","candidíase_vaginal"],
+   dose:{a:"2 cápsulas 2×/dia com bastante água; ou conforme produto",max:"conforme produto",p:"Consultar médico (<12 anos)"},
+   via:"Oral",gS:true,lS:true,cS:false,
+   al:["Cuidado com warfarina em doses altas","Hidratação adequada potencializa efeito"],
+   ci:"Cálculos renais de oxalato, hipersensibilidade",
+   mec:"Proantocianidinas tipo A (PAC) do cranberry inibem adesão fimbrial de E. coli ao uroepitélio; vitamina C acidifica urina",
+   planta:"Vaccinium macrocarpon (Cranberry)",parte:"Fruto (extrato padronizado em PAC)"},
   /* ═══════════════════════════════════════
      FITOTERÁPICOS — Gerais
   ═══════════════════════════════════════ */
@@ -1298,6 +1444,7 @@ const GROUPS=[
     {id:"diarreia",label:"Diarreia"},{id:"dor_abdominal",label:"Dor Abdominal"},
     {id:"colica",label:"Cólica"},{id:"azia_refluxo",label:"Azia / Refluxo"},
     {id:"constipacao",label:"Constipação"},{id:"parasitose",label:"Parasitose Intestinal"},
+    {id:"saude_intestinal",label:"Saúde Intestinal / Microbiota"},
   ]},
   {label:"Pele, Olhos & Boca",icon:"👁️",items:[
     {id:"coceira_alergia",label:"Coceira / Alergia"},
@@ -1326,6 +1473,13 @@ const GROUPS=[
     {id:"tontura",label:"Tontura"},{id:"insonia",label:"Insônia"},
     {id:"ansiedade_leve",label:"Ansiedade Leve"},
   ]},
+  {label:"Fertilidade & Saúde Feminina",icon:"🌸",items:[
+    {id:"fertilidade",label:"Fertilidade / Planejamento Familiar"},
+    {id:"gestacao_vit",label:"Gestação (suplementação)"},
+    {id:"candidíase_vaginal",label:"Candidíase Vaginal / Flora Íntima"},
+    {id:"menopausa",label:"Menopausa / Climatério"},
+    {id:"dor_mama",label:"Dor nas Mamas (mastalgia)"},
+  ]},
   {label:"Vitaminas & Suplementos",icon:"💊",vitaminas:true,items:[
     {id:"vit_d_def",   label:"Deficiência de Vitamina D"},
     {id:"anemia",      label:"Anemia / Deficiência de Ferro"},
@@ -1340,7 +1494,7 @@ const GROUPS=[
 const ALL=GROUPS.flatMap(g=>g.items);
 
 /* ─── CHRONIC CONDITION IDS ─── */
-const CHRONIC_IDS=new Set(["pressao_alta","diabetes","colesterol","trigliceridios","osteoporose","hipotireoidismo","artrite","epilepsia"]);
+const CHRONIC_IDS=new Set(["pressao_alta","diabetes","colesterol","trigliceridios","osteoporose","hipotireoidismo","artrite","epilepsia","menopausa"]);
 
 /* ═══════════════════════════════════════ UTILS ═══════════════════════════════════════ */
 const rgb=h=>{try{return[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)).join(",");}catch{return"100,180,100";}};
@@ -1494,6 +1648,25 @@ const ALTS={
   salva:       ["clorex_bucal","benzidamina","aroeira"],
   aroeira:     ["salva","clorex_bucal","clotrimazol"],
   sro:         ["vitc","zinc"],
+  // Fertilidade & Feminino
+  megafert:    ["acido_folico","ainofer","vitb12","puravit_adz"],
+  ainofer:     ["sulfato_fe","megafert"],
+  biofemina:   ["clotrimazol","nistatina","probio_gg"],
+  urocran:     ["ellura","cistop"],
+  // GI / Probióticos
+  probio_gg:   ["floratil","biofemina"],
+  floratil:    ["probio_gg"],
+  sucralfato:  ["omeprazol","bulcero","espinheira"],
+  bulcero:     ["omeprazol","sucralfato"],
+  glicel:      ["bisacodil","lactulose","flenus"],
+  fontelax:    ["softol","lactulose","macrogol"],
+  // Vitaminas
+  aidetres:    ["vitd3","puravit_adz"],
+  calcos:      ["calcio_vitd","vitd3"],
+  vitacolin:   ["dexpantenol","biotina"],
+  puravit:     ["puravit_adz","complexo_b"],
+  puravit_adz: ["puravit","vitd3","vita"],
+
 };
 
 /* helper — get alternative med objects for a given id */
@@ -1728,7 +1901,7 @@ function CatalogView({f,t,theme,onSelectMed}){
       if(cFilter==="fp"&&!m.fp) return false;
       if(cFilter==="sus"&&!m.sus) return false;
       if(cFilter==="sesa"&&!m.sesa) return false;
-      if(cFilter==="vit"){const V=new Set(["vitd3","acido_folico","vitb12","complexo_b","calcio_vitd","magnesio","vite","biotina","vita","vitk","vitc","sulfato_fe","zinc"]);if(!V.has(m.id)) return false;}
+      if(cFilter==="vit"){const V=new Set(["vitd3","acido_folico","vitb12","complexo_b","calcio_vitd","magnesio","vite","biotina","vita","vitk","vitc","sulfato_fe","zinc","aidetres","calcos","ainofer","puravit","puravit_adz","vitacolin","megafert"]);if(!V.has(m.id)) return false;}
       if(!q) return true;
       return m.pa.toLowerCase().includes(q)||m.classe.toLowerCase().includes(q)||m.comerciais.some(c=>c.toLowerCase().includes(q));
     }).sort((a,b)=>a.pa.localeCompare(b.pa,"pt-BR"));
