@@ -1743,8 +1743,36 @@ function MedCard({m,score,max,f,sel,catalog=false,onSelectMed=null}){
         </div>
       </div>
 
+      {/* ── SINTOMAS ── */}
+      {safeSyms.length>0&&(
+        <div style={{marginTop:9}}>
+          <div style={{display:"flex",flexWrap:"wrap",gap:3,alignItems:"center"}}>
+            <span style={{fontSize:9,color:t["--textDim"],flexShrink:0,fontWeight:700,
+              letterSpacing:".06em",textTransform:"uppercase",fontFamily:t["--sans"],
+              marginRight:2}}>Indicado para</span>
+            {safeSyms.map(s=>{
+              const lbl=ALL.find(i=>i.id===s)?.label||s;
+              const active=safeSel.has(s);
+              return(
+                <span key={s} style={{
+                  fontSize:9.5,padding:"1px 7px",borderRadius:20,
+                  fontFamily:t["--sans"],lineHeight:1.6,
+                  background:active?`rgba(${r},.18)`:t["--surface3"],
+                  color:active?safeCor:t["--textMuted"],
+                  fontWeight:active?700:400,
+                  border:active?`1px solid rgba(${r},.35)`:`1px solid ${t["--border"]}`,
+                  transition:"all .15s",
+                }}>
+                  {lbl}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* ── DOSE BAR ── */}
-      <div style={{marginTop:9,padding:"7px 10px",background:t["--doseBg"],borderRadius:t["--radiusSm"],
+      <div style={{marginTop:7,padding:"7px 10px",background:t["--doseBg"],borderRadius:t["--radiusSm"],
         display:"flex",gap:7,alignItems:"flex-start",border:isInd?`1px solid ${t["--border"]}`:"none"}}>
         <span style={{fontSize:9.5,color:t["--textDim"],flexShrink:0,paddingTop:2,fontWeight:700,letterSpacing:".06em",fontFamily:t["--sans"]}}>DOSE</span>
         <span style={{fontFamily:t["--mono"],fontSize:11,color:t["--textMuted"],lineHeight:1.5}}>
