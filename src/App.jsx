@@ -366,7 +366,7 @@ export default function FarmaciaONG(){
                         Medicamentos do Componente Básico da Assistência Farmacêutica, <strong>gratuitos nas UBS</strong> (Unidades Básicas de Saúde). Apresente receita médica + CPF + Cartão SUS.
                       </div>
                       <div style={{fontSize:10.5,color:t["--susTxt"]||t["--accentText"],fontFamily:t["--sans"],padding:"6px 10px",background:"rgba(0,0,0,.04)",borderRadius:t["--radiusSm"]}}>
-                        📍 <strong>Cascavel-PR — Farmácia Básica:</strong> Av. Tancredo Neves, 1453 · WhatsApp: <strong>(45) 3321-5529</strong>
+                        📍 <strong>Cascavel-PR — Farmácia Básica:</strong> Av. Tancredo Neves, 777 · WhatsApp: <strong>(45) 3321-5529</strong>
                       </div>
                     </div>
                   </div>

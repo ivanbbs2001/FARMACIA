@@ -5,22 +5,14 @@ export const VERIFICADO_EM = "09/11/2026";
 
 export const PONTOS = [
   {
-    id: "informado",
-    nome: "Farmácia Básica — endereço informado pela ONG",
-    endereco: "Av. Tancredo Neves, 1453 — Cascavel/PR",
-    whatsapp: "(45) 3321-5529",
-    horario: null,
-    obs: "Endereço e WhatsApp informados pela equipe da ONG. Não localizei esse endereço em fonte pública; confirme se é o mesmo ponto da Básica I (abaixo).",
-    ok: false,
-  },
-  {
     id: "b1",
     nome: "Farmácia Básica I",
     endereco: "Av. Tancredo Neves, 777 — Centro, Cascavel/PR",
     telefone: "(45) 3392-6580",
+    whatsapp: "(45) 3321-5529",
     horario: "Seg a sex: 9h–18h (diretório, não oficial). Sábado/feriado em escala: 13h–19h (imprensa local).",
-    obs: "Endereço citado pela imprensa local (CATVE, 22/09/2026). Telefone e horário de semana vêm de diretórios na internet — confirme por telefone.",
-    ok: false,
+    obs: "Endereço confirmado pela equipe da ONG. WhatsApp informado pela ONG. O telefone fixo e o horário de semana vêm de diretórios na internet — confirme por ligação.",
+    ok: true,
   },
   {
     id: "b2",

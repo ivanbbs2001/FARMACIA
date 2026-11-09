@@ -325,7 +325,7 @@ export function DrugDetailPanel({stack,onClose,onBack,onOpen,f}){
                       <strong>Gratuito na UBS</strong> — retirar na Unidade Básica de Saúde (Posto de Saúde) do bairro. Apresentar receita médica + CPF + Cartão SUS.
                     </div>
                     <div style={{fontSize:11,color:t["--susTxt"],fontFamily:t["--sans"],opacity:.8}}>
-                      📍 <strong>Cascavel-PR — Farmácia Básica:</strong> Av. Tancredo Neves, 1453 · WhatsApp: <strong>(45) 3321-5529</strong>
+                      📍 <strong>Cascavel-PR — Farmácia Básica:</strong> Av. Tancredo Neves, 777 · WhatsApp: <strong>(45) 3321-5529</strong>
                     </div>
                   </div>
                 )}
