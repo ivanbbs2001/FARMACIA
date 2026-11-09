@@ -10,11 +10,12 @@ import { MEDS } from "./data/meds";
 import { useSesa } from "./data/sesaStore";
 import { SesaAgeNotice } from "./components/SesaAgeNotice";
 import { GlobalSearch } from "./components/GlobalSearch";
+import { FarmaciaBasicaView } from "./components/FarmaciaBasicaView";
 import { InteractionsView } from "./components/InteractionsView";
 export default function FarmaciaONG(){
   const sesa=useSesa();
   const[theme,setTheme]=useState("light");
-  const[mode,setMode]=useState("symptoms"); // symptoms | catalog | sesa | interacoes
+  const[mode,setMode]=useState("symptoms"); // symptoms | catalog | sesa | basica | interacoes
   const[tab,setTab]=useState("conv");
   const[medStack,setMedStack]=useState([]);
   const openMedDetail =useCallback(med=>setMedStack(p=>[...p,med]),[]);
@@ -128,6 +129,21 @@ export default function FarmaciaONG(){
                   transition:"all .17s",minWidth:isMobile?34:0}}>
                 <span style={{fontSize:15}}>📦</span>
                 {!isMobile&&<span>SESA</span>}
+              </button>
+
+              {/* FARMÁCIA BÁSICA */}
+              <button onClick={()=>setMode(m=>m==="basica"?"symptoms":"basica")}
+                title="Farmácia Básica"
+                style={{display:"flex",alignItems:"center",gap:isMobile?0:5,
+                  padding:isMobile?"7px":"6px 11px",
+                  borderRadius:isInd?"2px":"8px",cursor:"pointer",
+                  background:mode==="basica"?"rgba(5,150,105,.14)":t["--surface2"],
+                  border:`1.5px solid ${mode==="basica"?"rgba(5,150,105,.5)":t["--border"]}`,
+                  color:mode==="basica"?"#047857":t["--textMuted"],
+                  fontFamily:t["--sans"],fontSize:11,fontWeight:mode==="basica"?700:500,
+                  transition:"all .17s",minWidth:isMobile?34:0}}>
+                <span style={{fontSize:15}}>🏥</span>
+                {!isMobile&&<span>Farmácia Básica</span>}
               </button>
 
               {/* INTERAÇÕES */}
@@ -256,7 +272,7 @@ export default function FarmaciaONG(){
           {/* RIGHT PANEL */}
           <div className="pg-sc" onClick={()=>{if(isMobile&&sidebarOpen)setSidebarOpen(false);}} style={{flex:1,overflowY:"auto",padding:"18px 20px"}}>
             {/* ── Back button for catalog / SESA ── */}
-            {(mode==="catalog"||mode==="sesa"||mode==="interacoes")&&(
+            {(mode==="catalog"||mode==="sesa"||mode==="basica"||mode==="interacoes")&&(
               <button onClick={()=>setMode("symptoms")}
                 style={{display:"inline-flex",alignItems:"center",gap:7,
                   padding:"7px 14px",marginBottom:16,cursor:"pointer",
@@ -268,7 +284,7 @@ export default function FarmaciaONG(){
                 ← Voltar para Sintomas
               </button>
             )}
-            {mode==="interacoes"?<InteractionsView t={t} theme={theme} onSelectMed={openMedDetail}/>:mode==="sesa"?<SesaView f={f} t={t} theme={theme} onSelectMed={openMedDetail}/>:mode==="catalog"?<CatalogView f={f} t={t} theme={theme} onSelectMed={openMedDetail}/>
+            {mode==="basica"?<FarmaciaBasicaView t={t} theme={theme}/>:mode==="interacoes"?<InteractionsView t={t} theme={theme} onSelectMed={openMedDetail}/>:mode==="sesa"?<SesaView f={f} t={t} theme={theme} onSelectMed={openMedDetail}/>:mode==="catalog"?<CatalogView f={f} t={t} theme={theme} onSelectMed={openMedDetail}/>
             :!sel.size?<Empty t={t}/>
             :(
               <>
@@ -350,7 +366,7 @@ export default function FarmaciaONG(){
                         Medicamentos do Componente Básico da Assistência Farmacêutica, <strong>gratuitos nas UBS</strong> (Unidades Básicas de Saúde). Apresente receita médica + CPF + Cartão SUS.
                       </div>
                       <div style={{fontSize:10.5,color:t["--susTxt"]||t["--accentText"],fontFamily:t["--sans"],padding:"6px 10px",background:"rgba(0,0,0,.04)",borderRadius:t["--radiusSm"]}}>
-                        📍 <strong>Cascavel-PR — Farmácia Básica:</strong> Av. Tancredo Neves, 1453 · WhatsApp: <strong>(45) 3321-5529</strong>
+                        📍 <strong>Cascavel-PR — Farmácia Básica:</strong> Av. Tancredo Neves, 777 · WhatsApp: <strong>(45) 3321-5529</strong>
                       </div>
                     </div>
                   </div>
